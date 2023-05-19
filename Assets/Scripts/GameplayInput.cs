@@ -71,9 +71,10 @@ public class GameplayInput : MonoBehaviour
     }
     private void BonusUpdate()
     {
-        Vector3 screenPosition = Input.mousePosition;
-        if (Input.GetMouseButtonDown(0) && ValidateGameplayInput(screenPosition))
+        
+        if (Input.GetMouseButtonDown(0) && ValidateGameplayInput(Input.mousePosition))
         {
+            Vector3 screenPosition = Input.mousePosition;
             screenPosition.z = cameraDepth;
             GlobalEventManager.MovePlayer(mainCamera.ScreenToWorldPoint(screenPosition));
         }
@@ -92,7 +93,9 @@ public class GameplayInput : MonoBehaviour
     {
         if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began && ValidateGameplayInput(Input.GetTouch(0).position))
         {
-            GlobalEventManager.MovePlayer(mainCamera.ScreenToWorldPoint(Input.GetTouch(0).position));
+            Vector3 screenPosition = Input.GetTouch(0).position;
+            screenPosition.z = cameraDepth;
+            GlobalEventManager.MovePlayer(mainCamera.ScreenToWorldPoint(screenPosition));
         }
     }
 #endif
