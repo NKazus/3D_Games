@@ -15,17 +15,14 @@ public class DataHandler : MonoBehaviour
         {
             Dots = dots;
         }
-
-        GlobalEventManager.GameStateEvent += ResetDots;
     }
 
     private void OnDisable()
     {
-        GlobalEventManager.GameStateEvent -= ResetDots;
         PlayerPrefs.SetInt("_Dots", Dots);
     }
 
-    public void ResetDots(bool isActive)
+    public void ResetDots()
     {
         Dots = dots;
     }

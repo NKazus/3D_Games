@@ -8,6 +8,7 @@ public enum UIState
     Gameplay = 1,
     BonusGame = 2,
     Settings = 3,
+    Rules = 4
 }
 public class UIManager : MonoBehaviour
 {
@@ -17,6 +18,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Button toSettings;
     [SerializeField] private Button toBonusGame;
     [SerializeField] private Button toGameplay;
+    [SerializeField] private Button toRules;
     [SerializeField] private Button toPrivacy;
     [SerializeField] private string privacyURL;
 
@@ -37,6 +39,7 @@ public class UIManager : MonoBehaviour
         toSettings.onClick.AddListener(() => { TriggerChange(UIState.Settings); });
         toBonusGame.onClick.AddListener(() => { TriggerChange(UIState.BonusGame); });
         toGameplay.onClick.AddListener(() => { TriggerChange(UIState.Gameplay); });
+        toRules.onClick.AddListener(() => { TriggerChange(UIState.Rules); });
 
         toPrivacy.onClick.AddListener(CheckPrivacy);
     }
@@ -55,6 +58,7 @@ public class UIManager : MonoBehaviour
         toSettings.onClick.RemoveAllListeners();
         toBonusGame.onClick.RemoveAllListeners();
         toGameplay.onClick.RemoveAllListeners();
+        toRules.onClick.RemoveAllListeners();
 
         toPrivacy.onClick.RemoveListener(CheckPrivacy);
     }

@@ -66,6 +66,7 @@ public class ScoreManager : MonoBehaviour
 
         if (count >= dots)
         {
+            data.ResetDots();
             GlobalEventManager.DoWin();
             GlobalEventManager.SwitchGameState(false);
         }

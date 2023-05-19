@@ -54,7 +54,7 @@ public class BonusGame : MonoBehaviour
 
     private void CheckBonus()
     {
-        data.ResetDots(true);
+        data.ResetDots();
         int bonusDots = collectedDotsCount / winDotNumber;
         data.Dots -= bonusDots;
         if(bonusDots > 0)
