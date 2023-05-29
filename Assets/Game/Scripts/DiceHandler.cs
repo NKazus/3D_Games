@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
 
@@ -27,12 +25,11 @@ public class DiceHandler : MonoBehaviour
         localTransform.position = startPosition;
         localTransform.rotation = Quaternion.Euler(rotationValues[value - 1]);
         meshRenderer.material = diceMaterials[materialID];
-        Debug.Log(materialID);
 
         DOTween.Sequence()
             .SetId(this)
             .Append(localTransform.DOMove(endPosition, 2f))
-            .Join(localTransform.DOShakeRotation(2f, 90, 10, 90, true))
+            .Join(localTransform.DOShakeRotation(2f, 65, 7, 90, true))
             .OnComplete(() => { callback(); });
     }
 

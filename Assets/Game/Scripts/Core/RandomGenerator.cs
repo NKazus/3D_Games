@@ -9,11 +9,11 @@ public static class RandomGenerator
         return random.Next(minValue, maxValue);
     }
 
-    public static void RandomizeArray(int[] array)
+    public static void RandomizeArray<T>(T[] array)
     {
         int n = array.Length;
         int k;
-        int temp;
+        T temp;
         while (n > 1)
         {
             k = random.Next(n--);

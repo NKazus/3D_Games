@@ -6,8 +6,8 @@ public class SoundManager : MonoBehaviour
     [SerializeField] private AudioMixerGroup mixerMasterGroup;
 
     [SerializeField] private AudioSource ambientMusic;
-    [SerializeField] private AudioSource coinSound;
-    [SerializeField] private AudioSource potionSound;
+    [SerializeField] private AudioSource rewardSound;
+    [SerializeField] private AudioSource magicDiceSound;
 
     private bool vibroEnabled = true;
 
@@ -20,8 +20,8 @@ public class SoundManager : MonoBehaviour
     private void OnEnable()
     {
         GlobalEventManager.VibroEvent += PlayVibro;
-        GlobalEventManager.CoinSoundEvent += PlayCoins;
-        GlobalEventManager.PotionSoundEvent += PlayPotions;
+        GlobalEventManager.RewardSoundEvent += PlayReward;
+        GlobalEventManager.MagicDiceSoundEvent += PlayMagicDice;
 
         GlobalEventManager.VibroSettingsEvent += TurnVibration;
         GlobalEventManager.SoundSettingsEvent += TurnSound;
@@ -36,8 +36,8 @@ public class SoundManager : MonoBehaviour
     private void OnDisable()
     {
         GlobalEventManager.VibroEvent -= PlayVibro;
-        GlobalEventManager.CoinSoundEvent -= PlayCoins;
-        GlobalEventManager.PotionSoundEvent -= PlayPotions;
+        GlobalEventManager.RewardSoundEvent -= PlayReward;
+        GlobalEventManager.MagicDiceSoundEvent -= PlayMagicDice;
 
         GlobalEventManager.VibroSettingsEvent -= TurnVibration;
         GlobalEventManager.SoundSettingsEvent -= TurnSound;
@@ -53,14 +53,14 @@ public class SoundManager : MonoBehaviour
         }
     }
 
-    private void PlayCoins()
+    private void PlayReward()
     {
-        coinSound.Play();
+        rewardSound.Play();
     }
 
-    private void PlayPotions()
+    private void PlayMagicDice()
     {
-        potionSound.Play();
+        magicDiceSound.Play();
     }
 
     #region SETTINGS

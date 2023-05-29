@@ -4,13 +4,12 @@ public static class GlobalEventManager
 {
     public static event Action<bool> GameStateEvent;
     public static event Action VibroEvent;
-    public static event Action CoinSoundEvent;
-    public static event Action PotionSoundEvent;
+    public static event Action RewardSoundEvent;
+    public static event Action MagicDiceSoundEvent;
     public static event Action<bool> VibroSettingsEvent;
     public static event Action<bool> SoundSettingsEvent;
 
     public static event Action DiceActivationEvent;
-    public static event Action<string> ScoreEvent;
     public static event Action WinEvent;
 
 
@@ -24,14 +23,14 @@ public static class GlobalEventManager
         VibroEvent?.Invoke();
     }
 
-    public static void PlayCoins()
+    public static void PlayReward()
     {
-        CoinSoundEvent?.Invoke();
+        RewardSoundEvent?.Invoke();
     }
 
-    public static void PlayPotions()
+    public static void PlayMagicDice()
     {
-        PotionSoundEvent?.Invoke();
+        MagicDiceSoundEvent?.Invoke();
     }
 
     public static void SetVibro(bool value)
@@ -42,11 +41,6 @@ public static class GlobalEventManager
     public static void SetSound(bool value)
     {
         SoundSettingsEvent?.Invoke(value);
-    }
-
-    public static void ChangeScore(string id)
-    {
-        ScoreEvent?.Invoke(id);
     }
 
     public static void DoWin()

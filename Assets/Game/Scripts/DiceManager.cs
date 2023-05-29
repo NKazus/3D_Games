@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -30,6 +28,9 @@ public class DiceManager : MonoBehaviour
 
     private void OnEnable()
     {
+        scoreManager.UpdateValues(0, dataHandler.GlobalScore);
+        scoreManager.UpdateValues(3, dataHandler.MagicDices);
+
         GlobalEventManager.GameStateEvent += Activate;
 
         moreButton.gameObject.SetActive(false);
@@ -38,6 +39,7 @@ public class DiceManager : MonoBehaviour
 
     private void OnDisable()
     {
+        diceHandler.ResetDice();
         GlobalEventManager.GameStateEvent -= Activate;
 
         diceButton.onClick.RemoveAllListeners();
@@ -52,12 +54,13 @@ public class DiceManager : MonoBehaviour
         {
             diceHandler.ResetDice();
             diceNumber = defaultDices;
+            scoreManager.UpdateValues(2, diceNumber);
             magicDice = false;
             currentUserValue = 0;
+            scoreManager.UpdateValues(1, currentUserValue);
 
             currentCardValue = cardHandler.Activate();
 
-            diceNumber = defaultDices;
             CalculateDiceValues();
 
             diceButton.onClick.AddListener(ThrowDice);
@@ -75,7 +78,7 @@ public class DiceManager : MonoBehaviour
         int halfValue = finalValue / 2;
         diceValues[1] = (halfValue < 6) ? halfValue : 6;
         int remainingValue = finalValue - diceValues[1];
-        diceValues[2] = (remainingValue < 6) ? remainingValue : RandomGenerator.GenerateInt(0,7);
+        diceValues[2] = (remainingValue < 6) ? remainingValue : RandomGenerator.GenerateInt(1,7);
         RandomGenerator.RandomizeArray(diceValues);
         /*for(int i = 0; i < defaultDices; i++)
         {
@@ -88,14 +91,13 @@ public class DiceManager : MonoBehaviour
         diceButton.onClick.RemoveListener(ThrowDice);
         diceHandler.Throw(DiceCallback, 0, diceValues[defaultDices - diceNumber]);
         diceNumber--;
-        //dice number ui
+        scoreManager.UpdateValues(2, diceNumber);
     }
 
     private void DiceCallback()
     {
         currentUserValue += diceValues[defaultDices - diceNumber - 1];
-        Debug.Log("currentScore:"+currentUserValue);
-        //localscore ui
+        scoreManager.UpdateValues(1, currentUserValue);
         if (diceNumber > 0)
         {
             diceButton.onClick.AddListener(ThrowDice);
@@ -125,7 +127,7 @@ public class DiceManager : MonoBehaviour
         if (magicDice)
         {
             dataHandler.ReduceMagicDices();
-            //magic dice number ui
+            scoreManager.UpdateValues(3, dataHandler.MagicDices);
             ActivateMagicDice();
         }
 
@@ -135,28 +137,39 @@ public class DiceManager : MonoBehaviour
     private void Calculate(int last, int button)
     {
         currentUserValue += last;
+        scoreManager.UpdateValues(1, currentUserValue);
         int difference = currentUserValue - currentCardValue;
+        int defaultReward = (button > 0) ? 5 : 0;
         if(difference * button >= 0)
         {
             GlobalEventManager.DoWin();
-            dataHandler.UpdateGlobalScore(10 + difference);
+            GlobalEventManager.PlayReward();
+            dataHandler.UpdateGlobalScore(defaultReward + difference);
         }
         else
         {
             dataHandler.UpdateGlobalScore(difference);
+            GlobalEventManager.PlayVibro();
         }
     }
 
     private void Finish()
     {
-        //update global and local score ui
+        scoreManager.UpdateValues(0, dataHandler.GlobalScore);
         GlobalEventManager.SwitchGameState(false);
     }
 
     private void ActivateMagicDice()
     {
         magicDice = !magicDice;
-        Debug.Log("Magic dice:"+magicDice);
         //active button visual
+        if (magicDice)
+        {
+            magicDiceButton.image.color = Color.red;
+        }
+        else
+        {
+            magicDiceButton.image.color = Color.white;
+        }
     }
 }

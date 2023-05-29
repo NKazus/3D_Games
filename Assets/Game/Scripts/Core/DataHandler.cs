@@ -23,6 +23,11 @@ public class DataHandler : MonoBehaviour
         PlayerPrefs.SetInt("_MagicDices", magicDices);
     }
 
+    public void AddMagicDices()
+    {
+        magicDices++;
+    }
+
     public void ReduceMagicDices()
     {
         magicDices--;
@@ -31,5 +36,9 @@ public class DataHandler : MonoBehaviour
     public void UpdateGlobalScore(int value)
     {
         globalScore += value;
+        if(globalScore < 0)
+        {
+            globalScore = 0;
+        }
     }
 }
