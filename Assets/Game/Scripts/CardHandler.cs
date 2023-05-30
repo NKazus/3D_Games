@@ -25,6 +25,11 @@ public class CardHandler : MonoBehaviour
         localTransform.position = startPosition;
     }
 
+    private void OnDisable()
+    {
+        DOTween.KillAll();
+    }
+
     public int Activate()
     {
         currentValue = RandomGenerator.GenerateInt(minCardValue, maxCardValue + 1);

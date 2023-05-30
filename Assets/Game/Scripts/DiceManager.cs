@@ -80,10 +80,6 @@ public class DiceManager : MonoBehaviour
         int remainingValue = finalValue - diceValues[1];
         diceValues[2] = (remainingValue < 6) ? remainingValue : RandomGenerator.GenerateInt(1,7);
         RandomGenerator.RandomizeArray(diceValues);
-        /*for(int i = 0; i < defaultDices; i++)
-        {
-            Debug.Log(diceValues[i]);
-        }*/
     }
 
     private void ThrowDice()
@@ -142,7 +138,7 @@ public class DiceManager : MonoBehaviour
         int defaultReward = (button > 0) ? 5 : 0;
         if(difference * button >= 0)
         {
-            GlobalEventManager.DoWin();
+            GlobalEventManager.DoWin(defaultReward + difference);
             GlobalEventManager.PlayReward();
             dataHandler.UpdateGlobalScore(defaultReward + difference);
         }

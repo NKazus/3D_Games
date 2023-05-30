@@ -68,12 +68,12 @@ public class GameplayHandler : MonoBehaviour
         }
     }
 
-    private void ChangeTextToWin()
+    private void ChangeTextToWin(int points)
     {
         restartIcon.sprite = win;
         restartIcon.SetNativeSize();
         restartText.text = winText;
-        restartExtra.text = "Extra potions: ";
+        restartExtra.text = "You've got "+points.ToString()+" points!";
         restartExtra.enabled = true;
     }
 }

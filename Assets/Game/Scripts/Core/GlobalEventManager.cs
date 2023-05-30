@@ -10,7 +10,7 @@ public static class GlobalEventManager
     public static event Action<bool> SoundSettingsEvent;
 
     public static event Action DiceActivationEvent;
-    public static event Action WinEvent;
+    public static event Action<int> WinEvent;
 
 
     public static void SwitchGameState(bool activate)
@@ -43,9 +43,9 @@ public static class GlobalEventManager
         SoundSettingsEvent?.Invoke(value);
     }
 
-    public static void DoWin()
+    public static void DoWin(int value)
     {
-        WinEvent?.Invoke();
+        WinEvent?.Invoke(value);
     }
 
     public static void ActivateDices()

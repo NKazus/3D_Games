@@ -15,6 +15,7 @@ public class CupManager : MonoBehaviour
     [SerializeField] private CupHandler[] cups;
     [SerializeField] private float[] cupJumpForces;
     [SerializeField] private Button startButton;
+    [SerializeField] private GameObject pickText;
 
     [SerializeField] private int maxShuffles = 10;
 
@@ -52,6 +53,7 @@ public class CupManager : MonoBehaviour
         DOTween.KillAll();
         ResetCups();
         startButton.onClick.RemoveListener(Activate);
+        pickText.SetActive(false);
     }
 
     private void Activate()
@@ -128,6 +130,7 @@ public class CupManager : MonoBehaviour
 
     private void FinishShifts()
     {
+        pickText.SetActive(true);
         shiftNumber++;
         if (shiftNumber >= cups.Length)
         {
@@ -140,6 +143,7 @@ public class CupManager : MonoBehaviour
 
     private void Result(bool isTreasure)
     {
+        pickText.SetActive(false);
         for (int i = 0; i < cups.Length; i++)
         {
             cups[i].DeactivateCup();
