@@ -5766,7 +5766,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f32d54a580abba48888eba1274f5902, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  globalScore: 0
+  globalScore: 50
   magicDices: 1
 --- !u!114 &1440539143
 MonoBehaviour:
