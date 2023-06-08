@@ -136,15 +136,16 @@ public class DiceManager : MonoBehaviour
         scoreManager.UpdateValues(1, currentUserValue);
         int difference = currentUserValue - currentCardValue;
         int defaultReward = (button > 0) ? 5 : 0;
-        if(difference * button >= 0)
+        int rewardValue = difference * button;
+        if(rewardValue >= 0)
         {
-            GlobalEventManager.DoWin(defaultReward + difference);
+            GlobalEventManager.DoWin(defaultReward + rewardValue);
             GlobalEventManager.PlayReward();
-            dataHandler.UpdateGlobalScore(defaultReward + difference);
+            dataHandler.UpdateGlobalScore(defaultReward + rewardValue);
         }
         else
         {
-            dataHandler.UpdateGlobalScore(difference);
+            dataHandler.UpdateGlobalScore(rewardValue);
             GlobalEventManager.PlayVibro();
         }
     }
@@ -158,10 +159,9 @@ public class DiceManager : MonoBehaviour
     private void ActivateMagicDice()
     {
         magicDice = !magicDice;
-        //active button visual
         if (magicDice)
         {
-            magicDiceButton.image.color = Color.red;
+            magicDiceButton.image.color = Color.green;
         }
         else
         {

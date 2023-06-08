@@ -14,7 +14,7 @@ public class DataHandler : MonoBehaviour
     private void OnEnable()
     {
         globalScore = PlayerPrefs.HasKey("_GlobalScore") ? PlayerPrefs.GetInt("_GlobalScore") : globalScore;
-        //magicDices = PlayerPrefs.HasKey("_MagicDices") ? PlayerPrefs.GetInt("_MagicDices") : magicDices;
+        magicDices = PlayerPrefs.HasKey("_MagicDices") ? PlayerPrefs.GetInt("_MagicDices") : magicDices;
     }
 
     private void OnDisable()
