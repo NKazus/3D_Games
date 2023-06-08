@@ -17,9 +17,9 @@ public class GameplayHandler : MonoBehaviour
     #region MONO
     private void Awake()
     {
-        restartIcon = restartBg.transform.GetChild(0).GetComponent<Image>();
-        restartText = restartBg.transform.GetChild(1).GetComponent<Text>();
-        restartExtra = restartBg.transform.GetChild(2).GetComponent<Text>();
+        restartIcon = restartBg.transform.GetChild(1).GetComponent<Image>();
+        restartText = restartBg.transform.GetChild(2).GetComponent<Text>();
+        restartExtra = restartBg.transform.GetChild(3).GetComponent<Text>();
     }
 
     private void OnEnable()

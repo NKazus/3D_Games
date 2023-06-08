@@ -5,6 +5,9 @@ using UnityEngine.UI;
 public class SwitchToggle : MonoBehaviour
 {
     [SerializeField] private RectTransform handleRectTransform;
+    [SerializeField] private Image toggleImage;
+    [SerializeField] private Sprite onIcon;
+    [SerializeField] private Sprite offIcon;
 
     private Toggle toggle;
     private Vector2 handlePosition;
@@ -33,6 +36,7 @@ public class SwitchToggle : MonoBehaviour
 
     private void Switch(bool isOn)
     {
+        toggleImage.sprite = isOn ? onIcon : offIcon;
         handleRectTransform.DOAnchorPos(isOn ? handlePosition * (-1) : handlePosition, .4f).SetId(this).SetEase(Ease.InOutBack);        
     }
 }
