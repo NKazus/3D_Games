@@ -10,6 +10,7 @@ public class FieldGenerator : MonoBehaviour
     [SerializeField] private static int fieldSize = 7;
 
     public Cell[,] field;
+    public int FieldSize => fieldSize;
 
     private void Start()
     {

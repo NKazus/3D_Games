@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+[System.Serializable]
 public struct CellIndices
 {
     public int cellX;
@@ -70,7 +71,7 @@ public class Cell : MonoBehaviour
             entry.eventID = EventTriggerType.PointerClick;
             entry.callback.AddListener((data) => { EnableCell((PointerEventData)data); });
             trigger.triggers.Add(entry);
-            meshRenderer.material = activeMaterial;
+            MarkCell();
         }        
     }
 
@@ -90,7 +91,7 @@ public class Cell : MonoBehaviour
         if (!isBlocked)
         {
             cellClick = EnableCell;
-            meshRenderer.material = activeMaterial;
+            MarkCell();
         }
         else
         {
@@ -116,5 +117,10 @@ public class Cell : MonoBehaviour
         isBlocked = false;
         meshRenderer.material = defaultMaterial;
         trigger.triggers.RemoveRange(0, trigger.triggers.Count);
+    }
+
+    public void MarkCell()
+    {
+        meshRenderer.material = activeMaterial;
     }
 }

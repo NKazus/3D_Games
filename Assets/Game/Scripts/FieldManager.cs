@@ -85,8 +85,8 @@ public class FieldManager : MonoBehaviour
         {
             do
             {
-                bCell.cellX = RandomGenerator.GenerateInt(0, 7);
-                bCell.cellZ = RandomGenerator.GenerateInt(0, 7);
+                bCell.cellX = RandomGenerator.GenerateInt(0, fieldGenerator.FieldSize);
+                bCell.cellZ = RandomGenerator.GenerateInt(0, fieldGenerator.FieldSize);
             }
             while (blockedCells.Contains(bCell));
             blockedCells.Add(bCell);
@@ -110,8 +110,8 @@ public class FieldManager : MonoBehaviour
         {
             do
             {
-                cCell.cellX = RandomGenerator.GenerateInt(0, 7);
-                cCell.cellZ = RandomGenerator.GenerateInt(0, 7);
+                cCell.cellX = RandomGenerator.GenerateInt(0, fieldGenerator.FieldSize);
+                cCell.cellZ = RandomGenerator.GenerateInt(0, fieldGenerator.FieldSize);
             }
             while (coinCells.Contains(cCell));
             coinCells.Add(cCell);
@@ -192,12 +192,12 @@ public class FieldManager : MonoBehaviour
 
     private void SetKeyPoints()
     {
-        finishCell.cellX = RandomGenerator.GenerateInt(0, 7);
+        finishCell.cellX = RandomGenerator.GenerateInt(0, fieldGenerator.FieldSize);
         finishCell.cellZ = 0;
         Vector3 finishCellPosition = fieldGenerator.field[finishCell.cellX, finishCell.cellZ].GetCellPosition();
         finish.position = new Vector3(finishCellPosition.x, finish.position.y, finishCellPosition.z);
 
-        currentCell.cellX = RandomGenerator.GenerateInt(0, 7);
+        currentCell.cellX = RandomGenerator.GenerateInt(0, fieldGenerator.FieldSize);
         currentCell.cellZ = 6;
         Vector3 currentCellPosition = fieldGenerator.field[currentCell.cellX, currentCell.cellZ].GetCellPosition();
         player.position = new Vector3(currentCellPosition.x, player.position.y, currentCellPosition.z);
@@ -207,11 +207,11 @@ public class FieldManager : MonoBehaviour
     {
         for(int i = 1; i <= jumpValue; i++)
         {
-            if(currentCell.cellX + i < 7)
+            if(currentCell.cellX + i < fieldGenerator.FieldSize)
             {
                 fieldGenerator.field[currentCell.cellX + i, currentCell.cellZ].Activate();
             }
-            if (currentCell.cellZ + i < 7)
+            if (currentCell.cellZ + i < fieldGenerator.FieldSize)
             {
                 fieldGenerator.field[currentCell.cellX, currentCell.cellZ + i].Activate();
             }
@@ -230,11 +230,11 @@ public class FieldManager : MonoBehaviour
     {
         for (int i = 1; i <= 2; i++)
         {
-            if (currentCell.cellX + i < 7)
+            if (currentCell.cellX + i < fieldGenerator.FieldSize)
             {
                 fieldGenerator.field[currentCell.cellX + i, currentCell.cellZ].Deactivate();
             }
-            if (currentCell.cellZ + i < 7)
+            if (currentCell.cellZ + i < fieldGenerator.FieldSize)
             {
                 fieldGenerator.field[currentCell.cellX, currentCell.cellZ + i].Deactivate();
             }
