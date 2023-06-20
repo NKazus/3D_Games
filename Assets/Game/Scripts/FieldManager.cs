@@ -12,6 +12,7 @@ public class FieldManager : MonoBehaviour
     [SerializeField] private FieldGenerator fieldGenerator;
     [SerializeField] private Transform player;
     [SerializeField] private Transform finish;
+    [SerializeField] private float finishOffsetZ = 0.05f;
     [SerializeField] private Transform[] coins;
     [SerializeField] private int initialMoves = 15;
     [SerializeField] private int blocks = 20;
@@ -154,7 +155,10 @@ public class FieldManager : MonoBehaviour
         currentCell = cell;
         moves--;
         scoreManager.UpdateValues(2, moves);
-        player.DOJump(new Vector3(cellPosition.x, player.position.y, cellPosition.z), 0.4f, 1, 1f).OnComplete(() => CheckState());
+        DOTween.Sequence()
+            .Append(player.DOJump(new Vector3(cellPosition.x, player.position.y, cellPosition.z), 0.4f, 1, 1f))
+            .Join(player.DOShakeScale(1f, new Vector3(0, 0, 1), 5, 90))
+            .OnComplete(() => CheckState());
     }
 
     private void CheckState()
@@ -166,6 +170,7 @@ public class FieldManager : MonoBehaviour
             dataHandler.UpdateGlobalScore(score);
             scoreManager.UpdateValues(0, dataHandler.GlobalScore);
             GlobalEventManager.SwitchGameState(false);
+            GlobalEventManager.PlayReward();
             return;
         }
         if(moves <= 0)
@@ -195,7 +200,7 @@ public class FieldManager : MonoBehaviour
         finishCell.cellX = RandomGenerator.GenerateInt(0, fieldGenerator.FieldSize);
         finishCell.cellZ = 0;
         Vector3 finishCellPosition = fieldGenerator.field[finishCell.cellX, finishCell.cellZ].GetCellPosition();
-        finish.position = new Vector3(finishCellPosition.x, finish.position.y, finishCellPosition.z);
+        finish.position = new Vector3(finishCellPosition.x, finish.position.y, finishCellPosition.z + finishOffsetZ);
 
         currentCell.cellX = RandomGenerator.GenerateInt(0, fieldGenerator.FieldSize);
         currentCell.cellZ = 6;

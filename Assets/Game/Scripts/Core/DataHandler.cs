@@ -16,8 +16,8 @@ public class DataHandler : MonoBehaviour
     private void OnEnable()
     {
         globalScore = PlayerPrefs.HasKey("_GlobalScore") ? PlayerPrefs.GetInt("_GlobalScore") : globalScore;
-        doubleJumps = 1;// PlayerPrefs.HasKey("_DoubleJumps") ? PlayerPrefs.GetInt("_DoubleJumps") : doubleJumps;
-        unlocks = 1;// PlayerPrefs.HasKey("_Unlocks") ? PlayerPrefs.GetInt("_Unlocks") : unlocks;
+        doubleJumps = PlayerPrefs.HasKey("_DoubleJumps") ? PlayerPrefs.GetInt("_DoubleJumps") : doubleJumps;
+        unlocks = PlayerPrefs.HasKey("_Unlocks") ? PlayerPrefs.GetInt("_Unlocks") : unlocks;
     }
 
     private void OnDisable()

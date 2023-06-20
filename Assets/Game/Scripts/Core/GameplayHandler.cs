@@ -73,7 +73,7 @@ public class GameplayHandler : MonoBehaviour
         restartIcon.sprite = win;
         restartIcon.SetNativeSize();
         restartText.text = winText;
-        restartExtra.text = "You've got "+points.ToString()+" points!";
+        restartExtra.text = "You've got "+points.ToString()+" coin(s)!";
         restartExtra.enabled = true;
     }
 }

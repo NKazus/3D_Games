@@ -13,8 +13,13 @@ public class RaceManager : MonoBehaviour
     [SerializeField] private DataHandler dataHandler;
     [SerializeField] private ScoreManager scoreManager;
     [SerializeField] private FieldGenerator fieldGenerator;
+
     [SerializeField] private Transform player;
     [SerializeField] private Transform bot;
+    [SerializeField] private Transform playerFinish;
+    [SerializeField] private Transform botFinish;
+    [SerializeField] private float finishOffsetZ = 0.08f;
+
     [SerializeField] private Route[] routes;
     [SerializeField] private Button startButton;
     [SerializeField] private Text buttonText;
@@ -32,7 +37,6 @@ public class RaceManager : MonoBehaviour
     private int pRouteIndex;
     private int bRouteIndex;
 
-    private bool refresh;
     private bool finished;
     private bool jumpReward = true;
 
@@ -41,7 +45,6 @@ public class RaceManager : MonoBehaviour
 
     private void OnEnable()
     {
-        refresh = false;
         Refresh();
         buttonText.text = START_TEXT;
         startButton.onClick.AddListener(Play);
@@ -50,12 +53,12 @@ public class RaceManager : MonoBehaviour
     private void OnDisable()
     {
         startButton.onClick.RemoveAllListeners();
-        DOTween.KillAll(this);
+        DOTween.RewindAll(this);
     }
 
     private void Refresh()
     {
-        DOTween.KillAll(this);
+        DOTween.RewindAll(this);
         finished = false;
         jumpReward = !jumpReward;
         rewardImage.sprite = jumpReward ? jumpIcon : unlockIcon;
@@ -69,14 +72,6 @@ public class RaceManager : MonoBehaviour
     private void Play()
     {
         startButton.onClick.RemoveListener(Play);
-        if (refresh)
-        {
-            Refresh();
-        }
-        else
-        {
-            refresh = true;
-        }
         Jump(bot);
         buttonText.text = JUMP_TEXT;
         startButton.onClick.AddListener(() => Jump(player, true));
@@ -90,8 +85,10 @@ public class RaceManager : MonoBehaviour
         }
         CellIndices cell = isPlayer ? routes[pRoute].cells[++pRouteIndex] : routes[bRoute].cells[++bRouteIndex];
         Vector3 cellPosition = fieldGenerator.field[cell.cellX, cell.cellZ].GetCellPosition();
-        obj.DOJump(new Vector3(cellPosition.x, obj.position.y, cellPosition.z), 0.4f, 1, isPlayer ? 0.4f : 0.7f)
+        DOTween.Sequence()
             .SetId(this)
+            .Append(obj.DOJump(new Vector3(cellPosition.x, obj.position.y, cellPosition.z), 0.2f, 1, isPlayer ? 0.4f : 0.7f))
+            .Join(obj.DOShakeScale(isPlayer ? 0.4f : 0.7f, new Vector3(0, 0, 1), 5, 90))
             .OnComplete(() => JumpCallback(isPlayer));
     }
 
@@ -126,9 +123,9 @@ public class RaceManager : MonoBehaviour
     private void Stop(bool win)
     {
         startButton.onClick.RemoveAllListeners();
+        startButton.gameObject.SetActive(false);
         if (win)
         {
-            Debug.Log("win");
             dataHandler.AddBonus(jumpReward);
             if (jumpReward)
             {
@@ -138,16 +135,22 @@ public class RaceManager : MonoBehaviour
             {
                 scoreManager.UpdateValues(4, dataHandler.Unlocks);
             }
-            GlobalEventManager.PlayMagicDice();
+            GlobalEventManager.PlayBonus();
         }
         else
         {
-            Debug.Log("lose");
             dataHandler.UpdateGlobalScore(-5);
             scoreManager.UpdateValues(0, dataHandler.GlobalScore);
             GlobalEventManager.PlayVibro();
         }
+        Invoke("Reactivate", 1.5f);
+    }
+
+    private void Reactivate()
+    {
+        Refresh();
         buttonText.text = START_TEXT;
+        startButton.gameObject.SetActive(true);
         startButton.onClick.AddListener(Play);
     }
 
@@ -166,14 +169,20 @@ public class RaceManager : MonoBehaviour
         pRouteIndex = 0;
         pStart = routes[pRoute].cells[0];
         pFinish = routes[pRoute].cells[routes[pRoute].cells.Count - 1];
+
         Vector3 cellPosition = fieldGenerator.field[pStart.cellX, pStart.cellZ].GetCellPosition();
         player.position = new Vector3(cellPosition.x, player.position.y, cellPosition.z);
+        cellPosition = fieldGenerator.field[pFinish.cellX, pFinish.cellZ].GetCellPosition();
+        playerFinish.position = new Vector3(cellPosition.x, playerFinish.position.y, cellPosition.z + finishOffsetZ);
 
         bRouteIndex = 0;
         bStart = routes[bRoute].cells[0];
         bFinish = routes[bRoute].cells[routes[bRoute].cells.Count - 1];
+
         cellPosition = fieldGenerator.field[bStart.cellX, bStart.cellZ].GetCellPosition();
         bot.position = new Vector3(cellPosition.x, bot.position.y, cellPosition.z);
+        cellPosition = fieldGenerator.field[bFinish.cellX, bFinish.cellZ].GetCellPosition();
+        botFinish.position = new Vector3(cellPosition.x, botFinish.position.y, cellPosition.z + finishOffsetZ);
     }
 
     private void SetField()

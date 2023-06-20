@@ -24,6 +24,6 @@ public class ScoreManager : MonoBehaviour
 
     private void UpdateText(Text uiText, string value)
     {
-        uiText.DOText(value, 0.5f);
+        uiText.DOText(value, 0.5f).Play();
     }
 }

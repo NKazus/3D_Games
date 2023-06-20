@@ -21,7 +21,7 @@ public class SoundManager : MonoBehaviour
     {
         GlobalEventManager.VibroEvent += PlayVibro;
         GlobalEventManager.RewardSoundEvent += PlayReward;
-        GlobalEventManager.MagicDiceSoundEvent += PlayMagicDice;
+        GlobalEventManager.BonusSoundEvent += PlayBonus;
 
         GlobalEventManager.VibroSettingsEvent += TurnVibration;
         GlobalEventManager.SoundSettingsEvent += TurnSound;
@@ -37,7 +37,7 @@ public class SoundManager : MonoBehaviour
     {
         GlobalEventManager.VibroEvent -= PlayVibro;
         GlobalEventManager.RewardSoundEvent -= PlayReward;
-        GlobalEventManager.MagicDiceSoundEvent -= PlayMagicDice;
+        GlobalEventManager.BonusSoundEvent -= PlayBonus;
 
         GlobalEventManager.VibroSettingsEvent -= TurnVibration;
         GlobalEventManager.SoundSettingsEvent -= TurnSound;
@@ -58,7 +58,7 @@ public class SoundManager : MonoBehaviour
         rewardSound.Play();
     }
 
-    private void PlayMagicDice()
+    private void PlayBonus()
     {
         magicDiceSound.Play();
     }
