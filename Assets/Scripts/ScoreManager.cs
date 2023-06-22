@@ -5,38 +5,23 @@ using UnityEngine.UI;
 public class ScoreManager : MonoBehaviour
 {
     [SerializeField] private Text globalScoreUI;
-    [SerializeField] private Text currentScoreUI;
-    [SerializeField] private Text dicesUI;
-    [SerializeField] private Text magicDicesUI;
+    [SerializeField] private Text timerUI;
 
-
-    private void OnEnable()
+    public void UpdateScore(int value)
     {
-        
+
+        globalScoreUI.DOText(value.ToString(), 0.5f);
     }
 
-    private void OnDisable()
+    public void UpdateTimer(float timeLeft)
     {
-        
-    }
-
-    public void UpdateValues(int id, int value)
-    {
-        Text ui;
-        string result = value.ToString();
-
-        switch (id)
+        if(timeLeft < 0)
         {
-            case 1: ui = currentScoreUI; break;
-            case 2: ui = dicesUI; result += "/3"; break;
-            case 3: ui = magicDicesUI; break;
-            default: ui = globalScoreUI; break;
+            timeLeft = 0;
         }
-        UpdateText(ui, result);
+        float minutes = Mathf.FloorToInt(timeLeft / 60);
+        float seconds = Mathf.FloorToInt(timeLeft % 60);
+        timerUI.text = string.Format("{0:00}:{1:00}", minutes, seconds);
     }
 
-    private void UpdateText(Text uiText, string value)
-    {
-        uiText.DOText(value, 0.5f);
-    }
 }

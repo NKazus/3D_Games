@@ -6,20 +6,14 @@ public class GameplayHandler : MonoBehaviour
     [SerializeField] private Button restart;
     [SerializeField] private GameObject restartBg;
     [SerializeField] private Sprite win;
-    [SerializeField] private string winText;
     [SerializeField] private Sprite lose;
-    [SerializeField] private string loseText;
 
     private Image restartIcon;
-    private Text restartText;
-    private Text restartExtra;
 
     #region MONO
     private void Awake()
     {
         restartIcon = restartBg.transform.GetChild(1).GetComponent<Image>();
-        restartText = restartBg.transform.GetChild(2).GetComponent<Text>();
-        restartExtra = restartBg.transform.GetChild(3).GetComponent<Text>();
     }
 
     private void OnEnable()
@@ -27,7 +21,7 @@ public class GameplayHandler : MonoBehaviour
         GlobalEventManager.GameStateEvent += ChangeGameState;
         GlobalEventManager.WinEvent += ChangeTextToWin;
 
-        Invoke("Restart", 1f);
+        Restart();
     }
 
     private void OnDisable()
@@ -61,19 +55,14 @@ public class GameplayHandler : MonoBehaviour
             restart.gameObject.SetActive(false);
             restartIcon.sprite = lose;
             restartIcon.SetNativeSize();
-            restartText.text = loseText;
-            restartExtra.enabled = false;
             restartBg.SetActive(false);
             restart.onClick.RemoveListener(Restart);
         }
     }
 
-    private void ChangeTextToWin(int points)
+    private void ChangeTextToWin()
     {
         restartIcon.sprite = win;
         restartIcon.SetNativeSize();
-        restartText.text = winText;
-        restartExtra.text = "You've got "+points.ToString()+" points!";
-        restartExtra.enabled = true;
     }
 }

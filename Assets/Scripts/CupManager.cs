@@ -41,8 +41,6 @@ public class CupManager : MonoBehaviour
 
     private void OnEnable()
     {
-        scoreManager.UpdateValues(0, dataHandler.GlobalScore);
-        scoreManager.UpdateValues(3, dataHandler.MagicDices);
         startButton.onClick.AddListener(Activate);
         startButton.gameObject.SetActive(true);
     }
@@ -152,12 +150,10 @@ public class CupManager : MonoBehaviour
         int reward = isTreasure ? 2 : -5;
         if (isTreasure)
         {
-            dataHandler.AddMagicDices();
-            scoreManager.UpdateValues(3, dataHandler.MagicDices);
-            GlobalEventManager.PlayMagicDice();
+            
+            GlobalEventManager.PlayBonus();
         }
         dataHandler.UpdateGlobalScore(reward);
-        scoreManager.UpdateValues(0, dataHandler.GlobalScore);
         startButton.gameObject.SetActive(true);
     }
 

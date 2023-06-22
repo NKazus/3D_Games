@@ -3,34 +3,27 @@ using UnityEngine;
 public class DataHandler : MonoBehaviour
 {
     [SerializeField] private int globalScore;
-    [SerializeField] private int magicDices;
+    [SerializeField] private float bonusTime;
+    [SerializeField] private float bonusTimeDelta;
 
-    public int ScoreValue => currentScoreValue;
-    private int currentScoreValue;
-
-    public int MagicDices => magicDices;
+    public float BonusTime => bonusTime;
     public int GlobalScore => globalScore;
 
     private void OnEnable()
     {
         globalScore = PlayerPrefs.HasKey("_GlobalScore") ? PlayerPrefs.GetInt("_GlobalScore") : globalScore;
-        magicDices = PlayerPrefs.HasKey("_MagicDices") ? PlayerPrefs.GetInt("_MagicDices") : magicDices;
+        bonusTime = PlayerPrefs.HasKey("_BonusTime") ? PlayerPrefs.GetFloat("_BonusTime") : bonusTime;
     }
 
     private void OnDisable()
     {
         PlayerPrefs.SetInt("_GlobalScore", globalScore);
-        PlayerPrefs.SetInt("_MagicDices", magicDices);
+        PlayerPrefs.SetFloat("_BonusTime", bonusTime);
     }
 
-    public void AddMagicDices()
+    public void SetBonusTime(bool reset = false)
     {
-        magicDices++;
-    }
-
-    public void ReduceMagicDices()
-    {
-        magicDices--;
+        bonusTime = reset ? 0 : bonusTime + bonusTimeDelta;
     }
 
     public void UpdateGlobalScore(int value)

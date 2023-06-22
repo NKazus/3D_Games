@@ -14,9 +14,9 @@ public static class RandomGenerator
         int n = array.Length;
         int k;
         T temp;
-        while (n > 1)
+        while (n > 2)
         {
-            k = random.Next(n--);
+            k = random.Next(1, n--);
             temp = array[n];
             array[n] = array[k];
             array[k] = temp;

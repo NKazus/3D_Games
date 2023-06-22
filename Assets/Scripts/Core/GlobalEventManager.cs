@@ -5,12 +5,12 @@ public static class GlobalEventManager
     public static event Action<bool> GameStateEvent;
     public static event Action VibroEvent;
     public static event Action RewardSoundEvent;
-    public static event Action MagicDiceSoundEvent;
+    public static event Action BonusSoundEvent;
     public static event Action<bool> VibroSettingsEvent;
     public static event Action<bool> SoundSettingsEvent;
 
     public static event Action DiceActivationEvent;
-    public static event Action<int> WinEvent;
+    public static event Action WinEvent;
 
 
     public static void SwitchGameState(bool activate)
@@ -28,9 +28,9 @@ public static class GlobalEventManager
         RewardSoundEvent?.Invoke();
     }
 
-    public static void PlayMagicDice()
+    public static void PlayBonus()
     {
-        MagicDiceSoundEvent?.Invoke();
+        BonusSoundEvent?.Invoke();
     }
 
     public static void SetVibro(bool value)
@@ -43,9 +43,9 @@ public static class GlobalEventManager
         SoundSettingsEvent?.Invoke(value);
     }
 
-    public static void DoWin(int value)
+    public static void DoWin()
     {
-        WinEvent?.Invoke(value);
+        WinEvent?.Invoke();
     }
 
     public static void ActivateDices()
