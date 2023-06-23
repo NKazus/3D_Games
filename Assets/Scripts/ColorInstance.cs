@@ -12,4 +12,9 @@ public class ColorInstance : MonoBehaviour
         objectMaterial.color = initialColor;
         meshRenderer.material = objectMaterial;
     }
+
+    public void SetHue(Color targetColor)
+    {
+        objectMaterial.color = targetColor;
+    }
 }

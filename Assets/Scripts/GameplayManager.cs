@@ -60,7 +60,10 @@ public class GameplayManager : MonoBehaviour
 
         player.Activate(SwitchCallback);
         targetValue = id;
-        StartCoroutine(StartTimer());
+        if (gameObject.activeSelf)
+        {
+            StartCoroutine(StartTimer());
+        }
     }
 
     private void SwitchCallback(int id)
