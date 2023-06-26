@@ -10,6 +10,7 @@ public class Coin : MonoBehaviour
     {
         coinTransform = transform;
         rotationTween = coinTransform.DORotate(new Vector3(0, 50, 0), 1f).SetLoops(-1, LoopType.Incremental).SetEase(Ease.Linear);
+        rotationTween.Rewind();
     }
 
     private void OnEnable()

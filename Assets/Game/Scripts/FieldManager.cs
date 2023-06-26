@@ -6,6 +6,8 @@ using UnityEngine.UI;
 public class FieldManager : MonoBehaviour
 {
     [SerializeField] private Button doubleJumpButton;
+    [SerializeField] private Sprite doubleJumpActive;
+    [SerializeField] private Sprite doubleJumpInactive;
     [SerializeField] private ScoreManager scoreManager;
 
     [SerializeField] private DataHandler dataHandler;
@@ -57,7 +59,12 @@ public class FieldManager : MonoBehaviour
             doubleJumpButton.image.color = Color.white;
             if(dataHandler.DoubleJumps > 0)
             {
+                doubleJumpButton.image.sprite = doubleJumpActive;
                 doubleJumpButton.onClick.AddListener(ActivateDoubleJump);
+            }
+            else
+            {
+                doubleJumpButton.image.sprite = doubleJumpInactive;
             }
             moves = initialMoves;
             scoreManager.UpdateValues(2, moves);
@@ -147,6 +154,10 @@ public class FieldManager : MonoBehaviour
         {
             dataHandler.RemoveBonus(true);
             scoreManager.UpdateValues(3, dataHandler.DoubleJumps);
+            if(dataHandler.DoubleJumps <= 0)
+            {
+                doubleJumpButton.image.sprite = doubleJumpInactive;
+            }
             jumpValue = 1;
             doubleJumpButton.image.color = Color.white;
             isDoubleJumpActive = false;
@@ -158,7 +169,8 @@ public class FieldManager : MonoBehaviour
         DOTween.Sequence()
             .Append(player.DOJump(new Vector3(cellPosition.x, player.position.y, cellPosition.z), 0.4f, 1, 1f))
             .Join(player.DOShakeScale(1f, new Vector3(0, 0, 1), 5, 90))
-            .OnComplete(() => CheckState());
+            .OnComplete(() => CheckState())
+            .Play();
     }
 
     private void CheckState()
@@ -189,7 +201,7 @@ public class FieldManager : MonoBehaviour
         {
             isDoubleJumpActive = !isDoubleJumpActive;
             jumpValue = isDoubleJumpActive ? 2 : 1;
-            doubleJumpButton.image.color = isDoubleJumpActive ? Color.green : Color.white;
+            doubleJumpButton.image.color = isDoubleJumpActive ? Color.yellow : Color.white;
             DeactivateCells();
             ActivateCells();
         }

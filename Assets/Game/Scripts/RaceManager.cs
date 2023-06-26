@@ -40,8 +40,8 @@ public class RaceManager : MonoBehaviour
     private bool finished;
     private bool jumpReward = true;
 
-    private const string START_TEXT = "Start";
-    private const string JUMP_TEXT = "Jump";
+    private const string START_TEXT = "START";
+    private const string JUMP_TEXT = "JUMP";
 
     private void OnEnable()
     {
@@ -53,12 +53,12 @@ public class RaceManager : MonoBehaviour
     private void OnDisable()
     {
         startButton.onClick.RemoveAllListeners();
-        DOTween.RewindAll(this);
+        DOTween.Kill("jump");
     }
 
     private void Refresh()
     {
-        DOTween.RewindAll(this);
+        DOTween.Kill("jump");
         finished = false;
         jumpReward = !jumpReward;
         rewardImage.sprite = jumpReward ? jumpIcon : unlockIcon;
@@ -86,7 +86,7 @@ public class RaceManager : MonoBehaviour
         CellIndices cell = isPlayer ? routes[pRoute].cells[++pRouteIndex] : routes[bRoute].cells[++bRouteIndex];
         Vector3 cellPosition = fieldGenerator.field[cell.cellX, cell.cellZ].GetCellPosition();
         DOTween.Sequence()
-            .SetId(this)
+            .SetId("jump")
             .Append(obj.DOJump(new Vector3(cellPosition.x, obj.position.y, cellPosition.z), 0.2f, 1, isPlayer ? 0.4f : 0.7f))
             .Join(obj.DOShakeScale(isPlayer ? 0.4f : 0.7f, new Vector3(0, 0, 1), 5, 90))
             .OnComplete(() => JumpCallback(isPlayer));
