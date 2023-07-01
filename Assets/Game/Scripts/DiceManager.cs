@@ -50,6 +50,22 @@ public class DiceManager : MonoBehaviour
 
         throwButton.onClick.RemoveAllListeners();
         skipButton.onClick.RemoveAllListeners();
+        throwButton.gameObject.SetActive(false);
+        skipButton.gameObject.SetActive(false);
+
+        throwNumber = 0;
+        scoreManager.UpdateValues(3, throwNumber);
+        roundNumber = 1;
+        scoreManager.UpdateValues(4, roundNumber);
+        currentUserScore = 0;
+        scoreManager.UpdateValues(1, currentUserScore);
+        currentBotScore = 0;
+        scoreManager.UpdateValues(2, currentBotScore);
+        for (int i = 0; i < 6; i++)
+        {
+            scoreManager.UpdateComboValues(i + 1, 0);
+            scoreManager.UpdateComboValues(i + 1, 0, true);
+        }
     }
 
     private void Activate(bool activate)
@@ -87,12 +103,13 @@ public class DiceManager : MonoBehaviour
     {
         throwButton.onClick.RemoveListener(ThrowDices);
         diceCount = 0;
+        throwNumber++;
+        
         for (int i = 0; i < userDices.Length; i++)
         {
             userDices[i].DeactivateDice();
             userDices[i].Throw(DiceCallback);
         }
-        throwNumber++;
         scoreManager.UpdateValues(3, throwNumber);
     }
 
@@ -134,6 +151,7 @@ public class DiceManager : MonoBehaviour
         for (int i = 0; i < userDices.Length; i++)
         {
             userDices[i].DeactivateDice();
+            userDices[i].SetLock(false);
             if(userDices[i].GetDiceValue() == choice)
             {
                 score += choice;
@@ -167,10 +185,17 @@ public class DiceManager : MonoBehaviour
         bot.ActivateBot(BotCallback, throws);
     }
 
-    private void BotCallback(int botScore)
+    private void BotCallback(TurnScore botResult)
     {
-        //bot score value + ui
-        if(roundNumber >= rounds)
+        if(botResult.value > 0)
+        {
+            scoreManager.UpdateComboValues(botResult.value, botResult.sum);
+        }
+        
+        currentBotScore += botResult.sum;
+        scoreManager.UpdateValues(2, currentBotScore);
+
+        if (roundNumber >= rounds)
         {
             Finish();
             return;

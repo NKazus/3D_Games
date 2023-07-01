@@ -47,7 +47,7 @@ public class DiceHandler : MonoBehaviour
 
     private void SwitchDice(PointerEventData data)
     {
-        SetLock();
+        SetLock(!locked);
     }
 
     private void PickDice(PointerEventData data, Action<int> callback)
@@ -60,9 +60,9 @@ public class DiceHandler : MonoBehaviour
         return currentDiceValue;
     }
 
-    public void SetLock()
+    public void SetLock(bool doLock)
     {
-        locked = !locked;
+        locked = doLock;
         meshRenderer.material = locked ? diceMaterials[1] : diceMaterials[0];
     }
 
