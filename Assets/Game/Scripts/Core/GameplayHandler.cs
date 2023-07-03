@@ -12,14 +12,12 @@ public class GameplayHandler : MonoBehaviour
 
     private Image restartIcon;
     private Text restartText;
-    private Text restartExtra;
 
     #region MONO
     private void Awake()
     {
         restartIcon = restartBg.transform.GetChild(1).GetComponent<Image>();
         restartText = restartBg.transform.GetChild(2).GetComponent<Text>();
-        restartExtra = restartBg.transform.GetChild(3).GetComponent<Text>();
     }
 
     private void OnEnable()
@@ -62,18 +60,15 @@ public class GameplayHandler : MonoBehaviour
             restartIcon.sprite = lose;
             restartIcon.SetNativeSize();
             restartText.text = loseText;
-            restartExtra.enabled = false;
             restartBg.SetActive(false);
             restart.onClick.RemoveListener(Restart);
         }
     }
 
-    private void ChangeTextToWin(int points)
+    private void ChangeTextToWin()
     {
         restartIcon.sprite = win;
         restartIcon.SetNativeSize();
         restartText.text = winText;
-        restartExtra.text = "You've got "+points.ToString()+" points!";
-        restartExtra.enabled = true;
     }
 }

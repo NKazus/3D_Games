@@ -44,7 +44,6 @@ public class Bot : MonoBehaviour
         roundCallback = botCallback;
         maxThrows = throws;
         throwNumber = 0;
-        Debug.Log("bot turn");
         ThrowDices();
     }
 

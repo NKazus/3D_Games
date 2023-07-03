@@ -16,6 +16,8 @@ public class DiceManager : MonoBehaviour
     [SerializeField] private Button throwButton;
     [SerializeField] private Button skipButton;
 
+    [SerializeField] private Image multiplyer;
+
     private int currentUserScore;
     private int currentBotScore;
 
@@ -66,6 +68,8 @@ public class DiceManager : MonoBehaviour
             scoreManager.UpdateComboValues(i + 1, 0);
             scoreManager.UpdateComboValues(i + 1, 0, true);
         }
+
+        multiplyer.enabled = dataHandler.BonusMultiplyer > 1;
     }
 
     private void Activate(bool activate)
@@ -92,6 +96,8 @@ public class DiceManager : MonoBehaviour
                 scoreManager.UpdateComboValues(i + 1, 0);
                 scoreManager.UpdateComboValues(i + 1, 0, true);
             }
+
+            multiplyer.enabled = dataHandler.BonusMultiplyer > 1;
 
             skipButton.gameObject.SetActive(false);
             throwButton.gameObject.SetActive(true);
@@ -156,8 +162,9 @@ public class DiceManager : MonoBehaviour
             {
                 score += choice;
             }
-        }        
+        }
 
+        score *= dataHandler.BonusMultiplyer;
         userCombos.Add(choice);
         scoreManager.UpdateComboValues(choice, score, true);
 
@@ -179,7 +186,7 @@ public class DiceManager : MonoBehaviour
         skipButton.onClick.RemoveListener(Skip);
         skipButton.gameObject.SetActive(false);
 
-        currentUserScore += score;
+        currentUserScore += score * dataHandler.BonusMultiplyer;
         scoreManager.UpdateValues(1, currentUserScore);
 
         bot.ActivateBot(BotCallback, throws);
@@ -215,8 +222,9 @@ public class DiceManager : MonoBehaviour
     {
         if(currentUserScore >= currentBotScore)
         {
-            GlobalEventManager.DoWin(5);
+            GlobalEventManager.DoWin();
             dataHandler.UpdateGlobalScore(5);
+            dataHandler.ActivateBonus(false);
             GlobalEventManager.PlayReward();
         }
         else

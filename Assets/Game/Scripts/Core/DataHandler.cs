@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class DataHandler : MonoBehaviour
 {
-    [SerializeField] private int globalScore;
-    [SerializeField] private int bonusMultiplyer;
+    [SerializeField] private int globalScore = 0;
+    [SerializeField] private int bonusMultiplyer = 1;
 
     public int BonusMultiplyer => bonusMultiplyer;
     public int GlobalScore => globalScore;
