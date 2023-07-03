@@ -11,7 +11,7 @@ public class DataHandler : MonoBehaviour
     private void OnEnable()
     {
         globalScore = PlayerPrefs.HasKey("_GlobalScore") ? PlayerPrefs.GetInt("_GlobalScore") : globalScore;
-        bonusMultiplyer = PlayerPrefs.HasKey("_BonusMultiplyer") ? PlayerPrefs.GetInt("_BonusMultiplyer") : bonusMultiplyer;
+        bonusMultiplyer = 1;// PlayerPrefs.HasKey("_BonusMultiplyer") ? PlayerPrefs.GetInt("_BonusMultiplyer") : bonusMultiplyer;
     }
 
     private void OnDisable()
