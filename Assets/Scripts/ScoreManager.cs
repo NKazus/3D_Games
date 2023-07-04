@@ -13,6 +13,10 @@ public class ScoreManager : MonoBehaviour
     [SerializeField] private Text[] playerCombos;
     [SerializeField] private Text[] botCombos;
 
+    [SerializeField] private Text playerExtraUI;
+    [SerializeField] private Text botExtraUI;
+    [SerializeField] private Text timerUI;
+
     public void UpdateValues(int id, int value)
     {
         Text ui;
@@ -24,6 +28,8 @@ public class ScoreManager : MonoBehaviour
             case 2: ui = botScoreUI; break;
             case 3: ui = throwsUI; result += "/5"; break;
             case 4: ui = roundsUI; result += "/5"; break;
+            case 5: ui = playerExtraUI; break;
+            case 6: ui = botExtraUI; break;
             default: ui = globalScoreUI; break;
         }
         UpdateText(ui, result);
@@ -34,6 +40,17 @@ public class ScoreManager : MonoBehaviour
         Text ui;
         ui = player ? playerCombos[id - 1] : botCombos[id - 1];
         UpdateText(ui, score.ToString());
+    }
+
+    public void UpdateTimer(float timeLeft)
+    {
+        if(timeLeft < 0)
+        {
+            timeLeft = 0;
+        }
+        float minutes = Mathf.FloorToInt(timeLeft / 60);
+        float seconds = Mathf.FloorToInt(timeLeft % 60);
+        timerUI.text = string.Format("{0:00}:{1:00}", minutes, seconds);
     }
 
     private void UpdateText(Text uiText, string value)

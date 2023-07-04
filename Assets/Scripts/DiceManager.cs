@@ -36,7 +36,6 @@ public class DiceManager : MonoBehaviour
     private void OnEnable()
     {
         scoreManager.UpdateValues(0, dataHandler.GlobalScore);
-        //scoreManager.UpdateValues(3, dataHandler.MagicDices);//bonus
 
         GlobalEventManager.GameStateEvent += Activate;
     }
@@ -186,7 +185,7 @@ public class DiceManager : MonoBehaviour
         skipButton.onClick.RemoveListener(Skip);
         skipButton.gameObject.SetActive(false);
 
-        currentUserScore += score * dataHandler.BonusMultiplyer;
+        currentUserScore += score;
         scoreManager.UpdateValues(1, currentUserScore);
 
         bot.ActivateBot(BotCallback, throws);
