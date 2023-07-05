@@ -21,6 +21,8 @@ public class ExtraGameManager : MonoBehaviour
 
     private void OnEnable()
     {
+        scoreManager.UpdateValues(0, dataHandler.GlobalScore);
+
         playerScore = 0;
         scoreManager.UpdateValues(5, playerScore);
         botScore = 0;

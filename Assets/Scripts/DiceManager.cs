@@ -175,6 +175,7 @@ public class DiceManager : MonoBehaviour
         for (int i = 0; i < userDices.Length; i++)
         {
             userDices[i].DeactivateDice();
+            userDices[i].SetLock(false);
         }
 
         CalculateRound(0);
