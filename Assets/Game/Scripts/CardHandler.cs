@@ -13,13 +13,19 @@ public class CardHandler : MonoBehaviour
     private Vector3 startScale;
     private CardSwitch cardSwitch;
 
+    private bool init = false;
+
     private void Awake()
     {
         localTransform = transform;
         startPosition = localTransform.position;
         startScale = localTransform.localScale;
 
-        cardSwitch = GetComponent<CardSwitch>();
+        if (!init)
+        {
+            cardSwitch = GetComponent<CardSwitch>();
+            init = true;
+        }
     }
 
     private void OnEnable()
@@ -37,6 +43,11 @@ public class CardHandler : MonoBehaviour
     {
         if (!animate)
         {
+            if (!init)
+            {
+                cardSwitch = GetComponent<CardSwitch>();
+                init = true;
+            }
             cardSwitch.Switch(target.image);
             return;
         }

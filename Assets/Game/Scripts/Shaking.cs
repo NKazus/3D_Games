@@ -14,12 +14,12 @@ public class Shaking : MonoBehaviour
     private void Awake()
     {
         localTransform = transform;
-        localPositionY = localTransform.position.y;
+        localPositionY = localTransform.localPosition.y;
 
         shakingTween = DOTween.Sequence()
             .SetId("shake")
-            .Append(localTransform.DOMoveY(moveValueY, timeValue))
-            .Append(localTransform.DOMoveY(localPositionY, timeValue))
+            .Append(localTransform.DOLocalMoveY(moveValueY, timeValue))
+            .Append(localTransform.DOLocalMoveY(localPositionY, timeValue))
             .SetLoops(-1);
     }
 

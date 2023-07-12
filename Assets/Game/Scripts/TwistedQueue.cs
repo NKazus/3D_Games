@@ -188,6 +188,8 @@ public class TwistedQueue : MonoBehaviour
 
         int totalScore = 2 * rightChoice - queueLength;
         GlobalEventManager.DoQueueWin(rightChoice, totalScore);
+        GlobalEventManager.PlayReward();
+        GlobalEventManager.PlayVibro();
         dataHandler.UpdateScore(totalScore);
         GlobalEventManager.SwitchGameState(false);
     }

@@ -7,7 +7,6 @@ public class SoundManager : MonoBehaviour
 
     [SerializeField] private AudioSource ambientMusic;
     [SerializeField] private AudioSource rewardSound;
-    [SerializeField] private AudioSource magicDiceSound;
 
     private bool vibroEnabled = true;
 
@@ -21,7 +20,6 @@ public class SoundManager : MonoBehaviour
     {
         GlobalEventManager.VibroEvent += PlayVibro;
         GlobalEventManager.RewardSoundEvent += PlayReward;
-        GlobalEventManager.MagicDiceSoundEvent += PlayMagicDice;
 
         GlobalEventManager.VibroSettingsEvent += TurnVibration;
         GlobalEventManager.SoundSettingsEvent += TurnSound;
@@ -37,7 +35,6 @@ public class SoundManager : MonoBehaviour
     {
         GlobalEventManager.VibroEvent -= PlayVibro;
         GlobalEventManager.RewardSoundEvent -= PlayReward;
-        GlobalEventManager.MagicDiceSoundEvent -= PlayMagicDice;
 
         GlobalEventManager.VibroSettingsEvent -= TurnVibration;
         GlobalEventManager.SoundSettingsEvent -= TurnSound;
@@ -56,11 +53,6 @@ public class SoundManager : MonoBehaviour
     private void PlayReward()
     {
         rewardSound.Play();
-    }
-
-    private void PlayMagicDice()
-    {
-        magicDiceSound.Play();
     }
 
     #region SETTINGS

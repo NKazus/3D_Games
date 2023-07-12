@@ -208,6 +208,8 @@ public class MagicSet : MonoBehaviour
 
         int totalScore = (int) ((1.5f * rightChoice) - (float)wrongChoice - (0.5f * miss));
         GlobalEventManager.DoWin(rightChoice, miss, wrongChoice, totalScore);
+        GlobalEventManager.PlayReward();
+        GlobalEventManager.PlayVibro();
         dataHandler.UpdateScore(totalScore);
         GlobalEventManager.SwitchGameState(false);
     }
