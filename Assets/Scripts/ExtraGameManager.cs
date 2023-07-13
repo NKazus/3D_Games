@@ -1,5 +1,5 @@
 using System.Collections;
-using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,7 +10,11 @@ public class ExtraGameManager : MonoBehaviour
     [SerializeField] private Button startButton;
     [SerializeField] private ExtraDiceHandler player;
     [SerializeField] private ExtraDiceHandler bot;
+    [SerializeField] private TextureSlider botBoard;
+    [SerializeField] private TextureSlider playerBoard;
     [SerializeField] private GameObject winPanel;
+    [SerializeField] private GameObject hint;
+
 
     [SerializeField] private float time = 10f;
 
@@ -18,6 +22,14 @@ public class ExtraGameManager : MonoBehaviour
 
     private int playerScore;
     private int botScore;
+    private Transform winPanelTransform;
+    private Transform hintTransform;
+
+    private void Awake()
+    {
+        winPanelTransform = winPanel.transform;
+        hintTransform = hint.transform;
+    }
 
     private void OnEnable()
     {
@@ -31,7 +43,10 @@ public class ExtraGameManager : MonoBehaviour
         scoreManager.UpdateTimer(timeLeft);
 
         startButton.gameObject.SetActive(true);
-        startButton.onClick.AddListener(StartGame);        
+        startButton.onClick.AddListener(StartGame);
+
+        botBoard.SetActive(false);
+        playerBoard.SetActive(false);
     }
 
     private void OnDisable()
@@ -45,7 +60,13 @@ public class ExtraGameManager : MonoBehaviour
 
     private void StartGame()
     {
-        winPanel.SetActive(false);
+        botBoard.SetActive(true);
+        playerBoard.SetActive(true);
+
+        winPanelTransform.DOScale(Vector3.zero, 0.5f).OnComplete(() => winPanel.SetActive(false));
+        hint.SetActive(true);
+        hintTransform.DOScale(new Vector3(0.7f, 0.6f, 1), 0.5f);
+
         startButton.onClick.RemoveListener(StartGame);
         startButton.gameObject.SetActive(false);
 
@@ -96,9 +117,14 @@ public class ExtraGameManager : MonoBehaviour
 
     private void Calculate()
     {
-        if(playerScore >= botScore)
+        botBoard.SetActive(false);
+        playerBoard.SetActive(false);
+        hintTransform.DOScale(Vector3.zero, 0.5f).OnComplete(() => hint.SetActive(false));
+
+        if (playerScore >= botScore)
         {
             winPanel.SetActive(true);
+            winPanelTransform.DOScale(new Vector3(1, 1, 1), 0.5f);
 
             dataHandler.ActivateBonus(true);
             GlobalEventManager.PlayMult();

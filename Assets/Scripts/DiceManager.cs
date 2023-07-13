@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,6 +10,8 @@ public class DiceManager : MonoBehaviour
 
     [SerializeField] private DiceHandler[] userDices;
     [SerializeField] private Bot bot;
+    [SerializeField] private TextureSlider playerBoard;
+    [SerializeField] private TextureSlider botBoard;
 
     [SerializeField] private int throws;
     [SerializeField] private int rounds;
@@ -17,6 +20,8 @@ public class DiceManager : MonoBehaviour
     [SerializeField] private Button skipButton;
 
     [SerializeField] private Image multiplyer;
+    [SerializeField] private Sprite multActive;
+    [SerializeField] private Sprite multInactive;
 
     private int currentUserScore;
     private int currentBotScore;
@@ -38,6 +43,8 @@ public class DiceManager : MonoBehaviour
         scoreManager.UpdateValues(0, dataHandler.GlobalScore);
 
         GlobalEventManager.GameStateEvent += Activate;
+        botBoard.SetActive(false);
+        playerBoard.SetActive(false);
     }
 
     private void OnDisable()
@@ -51,8 +58,9 @@ public class DiceManager : MonoBehaviour
 
         throwButton.onClick.RemoveAllListeners();
         skipButton.onClick.RemoveAllListeners();
-        throwButton.gameObject.SetActive(false);
-        skipButton.gameObject.SetActive(false);
+
+        throwButton.image.color = Color.gray;
+        skipButton.image.color = Color.gray;
 
         throwNumber = 0;
         scoreManager.UpdateValues(3, throwNumber);
@@ -68,7 +76,7 @@ public class DiceManager : MonoBehaviour
             scoreManager.UpdateComboValues(i + 1, 0, true);
         }
 
-        multiplyer.enabled = dataHandler.BonusMultiplyer > 1;
+        multiplyer.sprite = dataHandler.BonusMultiplyer > 1 ? multActive : multInactive;
     }
 
     private void Activate(bool activate)
@@ -96,17 +104,27 @@ public class DiceManager : MonoBehaviour
                 scoreManager.UpdateComboValues(i + 1, 0, true);
             }
 
-            multiplyer.enabled = dataHandler.BonusMultiplyer > 1;
+            multiplyer.sprite = dataHandler.BonusMultiplyer > 1 ? multActive : multInactive;
 
-            skipButton.gameObject.SetActive(false);
-            throwButton.gameObject.SetActive(true);
-            throwButton.onClick.AddListener(ThrowDices);            
+            skipButton.image.DOColor(Color.white, 0.5f);
+            skipButton.onClick.AddListener(Skip);
+
+            throwButton.image.DOColor(Color.white, 0.5f);
+            throwButton.onClick.AddListener(ThrowDices);
+
+            playerBoard.SetActive(true);
+            botBoard.SetActive(false);
         }
     }
 
     private void ThrowDices()
     {
         throwButton.onClick.RemoveListener(ThrowDices);
+        throwButton.image.DOColor(Color.gray, 0.5f);
+
+        skipButton.onClick.RemoveListener(Skip);
+        skipButton.image.DOColor(Color.gray, 0.5f);
+
         diceCount = 0;
         throwNumber++;
         
@@ -125,6 +143,7 @@ public class DiceManager : MonoBehaviour
         {
             if(throwNumber < throws)
             {
+                throwButton.image.DOColor(Color.white, 0.5f);
                 throwButton.onClick.AddListener(ThrowDices);
                 for (int i = 0; i < userDices.Length; i++)
                 {
@@ -133,14 +152,14 @@ public class DiceManager : MonoBehaviour
             }
             else
             {
-                throwButton.gameObject.SetActive(false);
-                skipButton.gameObject.SetActive(true);
-                skipButton.onClick.AddListener(Skip);
                 for (int i = 0; i < userDices.Length; i++)
                 {
                     userDices[i].ActivateDice(PickDiceCallback);
                 }
             }
+
+            skipButton.onClick.AddListener(Skip);
+            skipButton.image.DOColor(Color.white, 0.5f);
         }
     }
 
@@ -184,10 +203,16 @@ public class DiceManager : MonoBehaviour
     private void CalculateRound(int score)
     {
         skipButton.onClick.RemoveListener(Skip);
-        skipButton.gameObject.SetActive(false);
+        skipButton.image.DOColor(Color.gray, 0.5f);
+
+        throwButton.onClick.RemoveListener(ThrowDices);
+        throwButton.image.DOColor(Color.gray, 0.5f);
 
         currentUserScore += score;
         scoreManager.UpdateValues(1, currentUserScore);
+
+        botBoard.SetActive(true);
+        playerBoard.SetActive(false);
 
         bot.ActivateBot(BotCallback, throws);
     }
@@ -214,8 +239,14 @@ public class DiceManager : MonoBehaviour
         throwNumber = 0;
         scoreManager.UpdateValues(3, throwNumber);
 
-        throwButton.gameObject.SetActive(true);
+        throwButton.image.DOColor(Color.white, 0.5f);
         throwButton.onClick.AddListener(ThrowDices);
+
+        skipButton.onClick.AddListener(Skip);
+        skipButton.image.DOColor(Color.white, 0.5f);
+
+        botBoard.SetActive(false);
+        playerBoard.SetActive(true);
     }
 
     private void Finish()

@@ -1,3 +1,4 @@
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,7 +18,7 @@ public class GameplayHandler : MonoBehaviour
     private void Awake()
     {
         restartIcon = restartBg.transform.GetChild(1).GetComponent<Image>();
-        restartText = restartBg.transform.GetChild(2).GetComponent<Text>();
+        restartText = restartBg.transform.GetChild(3).GetComponent<Text>();
     }
 
     private void OnEnable()
@@ -50,8 +51,8 @@ public class GameplayHandler : MonoBehaviour
     {
         if (!isActive)
         {
-            restart.gameObject.SetActive(true);
             restartBg.SetActive(true);
+            restartBg.transform.DOScale(new Vector3(1, 1, 1), 0.5f).OnComplete(() => restart.gameObject.SetActive(true));
             restart.onClick.AddListener(Restart);
         }
         else
@@ -60,6 +61,7 @@ public class GameplayHandler : MonoBehaviour
             restartIcon.sprite = lose;
             restartIcon.SetNativeSize();
             restartText.text = loseText;
+            restartBg.transform.DOScale(Vector3.zero, 0.5f);
             restartBg.SetActive(false);
             restart.onClick.RemoveListener(Restart);
         }

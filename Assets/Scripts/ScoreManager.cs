@@ -17,6 +17,9 @@ public class ScoreManager : MonoBehaviour
     [SerializeField] private Text botExtraUI;
     [SerializeField] private Text timerUI;
 
+    [SerializeField] private Color activeComboColor;
+    [SerializeField] private Color cyanHue;
+
     public void UpdateValues(int id, int value)
     {
         Text ui;
@@ -26,10 +29,10 @@ public class ScoreManager : MonoBehaviour
         {
             case 1: ui = playerScoreUI; break;
             case 2: ui = botScoreUI; break;
-            case 3: ui = throwsUI; result += "/5"; break;
+            case 3: ui = throwsUI; result += "/5"; throwsUI.color = value < 5 ? activeComboColor : Color.grey; break;
             case 4: ui = roundsUI; result += "/5"; break;
-            case 5: ui = playerExtraUI; break;
-            case 6: ui = botExtraUI; break;
+            case 5: ui = playerExtraUI; playerExtraUI.color = value > 0 ? activeComboColor : cyanHue; break;
+            case 6: ui = botExtraUI; botExtraUI.color = value > 0 ? activeComboColor : cyanHue; break;
             default: ui = globalScoreUI; break;
         }
         UpdateText(ui, result);
@@ -39,6 +42,7 @@ public class ScoreManager : MonoBehaviour
     {
         Text ui;
         ui = player ? playerCombos[id - 1] : botCombos[id - 1];
+        ui.color = score > 0 ? activeComboColor : Color.gray;
         UpdateText(ui, score.ToString());
     }
 

@@ -5,8 +5,8 @@ using UnityEngine.EventSystems;
 
 public class DiceHandler : MonoBehaviour
 {
-    [SerializeField] private float endPositionZ;
-    [SerializeField] private float middlePositionZ;
+    [SerializeField] private Vector3 endPosition;
+    [SerializeField] private Vector3 middlePosition;
     [SerializeField] private Material[] diceMaterials;
     [SerializeField] private Vector3[] rotationValues;
 
@@ -41,9 +41,8 @@ public class DiceHandler : MonoBehaviour
 
         DOTween.Sequence()
             .SetId(this)
-            .Append(localTransform.DOShakeRotation(1f, 40, 5, 90, true))
-            .Join(localTransform.DOJump(new Vector3(startPosition.x, startPosition.y, middlePositionZ), 0.15f, 1, 1f))
-            .Append(localTransform.DOMove(new Vector3(startPosition.x, startPosition.y, endPositionZ), 1f))
+            .Append(localTransform.DOJump(middlePosition, 0.15f, 1, 1f))
+            .Append(localTransform.DOMove(endPosition, 0.7f))
             .OnComplete(() => { callback(); });
     }
 
