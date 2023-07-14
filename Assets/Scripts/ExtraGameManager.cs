@@ -52,6 +52,7 @@ public class ExtraGameManager : MonoBehaviour
     private void OnDisable()
     {
         winPanel.SetActive(false);
+        hint.SetActive(false);
         startButton.onClick.RemoveAllListeners();
         StopAllCoroutines();
         player.ResetState();

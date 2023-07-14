@@ -139,9 +139,9 @@ public class DiceManager : MonoBehaviour
     private void DiceCallback()
     {
         diceCount++;
-        if(diceCount >= userDices.Length)
+        if (diceCount >= userDices.Length)
         {
-            if(throwNumber < throws)
+            if (throwNumber < throws)
             {
                 throwButton.image.DOColor(Color.white, 0.5f);
                 throwButton.onClick.AddListener(ThrowDices);
@@ -155,12 +155,29 @@ public class DiceManager : MonoBehaviour
                 for (int i = 0; i < userDices.Length; i++)
                 {
                     userDices[i].ActivateDice(PickDiceCallback);
-                }
+                }                
             }
 
             skipButton.onClick.AddListener(Skip);
             skipButton.image.DOColor(Color.white, 0.5f);
         }
+    }
+
+    private bool CheckFullCombo()
+    {
+        int num = 1;
+        int prev = userDices[0].GetDiceValue();
+        int current;
+        for (int i = 1; i < userDices.Length; i++)
+        {
+            current = userDices[i].GetDiceValue();
+            if (current == prev)
+            {
+                num++;
+            }
+            prev = current;
+        }
+        return num == userDices.Length;
     }
 
     private void PickDiceCallback(int choice)
@@ -197,6 +214,15 @@ public class DiceManager : MonoBehaviour
             userDices[i].SetLock(false);
         }
 
+        int value = userDices[0].GetDiceValue();
+        if (CheckFullCombo() && !userCombos.Contains(value))
+        {
+            int score = value * userDices.Length * dataHandler.BonusMultiplyer;
+            CalculateRound(score);
+            userCombos.Add(value);
+            scoreManager.UpdateComboValues(value, score, true);
+            return;
+        }
         CalculateRound(0);
     }
 
