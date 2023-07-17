@@ -37,6 +37,6 @@ public class SwitchToggle : MonoBehaviour
     private void Switch(bool isOn)
     {
         toggleImage.sprite = isOn ? onIcon : offIcon;
-        handleRectTransform.DOAnchorPos(isOn ? handlePosition * (-1) : handlePosition, .4f).SetId(this).SetEase(Ease.InOutBack).Play();        
+        handleRectTransform.DOAnchorPos(isOn ? handlePosition * (-1) : handlePosition, .4f).SetId(this).SetEase(Ease.InOutBack);        
     }
 }

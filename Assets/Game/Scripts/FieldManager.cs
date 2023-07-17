@@ -1,43 +1,38 @@
-using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
+public enum Tool
+{
+    Scoop = 0,
+    Shovel = 1,
+    Insight = 2
+}
+
 public class FieldManager : MonoBehaviour
 {
-    [SerializeField] private Button doubleJumpButton;
-    [SerializeField] private Sprite doubleJumpActive;
-    [SerializeField] private Sprite doubleJumpInactive;
-    [SerializeField] private ScoreManager scoreManager;
+    [SerializeField] private Button scoopButton;
+    [SerializeField] private Button shovelButton;
+    [SerializeField] private Button insightButton;
+    [SerializeField] private Image activeToolIcon;
 
-    [SerializeField] private DataHandler dataHandler;
+    [SerializeField] private Color emptyToolColor;
+
+    [SerializeField] private GameDataHandler dataHandler;
     [SerializeField] private FieldGenerator fieldGenerator;
-    [SerializeField] private Transform player;
-    [SerializeField] private Transform finish;
-    [SerializeField] private float finishOffsetZ = 0.05f;
-    [SerializeField] private Transform[] coins;
-    [SerializeField] private int initialMoves = 15;
-    [SerializeField] private int blocks = 20;
 
-    private CellIndices currentCell;
-    private CellIndices finishCell;
+    [SerializeField] private int treasureCloseRange = 2;
 
-    private int jumpValue;
-    private bool isDoubleJumpActive;
+    private bool isScoopEnabled;
+    private bool isShovelEnabled;
 
-    private List<CellIndices> blockedCells;
-    private List<CellIndices> coinCells;
-
-    private int moves;
-    
+    private FieldCellIndices treasure;
 
     private void OnEnable()
     {
         GlobalEventManager.GameStateEvent += ChangeFieldState;
-        scoreManager.UpdateValues(0, dataHandler.GlobalScore);
-        
-        scoreManager.UpdateValues(3, dataHandler.DoubleJumps);
-        scoreManager.UpdateValues(4, dataHandler.Unlocks);
+
+        dataHandler.Refresh();
     }
 
     private void OnDisable()
@@ -50,219 +45,139 @@ public class FieldManager : MonoBehaviour
         if (activate)
         {
             fieldGenerator.ResetField();
-            SetKeyPoints();
-            GenerateLocks();
-            GenerateCoins();
-            
-            isDoubleJumpActive = false;
-            jumpValue = 1;
-            doubleJumpButton.image.color = Color.white;
-            if(dataHandler.DoubleJumps > 0)
-            {
-                doubleJumpButton.image.sprite = doubleJumpActive;
-                doubleJumpButton.onClick.AddListener(ActivateDoubleJump);
+            dataHandler.SetScoops(true);
+
+            SetTool(scoopButton, Tool.Scoop);
+            scoopButton.image.DOColor(Color.white, 0.3f);
+            isScoopEnabled = true;
+
+            GenerateTreasure();
+
+            scoopButton.onClick.AddListener(() => { SetTool(scoopButton, Tool.Scoop); });
+            shovelButton.onClick.AddListener(() => { SetTool(shovelButton, Tool.Shovel); });
+            insightButton.onClick.AddListener(() => { SetTool(insightButton, Tool.Insight); });
+
+            if (dataHandler.Shovels > 0)
+            {                
+                shovelButton.image.color = Color.white;
+                isShovelEnabled = true;
             }
             else
             {
-                doubleJumpButton.image.sprite = doubleJumpInactive;
+                shovelButton.image.color = emptyToolColor;
+                isShovelEnabled = false;
             }
-            moves = initialMoves;
-            scoreManager.UpdateValues(2, moves);
-            dataHandler.UpdateCurrentScore(true);
-            ActivateCells();
-            GlobalEventManager.MovePlayerEvent += MovePlayer;
-            GlobalEventManager.LocksUpdateEvent += UpdateLocks;
-            GlobalEventManager.CoinEvent += UpdateScore;
+
+            if (dataHandler.Insight > 0)
+            {
+                insightButton.image.color = Color.white;
+            }
+            else
+            {
+                insightButton.image.color = emptyToolColor;
+            }
+
+            ActivateField();
+            GlobalEventManager.ToolRefreshEvent += UpdateTools;
         }
         else
         {
-            doubleJumpButton.onClick.RemoveListener(ActivateDoubleJump);
-            GlobalEventManager.MovePlayerEvent -= MovePlayer;
-            GlobalEventManager.LocksUpdateEvent -= UpdateLocks;
-            GlobalEventManager.CoinEvent -= UpdateScore;
+            GlobalEventManager.ToolRefreshEvent -= UpdateTools;
+
+            insightButton.onClick.RemoveAllListeners();
+            insightButton.onClick.RemoveAllListeners();
+            insightButton.onClick.RemoveAllListeners();
+
+            DeactivateField();
         }
     }
 
-    private void GenerateLocks()
+
+    private void ActivateField()
     {
-        blockedCells = new List<CellIndices>();
-        blockedCells.Add(currentCell);
-        blockedCells.Add(finishCell);
-        CellIndices bCell;
-        for(int i = 0; i < blocks; i++)
+        for (int i = 0; i < fieldGenerator.FieldSize; i++)
         {
-            do
+            for (int j = 0; j < fieldGenerator.FieldSize; j++)
             {
-                bCell.cellX = RandomGenerator.GenerateInt(0, fieldGenerator.FieldSize);
-                bCell.cellZ = RandomGenerator.GenerateInt(0, fieldGenerator.FieldSize);
+                fieldGenerator.field[i, j].Activate(ScanTreasure);
             }
-            while (blockedCells.Contains(bCell));
-            blockedCells.Add(bCell);
-        }
-
-        blockedCells.Remove(currentCell);
-        blockedCells.Remove(finishCell);
-        for (int i = 0; i < blockedCells.Count; i++)
-        {
-            fieldGenerator.field[blockedCells[i].cellX, blockedCells[i].cellZ].Block();
         }
     }
 
-    private void GenerateCoins()
+    private void DeactivateField()
     {
-        coinCells = new List<CellIndices>();
-        coinCells.Add(currentCell);
-        coinCells.Add(finishCell);
-        CellIndices cCell;
-        for (int i = 0; i < coins.Length; i++)
+        for (int i = 0; i < fieldGenerator.FieldSize; i++)
         {
-            do
+            for (int j = 0; j < fieldGenerator.FieldSize; j++)
             {
-                cCell.cellX = RandomGenerator.GenerateInt(0, fieldGenerator.FieldSize);
-                cCell.cellZ = RandomGenerator.GenerateInt(0, fieldGenerator.FieldSize);
+                fieldGenerator.field[i, j].Deactivate();
             }
-            while (coinCells.Contains(cCell));
-            coinCells.Add(cCell);
-        }
-
-        coinCells.Remove(currentCell);
-        coinCells.Remove(finishCell);
-
-        Vector3 coinCellPosition;
-        for (int i = 0; i < coins.Length; i++)
-        {
-            coinCellPosition = fieldGenerator.field[coinCells[i].cellX, coinCells[i].cellZ].GetCellPosition();
-            coins[i].position = new Vector3(coinCellPosition.x, coins[i].position.y, coinCellPosition.z);
-            coins[i].gameObject.SetActive(true);
         }
     }
 
-    private void UpdateLocks()
+    private void GenerateTreasure()
     {
-        scoreManager.UpdateValues(4, dataHandler.Unlocks);
+        treasure.cellX = RandomGenerator.GenerateInt(0, fieldGenerator.FieldSize);
+        treasure.cellZ = RandomGenerator.GenerateInt(0, fieldGenerator.FieldSize);
+
+        fieldGenerator.field[treasure.cellX, treasure.cellZ].SetTreasure();
     }
 
-    private void UpdateScore()
+    private int ScanTreasure(FieldCellIndices target)
     {
-        dataHandler.UpdateCurrentScore();
-    }
-
-    private void MovePlayer(CellIndices cell)
-    {
-        DeactivateCells();
-        if(Mathf.Abs(currentCell.cellX - cell.cellX) > 1 || Mathf.Abs(currentCell.cellZ - cell.cellZ) > 1)
+        if (target.Equals(treasure))
         {
-            dataHandler.RemoveBonus(true);
-            scoreManager.UpdateValues(3, dataHandler.DoubleJumps);
-            if(dataHandler.DoubleJumps <= 0)
-            {
-                doubleJumpButton.image.sprite = doubleJumpInactive;
-            }
-            jumpValue = 1;
-            doubleJumpButton.image.color = Color.white;
-            isDoubleJumpActive = false;
+            return 0;
         }
-        Vector3 cellPosition = fieldGenerator.field[cell.cellX, cell.cellZ].GetCellPosition();
-        currentCell = cell;
-        moves--;
-        scoreManager.UpdateValues(2, moves);
-        DOTween.Sequence()
-            .Append(player.DOJump(new Vector3(cellPosition.x, player.position.y, cellPosition.z), 0.4f, 1, 1f))
-            .Join(player.DOShakeScale(1f, new Vector3(0, 0, 1), 5, 90))
-            .OnComplete(() => CheckState())
-            .Play();
+
+        bool closeRange = (target.cellX - treasure.cellX) * (target.cellX - treasure.cellX)
+            + (target.cellZ - treasure.cellZ) * (target.cellZ - treasure.cellZ) < treasureCloseRange * treasureCloseRange;
+
+        if (closeRange)
+        {
+            return 1;
+        }
+        else
+        {
+            return 2;
+        }        
     }
 
-    private void CheckState()
+    private void SetTool(Button target, Tool value)
     {
-        if(currentCell.Equals(finishCell))
+        dataHandler.SetActiveTool(value);
+        activeToolIcon.sprite = target.transform.GetChild(0).GetComponent<Image>().sprite;
+    }
+
+    private void UpdateTools()
+    {
+        switch (dataHandler.ActiveTool)
         {
-            int score = dataHandler.ScoreValue;
-            GlobalEventManager.DoWin(score);
-            dataHandler.UpdateGlobalScore(score);
-            scoreManager.UpdateValues(0, dataHandler.GlobalScore);
+            case Tool.Scoop:
+                if(dataHandler.Scoops  <= 0)
+                {
+                    scoopButton.image.DOColor(emptyToolColor, 0.3f);
+                    isScoopEnabled = false;
+                }
+                break;
+            case Tool.Shovel:
+                if (dataHandler.Shovels <= 0)
+                {
+                    shovelButton.image.DOColor(emptyToolColor, 0.3f);
+                    isShovelEnabled = false;
+                }
+                break;
+            case Tool.Insight:
+                if (dataHandler.Insight <= 0)
+                {
+                    insightButton.image.DOColor(emptyToolColor, 0.3f);
+                }
+                break;
+        }
+        if(!isScoopEnabled && !isShovelEnabled)
+        {
             GlobalEventManager.SwitchGameState(false);
-            GlobalEventManager.PlayReward();
-            return;
-        }
-        if(moves <= 0)
-        {
-            dataHandler.UpdateGlobalScore(-5);
-            scoreManager.UpdateValues(0, dataHandler.GlobalScore);
-            GlobalEventManager.SwitchGameState(false);
-            return;
-        }
-        ActivateCells();
-    }
-
-    private void ActivateDoubleJump()
-    {
-        if(dataHandler.DoubleJumps > 0)
-        {
-            isDoubleJumpActive = !isDoubleJumpActive;
-            jumpValue = isDoubleJumpActive ? 2 : 1;
-            doubleJumpButton.image.color = isDoubleJumpActive ? Color.yellow : Color.white;
-            DeactivateCells();
-            ActivateCells();
-        }
-    }
-
-    private void SetKeyPoints()
-    {
-        finishCell.cellX = RandomGenerator.GenerateInt(0, fieldGenerator.FieldSize);
-        finishCell.cellZ = 0;
-        Vector3 finishCellPosition = fieldGenerator.field[finishCell.cellX, finishCell.cellZ].GetCellPosition();
-        finish.position = new Vector3(finishCellPosition.x, finish.position.y, finishCellPosition.z + finishOffsetZ);
-
-        currentCell.cellX = RandomGenerator.GenerateInt(0, fieldGenerator.FieldSize);
-        currentCell.cellZ = 6;
-        Vector3 currentCellPosition = fieldGenerator.field[currentCell.cellX, currentCell.cellZ].GetCellPosition();
-        player.position = new Vector3(currentCellPosition.x, player.position.y, currentCellPosition.z);
-    }
-
-    private void ActivateCells()
-    {
-        for(int i = 1; i <= jumpValue; i++)
-        {
-            if(currentCell.cellX + i < fieldGenerator.FieldSize)
-            {
-                fieldGenerator.field[currentCell.cellX + i, currentCell.cellZ].Activate();
-            }
-            if (currentCell.cellZ + i < fieldGenerator.FieldSize)
-            {
-                fieldGenerator.field[currentCell.cellX, currentCell.cellZ + i].Activate();
-            }
-            if (currentCell.cellX - i >= 0)
-            {
-                fieldGenerator.field[currentCell.cellX - i, currentCell.cellZ].Activate();
-            }
-            if (currentCell.cellZ - i >= 0)
-            {
-                fieldGenerator.field[currentCell.cellX, currentCell.cellZ - i].Activate();
-            }
-        }
-    }
-
-    private void DeactivateCells()
-    {
-        for (int i = 1; i <= 2; i++)
-        {
-            if (currentCell.cellX + i < fieldGenerator.FieldSize)
-            {
-                fieldGenerator.field[currentCell.cellX + i, currentCell.cellZ].Deactivate();
-            }
-            if (currentCell.cellZ + i < fieldGenerator.FieldSize)
-            {
-                fieldGenerator.field[currentCell.cellX, currentCell.cellZ + i].Deactivate();
-            }
-            if (currentCell.cellX - i >= 0)
-            {
-                fieldGenerator.field[currentCell.cellX - i, currentCell.cellZ].Deactivate();
-            }
-            if (currentCell.cellZ - i >= 0)
-            {
-                fieldGenerator.field[currentCell.cellX, currentCell.cellZ - i].Deactivate();
-            }
+            GlobalEventManager.PlayVibro();
         }
     }
 }

@@ -10,9 +10,7 @@ public static class GlobalEventManager
     public static event Action<bool> SoundSettingsEvent;
 
     public static event Action<int> WinEvent;
-    public static event Action<CellIndices> MovePlayerEvent;
-    public static event Action LocksUpdateEvent;
-    public static event Action CoinEvent;
+    public static event Action ToolRefreshEvent;
 
     public static void SwitchGameState(bool activate)
     {
@@ -49,18 +47,8 @@ public static class GlobalEventManager
         WinEvent?.Invoke(value);
     }
 
-    public static void MovePlayer(CellIndices cell)
+    public static void RefreshTools()
     {
-        MovePlayerEvent?.Invoke(cell);
-    }
-
-    public static void UpdateLocks()
-    {
-        LocksUpdateEvent?.Invoke();
-    }
-
-    public static void CollectCoin()
-    {
-        CoinEvent?.Invoke();
+        ToolRefreshEvent?.Invoke();
     }
 }
