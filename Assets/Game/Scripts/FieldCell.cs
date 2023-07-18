@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Zenject;
 
 [System.Serializable]
 public struct FieldCellIndices
@@ -30,8 +31,6 @@ public class FieldCell : MonoBehaviour
 
     private EventTrigger trigger;
 
-    private GameDataHandler dataHandler;
-
     private MeshRenderer layer0Renderer;
     private GameObject[] layers;
 
@@ -41,6 +40,10 @@ public class FieldCell : MonoBehaviour
     private int currentLayer;
 
     private Func<FieldCellIndices, int> ScanFunction;
+
+    [Inject] private readonly GlobalEventManager eventManager;
+    [Inject] private readonly RandomGenerator randomGenerator;
+    [Inject] private readonly GameDataHandler dataHandler;
 
     private void Awake()
     {
@@ -66,12 +69,10 @@ public class FieldCell : MonoBehaviour
         }
     }
 
-    public void SetIndices(int x, int z, GameDataHandler data)
+    public void SetIndices(int x, int z)
     {
         indices.cellX = x;
         indices.cellZ = z;
-
-        dataHandler = data;
     }
 
     private void ClickCell(PointerEventData data)
@@ -93,34 +94,32 @@ public class FieldCell : MonoBehaviour
                 }
                 break;
             case Tool.Insight:
-                if (dataHandler.Insight > 0)
+                if (dataHandler.Insight > 0 && !isScanned)
                 {
                     dataHandler.RemoveBonus(false);
                     ScanCell();
+                    isScanned = true;
                 }
                 break;
             default: Debug.Log("no such tool found"); break;
         }
-        GlobalEventManager.RefreshTools();
+        eventManager.RefreshTools();
     }
 
     private void ScanCell()
     {
-        if(!isScanned)
+        int scanValue = ScanFunction(indices);
+        Color scanColor;
+        switch (scanValue)
         {
-            int scanValue = ScanFunction(indices);
-            Color scanColor;
-            switch (scanValue)
-            {
-                case 0: scanColor = hitColor; break;
-                case 1: scanColor = nearColor; break;
-                case 2: scanColor = farColor; break;
-                default: scanColor = Color.white; break;
-            }
-            scanHandler.SetColor(scanColor);
-            scanLayer.SetActive(true);
-            isScanned = true;
-        }        
+            case 0: scanColor = hitColor; break;
+            case 1: scanColor = nearColor; break;
+            case 2: scanColor = farColor; break;
+            default: scanColor = Color.white; break;
+        }
+        eventManager.PlayMuseum();
+        scanHandler.SetColor(scanColor);
+        scanLayer.SetActive(true);   
     }
 
     private void DigCell(bool completely = false)
@@ -134,17 +133,17 @@ public class FieldCell : MonoBehaviour
 
         if (currentLayer <=0 && isTreasure)
         {
-            int reward = RandomGenerator.GenerateInt(5, 10);
-            GlobalEventManager.DoWin(reward);
+            int reward = randomGenerator.GenerateInt(5, 10);
+            eventManager.DoWin(reward);
             dataHandler.UpdateGlobalScore(reward);
-            GlobalEventManager.PlayReward();
+            eventManager.PlayReward();
             Invoke("TriggerVictory", 2f);
         }
     }
 
     private void TriggerVictory()
     {
-        GlobalEventManager.SwitchGameState(false);
+        eventManager.SwitchGameState(false);
     }
 
     public Vector3 GetCellPosition()

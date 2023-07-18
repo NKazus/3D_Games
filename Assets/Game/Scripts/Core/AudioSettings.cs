@@ -1,10 +1,13 @@
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 public class AudioSettings : MonoBehaviour
 {
     [SerializeField] private Toggle musicToggle;
     [SerializeField] private Toggle vibroToggle;
+
+    [Inject] private readonly GlobalEventManager eventManager;
 
     #region MONO
     private void OnEnable()
@@ -28,11 +31,11 @@ public class AudioSettings : MonoBehaviour
 
     private void TurnMisic(bool isMusicOn)
     {
-        GlobalEventManager.SetSound(isMusicOn);
+        eventManager.SetSound(isMusicOn);
     }
 
     private void TurnVibro(bool isVibroOn)
     {
-        GlobalEventManager.SetVibro(isVibroOn);
+        eventManager.SetVibro(isVibroOn);
     }
 }

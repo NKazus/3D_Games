@@ -1,8 +1,8 @@
 using UnityEngine;
+using Zenject;
 
 public class FieldGenerator : MonoBehaviour
 {
-    [SerializeField] private GameDataHandler dataHandler;
     [SerializeField] private Transform fieldParentObject;
     [SerializeField] private GameObject cellPrefab;
     [SerializeField] private float cellOffset = 0.07f;
@@ -11,6 +11,8 @@ public class FieldGenerator : MonoBehaviour
 
     public FieldCell[,] field;
     public int FieldSize => fieldSize;
+
+    [Inject] private readonly DiContainer diContainer;
 
     private void Start()
     {
@@ -26,14 +28,14 @@ public class FieldGenerator : MonoBehaviour
         {
             for(int j = 0; j < fieldSize; j++)
             {
-                cell = Instantiate(cellPrefab);
+                cell = diContainer.InstantiatePrefab(cellPrefab);
                 cell.transform.SetParent(fieldParentObject);
                 cell.transform.position =
                     new Vector3(i * cellOffset + fieldOffset.x,
                     transform.position.y + fieldOffset.y, -j * cellOffset + fieldOffset.z);
                 
                 field[i, j] = cell.GetComponent<FieldCell>();
-                field[i, j].SetIndices(i, j, dataHandler);
+                field[i, j].SetIndices(i, j);
             }
         }
         

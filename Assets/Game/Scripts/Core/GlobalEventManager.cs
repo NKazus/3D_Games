@@ -1,53 +1,59 @@
 using System;
 
-public static class GlobalEventManager
+public class GlobalEventManager
 {
-    public static event Action<bool> GameStateEvent;
-    public static event Action VibroEvent;
-    public static event Action RewardSoundEvent;
-    public static event Action BonusSoundEvent;
-    public static event Action<bool> VibroSettingsEvent;
-    public static event Action<bool> SoundSettingsEvent;
+    public event Action<bool> GameStateEvent;
+    public event Action VibroEvent;
+    public event Action RewardSoundEvent;
+    public event Action MuseumSoundEvent;
+    public event Action MarketSoundEvent;
+    public event Action<bool> VibroSettingsEvent;
+    public event Action<bool> SoundSettingsEvent;
 
-    public static event Action<int> WinEvent;
-    public static event Action ToolRefreshEvent;
+    public event Action<int> WinEvent;
+    public event Action ToolRefreshEvent;
 
-    public static void SwitchGameState(bool activate)
+    public void SwitchGameState(bool activate)
     {
         GameStateEvent?.Invoke(activate);
     }
 
-    public static void PlayVibro()
+    public void PlayVibro()
     {
         VibroEvent?.Invoke();
     }
 
-    public static void PlayReward()
+    public void PlayReward()
     {
         RewardSoundEvent?.Invoke();
     }
 
-    public static void PlayBonus()
+    public void PlayMuseum()
     {
-        BonusSoundEvent?.Invoke();
+        MuseumSoundEvent?.Invoke();
     }
 
-    public static void SetVibro(bool value)
+    public void PlayMarket()
+    {
+        MarketSoundEvent?.Invoke();
+    }
+
+    public void SetVibro(bool value)
     {
         VibroSettingsEvent?.Invoke(value);
     }
 
-    public static void SetSound(bool value)
+    public void SetSound(bool value)
     {
         SoundSettingsEvent?.Invoke(value);
     }
 
-    public static void DoWin(int value)
+    public void DoWin(int value)
     {
         WinEvent?.Invoke(value);
     }
 
-    public static void RefreshTools()
+    public void RefreshTools()
     {
         ToolRefreshEvent?.Invoke();
     }

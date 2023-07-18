@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Audio;
+using Zenject;
 
 public class AudioManager : MonoBehaviour
 {
@@ -7,9 +8,12 @@ public class AudioManager : MonoBehaviour
 
     [SerializeField] private AudioSource ambientMusic;
     [SerializeField] private AudioSource rewardSound;
-    [SerializeField] private AudioSource toolSound;
+    [SerializeField] private AudioSource museumSound;
+    [SerializeField] private AudioSource marketSound;
 
     private bool vibroEnabled = true;
+
+    [Inject] private readonly GlobalEventManager eventManager;
 
     #region MONO
     private void Awake()
@@ -19,12 +23,13 @@ public class AudioManager : MonoBehaviour
 
     private void OnEnable()
     {
-        GlobalEventManager.VibroEvent += PlayVibro;
-        GlobalEventManager.RewardSoundEvent += PlayReward;
-        GlobalEventManager.BonusSoundEvent += PlayBonus;
+        eventManager.VibroEvent += PlayVibro;
+        eventManager.RewardSoundEvent += PlayReward;
+        eventManager.MuseumSoundEvent += PlayMuseum;
+        eventManager.MarketSoundEvent += PlayMarket;
 
-        GlobalEventManager.VibroSettingsEvent += TurnVibration;
-        GlobalEventManager.SoundSettingsEvent += TurnSound;
+        eventManager.VibroSettingsEvent += TurnVibration;
+        eventManager.SoundSettingsEvent += TurnSound;
     }
 
     private void Start()
@@ -45,12 +50,13 @@ public class AudioManager : MonoBehaviour
 
     private void OnDisable()
     {
-        GlobalEventManager.VibroEvent -= PlayVibro;
-        GlobalEventManager.RewardSoundEvent -= PlayReward;
-        GlobalEventManager.BonusSoundEvent -= PlayBonus;
+        eventManager.VibroEvent -= PlayVibro;
+        eventManager.RewardSoundEvent -= PlayReward;
+        eventManager.MuseumSoundEvent -= PlayMuseum;
+        eventManager.MarketSoundEvent -= PlayMarket;
 
-        GlobalEventManager.VibroSettingsEvent -= TurnVibration;
-        GlobalEventManager.SoundSettingsEvent -= TurnSound;
+        eventManager.VibroSettingsEvent -= TurnVibration;
+        eventManager.SoundSettingsEvent -= TurnSound;
     }
     #endregion
 
@@ -68,9 +74,14 @@ public class AudioManager : MonoBehaviour
         rewardSound.Play();
     }
 
-    private void PlayBonus()
+    private void PlayMuseum()
     {
-        toolSound.Play();
+        museumSound.Play();
+    }
+
+    private void PlayMarket()
+    {
+        marketSound.Play();
     }
 
     #region SETTINGS

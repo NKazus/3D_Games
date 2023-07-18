@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 public class GameplayController : MonoBehaviour
 {
@@ -14,6 +15,8 @@ public class GameplayController : MonoBehaviour
     private Text restartText;
     private Text restartExtra;
 
+    [Inject] private readonly GlobalEventManager eventManager;
+
     #region MONO
     private void Awake()
     {
@@ -24,19 +27,19 @@ public class GameplayController : MonoBehaviour
 
     private void OnEnable()
     {
-        GlobalEventManager.GameStateEvent += ChangeGameState;
-        GlobalEventManager.WinEvent += ChangeTextToWin;
+        eventManager.GameStateEvent += ChangeGameState;
+        eventManager.WinEvent += ChangeTextToWin;
 
         Restart();
     }
 
     private void OnDisable()
     {
-        GlobalEventManager.SwitchGameState(false);
+        eventManager.SwitchGameState(false);
     
-        GlobalEventManager.WinEvent -= ChangeTextToWin;
-        GlobalEventManager.GameStateEvent -= ChangeGameState;
-
+        eventManager.WinEvent -= ChangeTextToWin;
+        eventManager.GameStateEvent -= ChangeGameState;
+  
         restart.gameObject.SetActive(false);
         restartBg.SetActive(false);
         restart.onClick.RemoveListener(Restart);
@@ -45,7 +48,7 @@ public class GameplayController : MonoBehaviour
 
     private void Restart()
     {
-        GlobalEventManager.SwitchGameState(true);
+        eventManager.SwitchGameState(true);
     }
 
     private void ChangeGameState(bool isActive)

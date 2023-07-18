@@ -37,11 +37,13 @@ public class GameDataHandler : MonoBehaviour
         {
             shovels++;
             scoreManager.UpdateValues(2, shovels);
+            scoreManager.UpdateValues(4, shovels);
         }
         else
         {
             insight++;
             scoreManager.UpdateValues(3, insight);
+            scoreManager.UpdateValues(5, insight);
         }
     }
 
@@ -85,6 +87,8 @@ public class GameDataHandler : MonoBehaviour
         scoreManager.UpdateValues(0, oreCount);
         scoreManager.UpdateValues(1, scoops);
         scoreManager.UpdateValues(2, shovels);
+        scoreManager.UpdateValues(4, shovels);
         scoreManager.UpdateValues(3, insight);
+        scoreManager.UpdateValues(5, insight);
     }
 }

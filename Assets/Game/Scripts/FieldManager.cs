@@ -1,6 +1,7 @@
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 public enum Tool
 {
@@ -18,7 +19,6 @@ public class FieldManager : MonoBehaviour
 
     [SerializeField] private Color emptyToolColor;
 
-    [SerializeField] private GameDataHandler dataHandler;
     [SerializeField] private FieldGenerator fieldGenerator;
 
     [SerializeField] private int treasureCloseRange = 2;
@@ -28,16 +28,20 @@ public class FieldManager : MonoBehaviour
 
     private FieldCellIndices treasure;
 
+    [Inject] private readonly GameDataHandler dataHandler;
+    [Inject] private readonly GlobalEventManager eventManager;
+    [Inject] private readonly RandomGenerator randomGenerator;
+
     private void OnEnable()
     {
-        GlobalEventManager.GameStateEvent += ChangeFieldState;
+        eventManager.GameStateEvent += ChangeFieldState;
 
         dataHandler.Refresh();
     }
 
     private void OnDisable()
     {
-        GlobalEventManager.GameStateEvent += ChangeFieldState;
+        eventManager.GameStateEvent += ChangeFieldState;
     }
 
     private void ChangeFieldState(bool activate)
@@ -78,11 +82,11 @@ public class FieldManager : MonoBehaviour
             }
 
             ActivateField();
-            GlobalEventManager.ToolRefreshEvent += UpdateTools;
+            eventManager.ToolRefreshEvent += UpdateTools;
         }
         else
         {
-            GlobalEventManager.ToolRefreshEvent -= UpdateTools;
+            eventManager.ToolRefreshEvent -= UpdateTools;
 
             insightButton.onClick.RemoveAllListeners();
             insightButton.onClick.RemoveAllListeners();
@@ -117,8 +121,8 @@ public class FieldManager : MonoBehaviour
 
     private void GenerateTreasure()
     {
-        treasure.cellX = RandomGenerator.GenerateInt(0, fieldGenerator.FieldSize);
-        treasure.cellZ = RandomGenerator.GenerateInt(0, fieldGenerator.FieldSize);
+        treasure.cellX = randomGenerator.GenerateInt(0, fieldGenerator.FieldSize);
+        treasure.cellZ = randomGenerator.GenerateInt(0, fieldGenerator.FieldSize);
 
         fieldGenerator.field[treasure.cellX, treasure.cellZ].SetTreasure();
     }
@@ -176,8 +180,8 @@ public class FieldManager : MonoBehaviour
         }
         if(!isScoopEnabled && !isShovelEnabled)
         {
-            GlobalEventManager.SwitchGameState(false);
-            GlobalEventManager.PlayVibro();
+            eventManager.SwitchGameState(false);
+            eventManager.PlayVibro();
         }
     }
 }

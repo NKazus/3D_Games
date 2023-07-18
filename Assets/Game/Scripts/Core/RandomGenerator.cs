@@ -1,15 +1,15 @@
 using System;
 
-public static class RandomGenerator
+public class RandomGenerator
 {
-    private static Random random = new Random();
+    private Random random = new Random();
 
-    public static int GenerateInt(int minValue, int maxValue)
+    public int GenerateInt(int minValue, int maxValue)
     {
         return random.Next(minValue, maxValue);
     }
 
-    public static void RandomizeArray<T>(T[] array)
+    public void RandomizeArray<T>(T[] array)
     {
         int n = array.Length;
         int k;
