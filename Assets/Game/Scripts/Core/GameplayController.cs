@@ -76,7 +76,7 @@ public class GameplayController : MonoBehaviour
         restartIcon.sprite = win;
         restartIcon.SetNativeSize();
         restartText.text = winText;
-        restartExtra.text = "You've got "+points.ToString()+" ore samples!";
+        restartExtra.text = "You've mined "+points.ToString()+" ore samples!";
         restartExtra.enabled = true;
     }
 }

@@ -13,6 +13,7 @@ public class TradeManager : MonoBehaviour
     [SerializeField] private string shovelText;
     [SerializeField] private string insightText;
     [SerializeField] private string oreText;
+    [SerializeField] private Image optionTextBg;
 
     [SerializeField] private Color emptyColor;
     [SerializeField] private Color shovelColor;
@@ -43,6 +44,7 @@ public class TradeManager : MonoBehaviour
     {
         CheckOre();
         optionText.enabled = false;
+        optionTextBg.enabled = false;
         isTradeActive = false;
         tradeButton.image.color = Color.gray;
     }
@@ -50,6 +52,10 @@ public class TradeManager : MonoBehaviour
     private void OnDisable()
     {
         tradeButton.onClick.RemoveAllListeners();
+        for (int i = 0; i < oreSamples.Length; i++)
+        {
+            oreSamples[i].Hide();
+        }
     }
 
     private void PickOption(bool isShovel)
@@ -58,6 +64,7 @@ public class TradeManager : MonoBehaviour
         optionText.text = isShovel ? shovelText : insightText;
         optionText.color = isShovel ? shovelColor : insightColor;
         optionText.enabled = true;
+        optionTextBg.enabled = true;
 
         if (isShovel)
         {
