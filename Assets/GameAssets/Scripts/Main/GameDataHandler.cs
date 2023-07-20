@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class GameDataHandler : MonoBehaviour
 {
-    [SerializeField] private int oreCount;
-    [SerializeField] private int shovels;
-    [SerializeField] private int insight;
+    [SerializeField] private int oreCount = 5;
+    [SerializeField] private int shovels = 10;
+    [SerializeField] private int insight = 10;
     [SerializeField] private int initialScoops = 15;
     [SerializeField] private UserScoreManager scoreManager;
 
@@ -19,9 +19,9 @@ public class GameDataHandler : MonoBehaviour
 
     private void OnEnable()
     {
-        /*oreCount = PlayerPrefs.HasKey("_OreCount") ? PlayerPrefs.GetInt("_OreCount") : oreCount;
+        oreCount = PlayerPrefs.HasKey("_OreCount") ? PlayerPrefs.GetInt("_OreCount") : oreCount;
         shovels = PlayerPrefs.HasKey("_Shovels") ? PlayerPrefs.GetInt("_Shovels") : shovels;
-        insight = PlayerPrefs.HasKey("_Insight") ? PlayerPrefs.GetInt("_Insight") : insight;*/
+        insight = PlayerPrefs.HasKey("_Insight") ? PlayerPrefs.GetInt("_Insight") : insight;
     }
 
     private void OnDisable()

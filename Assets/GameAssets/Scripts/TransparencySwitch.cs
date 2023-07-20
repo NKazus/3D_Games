@@ -3,6 +3,9 @@ using UnityEngine;
 
 public class TransparencySwitch : MonoBehaviour
 {
+    [SerializeField] private Color initialColor;
+    [SerializeField] private bool init;
+
     private Transform localTransform;
     private MeshRenderer scanRenderer;
     private Material scanMaterial;
@@ -19,6 +22,11 @@ public class TransparencySwitch : MonoBehaviour
         scanRenderer = GetComponent<MeshRenderer>();
         scanMaterial = Instantiate(scanRenderer.material);
         scanRenderer.material = scanMaterial;
+
+        if (init)
+        {
+            SetColor(initialColor);
+        }
 
         scaleSequence = DOTween.Sequence()
             .Append(localTransform.DOScale(initialScale * 0.7f, 1f))

@@ -3,13 +3,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
 
-public enum Tool
-{
-    Scoop = 0,
-    Shovel = 1,
-    Insight = 2
-}
-
 public class FieldManager : MonoBehaviour
 {
     [SerializeField] private Button scoopButton;

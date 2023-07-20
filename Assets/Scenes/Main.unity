@@ -640,7 +640,7 @@ RectTransform:
   m_GameObject: {fileID: 30407970}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.9, y: 0.9, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1069042775}
@@ -651,7 +651,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 41.000027}
+  m_AnchoredPosition: {x: 0, y: 49}
   m_SizeDelta: {x: 688, y: 659}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &30407973
@@ -8008,7 +8008,7 @@ RectTransform:
   m_GameObject: {fileID: 922478816}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.9, y: 0.9, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1874752388}
@@ -8020,7 +8020,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -100}
+  m_AnchoredPosition: {x: 0, y: -79.00006}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &933101764
@@ -12440,7 +12440,6 @@ GameObject:
   - component: {fileID: 1440539143}
   - component: {fileID: 1440539146}
   - component: {fileID: 1440539147}
-  - component: {fileID: 1440539148}
   - component: {fileID: 1440539149}
   m_Layer: 0
   m_Name: GameManager
@@ -12522,7 +12521,7 @@ MonoBehaviour:
   toGameplay: {fileID: 1922600207}
   toRules: {fileID: 1972264838}
   toPrivacy: {fileID: 2106902490}
-  privacyURL: 
+  privacyURL: https://oreehunt.com/privacy-policy.html
 --- !u!114 &1440539142
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12593,18 +12592,6 @@ MonoBehaviour:
   emptyToolColor: {r: 0.6792453, g: 0.6792453, b: 0.6792453, a: 1}
   fieldGenerator: {fileID: 1440539146}
   treasureCloseRange: 2
---- !u!114 &1440539148
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1440539136}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 085f3b50e7bfe4d4e9a8d4b9d6c8bbb2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1440539149
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18470,6 +18457,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9bdf59061f854a7d8808f1440dbdd32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  initialColor: {r: 0.8, g: 0.18431373, b: 0.18431373, a: 1}
+  init: 1
 --- !u!114 &3784193950216708622
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18482,6 +18471,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9bdf59061f854a7d8808f1440dbdd32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  initialColor: {r: 0.8, g: 0.18431373, b: 0.18431373, a: 1}
+  init: 1
 --- !u!114 &3784193950239701854
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18494,6 +18485,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9bdf59061f854a7d8808f1440dbdd32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  initialColor: {r: 0.8, g: 0.18431373, b: 0.18431373, a: 1}
+  init: 1
 --- !u!114 &3784193950738284068
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18506,6 +18499,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9bdf59061f854a7d8808f1440dbdd32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  initialColor: {r: 0.93333334, g: 0.92941177, b: 0.34901962, a: 1}
+  init: 1
 --- !u!114 &3784193950923011406
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18518,6 +18513,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9bdf59061f854a7d8808f1440dbdd32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  initialColor: {r: 0.93333334, g: 0.92941177, b: 0.34901962, a: 1}
+  init: 1
 --- !u!114 &3784193951139072333
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18530,6 +18527,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9bdf59061f854a7d8808f1440dbdd32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  initialColor: {r: 0.93333334, g: 0.92941177, b: 0.34901962, a: 1}
+  init: 1
 --- !u!114 &3784193951191213898
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18542,6 +18541,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9bdf59061f854a7d8808f1440dbdd32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  initialColor: {r: 0, g: 0, b: 0, a: 0}
+  init: 0
 --- !u!23 &3952924057971449768
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -20716,7 +20717,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7763095870435724464}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.0297, z: 0}
+  m_LocalPosition: {x: 0, y: 0.03, z: 0.005}
   m_LocalScale: {x: 0.07, y: 0.01, z: 0.07}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -20897,7 +20898,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7763095870693736775}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.221, y: 0.0814, z: 0.034}
+  m_LocalPosition: {x: 0.228, y: 0.0814, z: 0.034}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -20933,7 +20934,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7763095870742059031}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.217, y: 0.0814, z: 0.304}
+  m_LocalPosition: {x: 0.224, y: 0.0814, z: 0.304}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
