@@ -4,24 +4,16 @@ using UnityEngine.UI;
 
 public class ScoreManager : MonoBehaviour
 {
-    [SerializeField] private Text globalScoreUI;
-    [SerializeField] private Text timerUI;
+    [SerializeField] private Text treasureUI;
+    [SerializeField] private Text sticksUI;
 
     public void UpdateScore(int value)
     {
-
-        globalScoreUI.DOText(value.ToString(), 0.5f);
+        treasureUI.DOText(value.ToString(), 0.5f);
     }
 
-    public void UpdateTimer(float timeLeft)
+    public void UpdateSticks(int value)
     {
-        if(timeLeft < 0)
-        {
-            timeLeft = 0;
-        }
-        float minutes = Mathf.FloorToInt(timeLeft / 60);
-        float seconds = Mathf.FloorToInt(timeLeft % 60);
-        timerUI.text = string.Format("{0:00}:{1:00}", minutes, seconds);
+        sticksUI.DOText(value.ToString(), 0.5f);
     }
-
 }

@@ -2,36 +2,44 @@ using UnityEngine;
 
 public class ResourceHandler : MonoBehaviour
 {
-    [SerializeField] private int globalScore;
-    [SerializeField] private float bonusTime;
-    [SerializeField] private float bonusTimeDelta;
+    [SerializeField] private ScoreManager scoreManager;
+    [SerializeField] private int treasureScore;
+    [SerializeField] private int sticks;
 
-    public float BonusTime => bonusTime;
-    public int GlobalScore => globalScore;
+    public int Sticks => sticks;
+    public int TreasureScore => treasureScore;
 
     private void OnEnable()
     {
-        globalScore = PlayerPrefs.HasKey("_GlobalScore") ? PlayerPrefs.GetInt("_GlobalScore") : globalScore;
-        bonusTime = PlayerPrefs.HasKey("_BonusTime") ? PlayerPrefs.GetFloat("_BonusTime") : bonusTime;
+        treasureScore = PlayerPrefs.HasKey("_TreasureScore") ? PlayerPrefs.GetInt("_TreasureScore") : treasureScore;
+        sticks = 10;// PlayerPrefs.HasKey("_Sticks") ? PlayerPrefs.GetInt("_Sticks") : sticks;
     }
 
     private void OnDisable()
     {
-        PlayerPrefs.SetInt("_GlobalScore", globalScore);
-        PlayerPrefs.SetFloat("_BonusTime", bonusTime);
+        PlayerPrefs.SetInt("_TreasureScore", treasureScore);
+        PlayerPrefs.SetInt("_Sticks", sticks);
     }
 
-    public void SetBonusTime(bool reset = false)
+    public void UpdateSticks(int value)
     {
-        bonusTime = reset ? 0 : bonusTime + bonusTimeDelta;
-    }
-
-    public void UpdateGlobalScore(int value)
-    {
-        globalScore += value;
-        if(globalScore < 0)
+        if (sticks < 1)
         {
-            globalScore = 0;
+            sticks = 1;
+            scoreManager.UpdateSticks(sticks);
+            return;
         }
+        sticks += value;
+        scoreManager.UpdateSticks(sticks);
+    }
+
+    public void UpdateTreasure(int value)
+    {
+        treasureScore += value;
+        if(treasureScore < 0)
+        {
+            treasureScore = 0;
+        }
+        scoreManager.UpdateScore(treasureScore);
     }
 }

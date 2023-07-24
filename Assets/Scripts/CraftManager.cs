@@ -78,7 +78,6 @@ public class BonusManager : MonoBehaviour
         if (id > 0)
         {
             eventManager.PlayBonus();
-            resources.SetBonusTime();
             winPanel.SetActive(true);
         }
         else

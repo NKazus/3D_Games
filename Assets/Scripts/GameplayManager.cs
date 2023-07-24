@@ -5,34 +5,40 @@ using Zenject;
 
 public class GameplayManager : MonoBehaviour
 {
-    [SerializeField] private ScoreManager scoreManager;
-
     [SerializeField] private Button startButton;
-    [SerializeField] private GameObject timer;
-    [SerializeField] private float initialTime = 5f;
+    [SerializeField] private Button tryButton;
 
-    private int targetValue;
-    private int playerValue;
+    [SerializeField] private Stick stick;
 
-    private float timeLeft;
+    [SerializeField] private Gear gear;
+    [SerializeField] private Pin[] pins;
+    [SerializeField] private HighlightController highlight;
+
+    private int stage;
+
+    private bool move;
+    private bool win;
 
     [Inject] private readonly ResourceHandler resources;
     [Inject] private readonly EventManager eventManager;
 
     private void OnEnable()
     {
-        scoreManager.UpdateScore(resources.GlobalScore);
-        timer.SetActive(false);
+        resources.UpdateTreasure(0);
+        resources.UpdateSticks(0);
+
+        tryButton.gameObject.SetActive(false);
         startButton.gameObject.SetActive(true);
         startButton.onClick.AddListener(Initialize);
     }
 
     private void OnDisable()
     {
+        highlight.ResetHighlight();
         eventManager.GameStateEvent -= Activate;
 
         startButton.onClick.RemoveAllListeners();
-        StopAllCoroutines();
+        tryButton.onClick.RemoveAllListeners();
     }
 
     private void Initialize()
@@ -40,66 +46,117 @@ public class GameplayManager : MonoBehaviour
         startButton.onClick.RemoveListener(Initialize);
         startButton.gameObject.SetActive(false);
         Activate(true);
-        eventManager.GameStateEvent += Activate;
-        
+        eventManager.GameStateEvent += Activate;        
     }
 
     private void Activate(bool activate)
     {
         if (activate)
         {
-            timer.SetActive(false);
+            resources.UpdateSticks(0);
 
-        }
-    }
+            move = false;
+            win = false;
+            gear.ActivateGear(activate);
+            for (int i = 0; i < pins.Length; i++)
+            {
+                pins[i].ResetPin();
+            }
+            stage = 0;
+            highlight.UpdateHighlight(stage);
+            stick.SetStick(stage, StickCallback);
 
-    private void RollCallback(int id)
-    {
-        timeLeft = initialTime + resources.BonusTime;
-        timer.SetActive(true);
-
-        targetValue = id;
-        if (gameObject.activeSelf)
-        {
-            StartCoroutine(StartTimer());
-        }
-    }
-
-    private void SwitchCallback(int id)
-    {
-        playerValue = id;
-    }
-
-    private IEnumerator StartTimer()
-    {
-        while (timeLeft > 0)
-        {
-            timeLeft -= Time.deltaTime;
-            scoreManager.UpdateTimer(timeLeft);
-            yield return null;
-        }
-        if(timeLeft <= 0)
-        {
-
-            Calculate();
-        }
-    }
-
-    private void Calculate()
-    {
-        if(playerValue == targetValue)
-        {
-            eventManager.DoWin();
-            resources.UpdateGlobalScore(10);
-            eventManager.PlayReward();
-            resources.SetBonusTime(true);            
+            eventManager.ButtonPressEvent += CheckStage;
+            eventManager.StickEvent += CheckSticks;
         }
         else
         {
-            resources.UpdateGlobalScore(-10);
-            eventManager.PlayVibro();
+            for (int i = 0; i < pins.Length; i++)
+            {
+                pins[i].DeactivatePin();
+            }
+
+            tryButton.onClick.RemoveAllListeners();
+            tryButton.gameObject.SetActive(false);
+            
+            eventManager.ButtonPressEvent -= CheckStage;
+            eventManager.StickEvent -= CheckSticks;
         }
-        scoreManager.UpdateScore(resources.GlobalScore);
-        eventManager.SwitchGameState(false);
+    }
+
+    private void StickCallback()
+    {
+        pins[stage].ActivatePin();
+
+        tryButton.image.color = Color.white;
+        tryButton.gameObject.SetActive(true);
+        tryButton.onClick.AddListener(MoveStick);        
+    }
+
+
+    private void MoveStick()
+    {
+        tryButton.image.color = Color.gray;
+        tryButton.onClick.RemoveListener(MoveStick);
+        stick.MoveStick(MoveCallback);
+    }
+
+    private void MoveCallback()
+    {
+        if (win)
+        {
+            return;
+        }
+        if (move)
+        {
+            highlight.UpdateHighlight(stage);
+            stick.SetStick(stage, StickCallback);
+            move = false;
+        }
+        else
+        {
+            tryButton.image.color = Color.white;
+            tryButton.onClick.AddListener(MoveStick);
+        }
+    }
+
+    private void CheckStage(int id)
+    {
+        if(stage == id)
+        {
+            pins[stage].DeactivatePin();
+            tryButton.image.color = Color.gray;
+            tryButton.onClick.RemoveListener(MoveStick);
+            if(++stage >= 4)
+            {
+                gear.ActivateGear(false);
+                highlight.ResetHighlight();
+                win = true;
+                eventManager.DoWin();
+                resources.UpdateTreasure(1);
+                eventManager.SwitchGameState(false);
+            }
+            else
+            {
+                move = true;
+            }
+        }
+    }
+
+    private void CheckSticks()
+    {
+        resources.UpdateSticks(-1);
+        int sticks = resources.Sticks;
+
+        if (sticks <= 0)
+        {
+            eventManager.SwitchGameState(false);
+            return;
+        }
+
+        stick.SetStick(stage);
+        tryButton.image.color = Color.white;
+        tryButton.gameObject.SetActive(true);
+        tryButton.onClick.AddListener(MoveStick);
     }
 }
