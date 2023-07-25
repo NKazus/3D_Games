@@ -4,93 +4,131 @@ using DG.Tweening;
 using System.Collections;
 using Zenject;
 
-public class BonusManager : MonoBehaviour
+public class CraftManager : MonoBehaviour
 {
-    [SerializeField] private Transform targetBoard;
-    [SerializeField] private Transform pickBoard;
-    [SerializeField] private Vector3 targetPosition;
-    [SerializeField] private Vector3 startPosition;
+    [SerializeField] private StickComponent left;
+    [SerializeField] private StickComponent right;
 
     [SerializeField] private Button startButton;
-    [SerializeField] private GameObject pickText;
+    [SerializeField] private Button confButton;
+    [SerializeField] private Button careButton;
+
+    [SerializeField] private GameObject hintText;
     [SerializeField] private GameObject winPanel;
 
+    [SerializeField] private int tries;
+    [SerializeField] private float confValue;
+    [SerializeField] private float careValue;
+
+    private int currentTry;
+    private float leftScale;
+    private float rightScale;
+
+    private const float SUM_VALUE = 2f;
 
     [Inject] private readonly ResourceHandler resources;
     [Inject] private readonly EventManager eventManager;
-
-    private void Awake()
-    {
-
-    }
+    [Inject] private readonly RandomGenerator randomGenerator;
 
     private void OnEnable()
     {
+        resources.UpdateTreasure(0);
+        resources.UpdateSticks(0);
+
         winPanel.SetActive(false);
+        hintText.SetActive(false);
+        currentTry = 0;
+        resources.UpdateTries(currentTry);
+
         startButton.onClick.AddListener(Activate);
         startButton.gameObject.SetActive(true);
+
+        careButton.onClick.AddListener(() => CalculateScale(careValue));
+        confButton.onClick.AddListener(() => CalculateScale(confValue));
     }
 
 
     private void OnDisable()
     {
-        DOTween.KillAll();
         StopAllCoroutines();
-        ResetBoards();
         startButton.onClick.RemoveListener(Activate);
-        pickText.SetActive(false);
+        careButton.onClick.RemoveAllListeners();
+        confButton.onClick.RemoveAllListeners();
+        careButton.gameObject.SetActive(false);
+        confButton.gameObject.SetActive(false);
+
+        hintText.SetActive(false);
     }
 
     private void Activate()
     {
+        currentTry = 0;
+        resources.UpdateTries(currentTry);
+
         startButton.gameObject.SetActive(false);
         winPanel.SetActive(false);
-        ResetBoards();
-        CalculateColors();
-        targetBoard.DOMove(targetPosition, 2f)
-            .SetId(this)
-            .OnComplete(() => { StartCoroutine(Wait()); });
+        hintText.SetActive(true);
+        InitializeSticks();
+
+        careButton.gameObject.SetActive(true);
+        confButton.gameObject.SetActive(true);
     }
 
-    private IEnumerator Wait()
+    private void InitializeSticks()
     {
-        yield return new WaitForSeconds(2);
-        targetBoard.DOMove(startPosition, 2f)
-            .SetId(this)
-            .OnComplete(() => { MoveCrystals(); });
+        left.ResetComponent();
+        right.ResetComponent();
+
+        float initCoeff = randomGenerator.GenerateInt(3, 8) / 10f;
+        initCoeff *= randomGenerator.GenerateInt(0, 10) > 5 ? 1 : -1;
+
+        leftScale = SUM_VALUE / 2f + initCoeff;
+        rightScale = SUM_VALUE - leftScale;
+
+        left.SetScale(leftScale);
+        right.SetScale(rightScale);
     }
 
-    private void MoveCrystals()
+    private void CalculateScale(float value)
     {
+        currentTry++;
+        resources.UpdateTries(currentTry);
 
+        float dirValue = leftScale > rightScale ? -1 : 1;
+        leftScale += dirValue * value;
+        rightScale += (-dirValue) * value;
+
+        left.SetScale(leftScale);
+        right.SetScale(rightScale);
+        CheckResult();
     }
 
-    private void CalculateColors()
+    private void CheckResult()
     {
-        
-    }
-
-
-    private void CheckResult(int id)
-    {
-        pickText.SetActive(false);
-        
-        if (id > 0)
+        if (Mathf.Abs(leftScale - rightScale) < 0.04)
         {
-            eventManager.PlayBonus();
-            winPanel.SetActive(true);
+            left.MergeToTarget(MergeCallback);
+            right.MergeToTarget(MergeCallback);
+            resources.UpdateSticks(1);
+            return;
         }
-        else
-        {
+        if (currentTry >= tries)
+        {        
+            careButton.gameObject.SetActive(false);
+            confButton.gameObject.SetActive(false);
+            hintText.SetActive(false);
             eventManager.PlayVibro();
-        }
-
-        startButton.gameObject.SetActive(true);
+            startButton.gameObject.SetActive(true);
+        }        
     }
 
-    private void ResetBoards()
+    private void MergeCallback()
     {
-        targetBoard.position = startPosition;
-        pickBoard.position = new Vector3(startPosition.x, startPosition.y, -startPosition.z);
+        eventManager.PlayBonus();
+        winPanel.SetActive(true);
+        hintText.SetActive(false);
+        careButton.gameObject.SetActive(false);
+        confButton.gameObject.SetActive(false);
+        startButton.gameObject.SetActive(true);
     }
 }

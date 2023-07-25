@@ -42,4 +42,9 @@ public class ResourceHandler : MonoBehaviour
         }
         scoreManager.UpdateScore(treasureScore);
     }
+
+    public void UpdateTries(int value)
+    {
+        scoreManager.UpdateTries(value);
+    }
 }
