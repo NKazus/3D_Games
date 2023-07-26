@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
 using Zenject;
@@ -9,17 +7,20 @@ public class Pin : MonoBehaviour
     [SerializeField] private float rotationSpeed;
     [SerializeField] private Vector3 startPosition;
     [SerializeField] private Vector3 endPosition;
-    [SerializeField] private float moveTime;
+    [SerializeField] private float moveTimeMin;
+    [SerializeField] private float moveTimeMax;
 
     private Transform[] gears;
     private Transform movingPart;
     private Quaternion[] gearsRotation;
 
     private float gearSpeed;
+    private float moveTime;
 
     private Sequence movingSequence;
 
     [Inject] private readonly UpdateManager updateManager;
+    [Inject] private readonly RandomGenerator randomGenerator;
 
     private void Awake()
     {
@@ -73,6 +74,7 @@ public class Pin : MonoBehaviour
 
     public void RewindPin()
     {
+        moveTime = randomGenerator.GenerateFloat(moveTimeMin, moveTimeMax);
         movingSequence = DOTween.Sequence()
             .Append(movingPart.DOLocalMove(endPosition, moveTime))
             .Append(movingPart.DOLocalMove(startPosition, moveTime))

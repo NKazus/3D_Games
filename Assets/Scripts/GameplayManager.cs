@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
@@ -133,6 +132,7 @@ public class GameplayManager : MonoBehaviour
                 highlight.ResetHighlight();
                 win = true;
                 eventManager.DoWin();
+                eventManager.PlayReward();
                 resources.UpdateTreasure(1);
                 eventManager.SwitchGameState(false);
             }
@@ -145,6 +145,7 @@ public class GameplayManager : MonoBehaviour
 
     private void CheckSticks()
     {
+        eventManager.PlayBreak();
         resources.UpdateSticks(-1);
         int sticks = resources.Sticks;
 

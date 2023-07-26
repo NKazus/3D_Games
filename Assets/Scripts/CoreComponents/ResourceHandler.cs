@@ -12,7 +12,7 @@ public class ResourceHandler : MonoBehaviour
     private void OnEnable()
     {
         treasureScore = PlayerPrefs.HasKey("_TreasureScore") ? PlayerPrefs.GetInt("_TreasureScore") : treasureScore;
-        sticks = 10;// PlayerPrefs.HasKey("_Sticks") ? PlayerPrefs.GetInt("_Sticks") : sticks;
+        sticks = PlayerPrefs.HasKey("_Sticks") ? PlayerPrefs.GetInt("_Sticks") : sticks;
     }
 
     private void OnDisable()

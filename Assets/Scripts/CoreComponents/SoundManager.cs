@@ -8,7 +8,8 @@ public class SoundManager : MonoBehaviour
 
     [SerializeField] private AudioSource ambientMusic;
     [SerializeField] private AudioSource rewardSound;
-    [SerializeField] private AudioSource bonusSound;
+    [SerializeField] private AudioSource breakSound;
+    [SerializeField] private AudioSource stickSound;
 
     private bool vibroEnabled = true;
 
@@ -30,7 +31,8 @@ public class SoundManager : MonoBehaviour
     {
         eventManager.VibroEvent += PlayVibro;
         eventManager.RewardSoundEvent += PlayReward;
-        eventManager.BonusSoundEvent += PlayBonus;
+        eventManager.StickSoundEvent += PlayStick;
+        eventManager.BreakSoundEvent += PlayBreak;
 
         eventManager.VibroSettingsEvent += TurnVibration;
         eventManager.SoundSettingsEvent += TurnSound;
@@ -46,7 +48,8 @@ public class SoundManager : MonoBehaviour
     {
         eventManager.VibroEvent -= PlayVibro;
         eventManager.RewardSoundEvent -= PlayReward;
-        eventManager.BonusSoundEvent -= PlayBonus;
+        eventManager.StickSoundEvent -= PlayStick;
+        eventManager.BreakSoundEvent -= PlayBreak;
 
         eventManager.VibroSettingsEvent -= TurnVibration;
         eventManager.SoundSettingsEvent -= TurnSound;
@@ -67,9 +70,14 @@ public class SoundManager : MonoBehaviour
         rewardSound.Play();
     }
 
-    private void PlayBonus()
+    private void PlayStick()
     {
-        bonusSound.Play();
+        stickSound.Play();
+    }
+
+    private void PlayBreak()
+    {
+        breakSound.Play();
     }
 
     #region SETTINGS

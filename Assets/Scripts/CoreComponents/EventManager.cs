@@ -7,7 +7,9 @@ public class EventManager
 
     public event Action VibroEvent;
     public event Action RewardSoundEvent;
-    public event Action BonusSoundEvent;
+    public event Action StickSoundEvent;
+    public event Action BreakSoundEvent;
+
     public event Action<bool> VibroSettingsEvent;
     public event Action<bool> SoundSettingsEvent;
 
@@ -29,9 +31,14 @@ public class EventManager
         RewardSoundEvent?.Invoke();
     }
 
-    public void PlayBonus()
+    public void PlayStick()
     {
-        BonusSoundEvent?.Invoke();
+        StickSoundEvent?.Invoke();
+    }
+
+    public void PlayBreak()
+    {
+        BreakSoundEvent?.Invoke();
     }
 
     public void SetVibro(bool value)

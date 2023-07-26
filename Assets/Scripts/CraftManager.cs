@@ -1,7 +1,5 @@
 using UnityEngine;
 using UnityEngine.UI;
-using DG.Tweening;
-using System.Collections;
 using Zenject;
 
 public class CraftManager : MonoBehaviour
@@ -124,7 +122,7 @@ public class CraftManager : MonoBehaviour
 
     private void MergeCallback()
     {
-        eventManager.PlayBonus();
+        eventManager.PlayStick();
         winPanel.SetActive(true);
         hintText.SetActive(false);
         careButton.gameObject.SetActive(false);

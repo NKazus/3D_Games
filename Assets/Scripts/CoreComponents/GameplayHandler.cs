@@ -8,8 +8,11 @@ public class GameplayHandler : MonoBehaviour
     [SerializeField] private GameObject restartBg;
     [SerializeField] private Sprite win;
     [SerializeField] private Sprite lose;
+    [SerializeField] private string winText;
+    [SerializeField] private string loseText;
 
     private Image restartIcon;
+    private Text restartText;
 
     [Inject] private readonly EventManager eventManager;
 
@@ -17,6 +20,7 @@ public class GameplayHandler : MonoBehaviour
     private void Awake()
     {
         restartIcon = restartBg.transform.GetChild(1).GetComponent<Image>();
+        restartText = restartBg.transform.GetChild(2).GetComponent<Text>();
     }
 
     private void OnEnable()
@@ -57,6 +61,7 @@ public class GameplayHandler : MonoBehaviour
         {
             restart.gameObject.SetActive(false);
             restartIcon.sprite = lose;
+            restartText.text = loseText;
             restartIcon.SetNativeSize();
             restartBg.SetActive(false);
             restart.onClick.RemoveListener(Restart);
@@ -67,5 +72,6 @@ public class GameplayHandler : MonoBehaviour
     {
         restartIcon.sprite = win;
         restartIcon.SetNativeSize();
+        restartText.text = winText;
     }
 }

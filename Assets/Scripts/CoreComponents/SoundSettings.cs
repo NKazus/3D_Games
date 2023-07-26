@@ -15,14 +15,14 @@ public class SoundSettings : MonoBehaviour
         musicToggle.onValueChanged.AddListener(TurnMisic);
         vibroToggle.onValueChanged.AddListener(TurnVibro);
 
-        musicToggle.isOn = (PlayerPrefs.GetInt("_SoundEnabled") == 1);
-        vibroToggle.isOn = (PlayerPrefs.GetInt("_VibroEnabled") == 1);
+        musicToggle.isOn = (PlayerPrefs.GetInt("_GameSound") == 1);
+        vibroToggle.isOn = (PlayerPrefs.GetInt("_GameVibro") == 1);
     }
 
     private void OnDisable()
     {
-        PlayerPrefs.SetInt("_SoundEnabled", musicToggle.isOn ? 1 : 0);
-        PlayerPrefs.SetInt("_VibroEnabled", vibroToggle.isOn ? 1 : 0);
+        PlayerPrefs.SetInt("_GameSound", musicToggle.isOn ? 1 : 0);
+        PlayerPrefs.SetInt("_GameVibro", vibroToggle.isOn ? 1 : 0);
 
         musicToggle.onValueChanged.RemoveListener(TurnMisic);
         vibroToggle.onValueChanged.RemoveListener(TurnVibro);
