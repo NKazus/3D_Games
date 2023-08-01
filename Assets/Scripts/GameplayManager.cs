@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
@@ -41,6 +40,7 @@ public class GameplayManager : MonoBehaviour
 
     private void OnEnable()
     {
+        resources.UpdatePlayerScore(0);
         resources.UpdateBalanceCharges(true, 0);
         resources.UpdateBalanceCharges(false, 0);
 

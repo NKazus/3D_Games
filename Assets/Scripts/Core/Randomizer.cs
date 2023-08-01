@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 public class Randomizer
 {
@@ -9,9 +10,9 @@ public class Randomizer
         return random.Next(minValue, maxValue);
     }
 
-    public void RandomizeArray<T>(T[] array)
+    public void RandomizeList<T>(List<T> array)
     {
-        int n = array.Length;
+        int n = array.Count;
         int k;
         T temp;
         while (n > 1)

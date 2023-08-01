@@ -31,11 +31,13 @@ public class Resources : MonoBehaviour
         {
             balanceCharges10 += charges;
             score.UpdateValues(1, balanceCharges10);
+            score.UpdateValues(3, balanceCharges10);
         }
         else
         {
             balanceCharges30 += charges;
             score.UpdateValues(2, balanceCharges30);
+            score.UpdateValues(4, balanceCharges30);
         }        
     }
 
