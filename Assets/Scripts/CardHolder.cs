@@ -22,6 +22,7 @@ public class CardHolder : MonoBehaviour
     {
         isActive = false;
         cardText.enabled = false;
+        cardTransform.localScale = initialScale;
     }
 
     public void ResetCard()

@@ -1,5 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
@@ -10,12 +10,15 @@ public class BalanceManager : MonoBehaviour
     [SerializeField] private GameObject[] optionObjects;
     [SerializeField] private CardHolder[] playerCards;
     [SerializeField] private CardHolder[] targetCards;
+    [SerializeField] private HitEmitter[] emitters;
 
     [SerializeField] private Text pickText;
     [SerializeField] private GameObject result;
     [SerializeField] private string win10Text;
     [SerializeField] private string win30Text;
     [SerializeField] private string loseText;
+    [SerializeField] private string pickCardText;
+    [SerializeField] private string noPointsText;
 
     private BalanceButton[] options;
     private List<int> targetValues;
@@ -26,6 +29,7 @@ public class BalanceManager : MonoBehaviour
 
     [Inject] private readonly Randomizer randomizer;
     [Inject] private readonly Resources resources;
+    [Inject] private readonly EventManager events;
 
     private void Awake()
     {
@@ -57,14 +61,20 @@ public class BalanceManager : MonoBehaviour
     private void OnDisable()
     {
         start.onClick.RemoveListener(ActivateBalancingGame);
+        DOTween.Kill("balance_card");
     }
 
     private void ActivateBalancingGame()
     {
         start.gameObject.SetActive(false);
         result.SetActive(false);
+        pickText.text = pickCardText;
         pickText.enabled = true;
 
+        for (int i = 0; i < emitters.Length; i++)
+        {
+            emitters[i].DeactivateEmission();
+        }
         currentChoice = 0;
 
         ResetCards();
@@ -85,6 +95,12 @@ public class BalanceManager : MonoBehaviour
             optionObjects[i].SetActive(false);
         }
 
+        if (resources.PlayerScore < 5)
+        {
+            pickText.text = noPointsText;
+            pickText.enabled = true;
+            return;
+        }
         start.gameObject.SetActive(true);
     }
 
@@ -120,6 +136,7 @@ public class BalanceManager : MonoBehaviour
         {
             options[i].ResetButton(true);
         }
+
         playerValues.Add(value);
         playerCards[currentChoice]
             .SetCard(value, () => { targetCards[currentChoice].SetCard(targetValues[currentChoice], CardCallback); });
@@ -127,6 +144,11 @@ public class BalanceManager : MonoBehaviour
 
     private void CardCallback()
     {
+        if (playerValues[currentChoice] == targetValues[currentChoice])
+        {
+            emitters[currentChoice].ActivateEmission();
+        }
+
         for (int i = 0; i < options.Length; i++)
         {
             options[i].Activate();
@@ -151,21 +173,25 @@ public class BalanceManager : MonoBehaviour
     private void Calculate()
     {
         int hits = 0;
-        for(int i = 0; i < optionObjects.Length; i++)
+        if (playerValues[currentChoice] == targetValues[currentChoice])
+        {
+            emitters[currentChoice].ActivateEmission();
+        }
+        for (int i = 0; i < optionObjects.Length; i++)
         {
             if (targetValues[i] == playerValues[i])
             {
                 hits++;
             }
         }
-        resources.UpdatePlayerScore(-5);
+        resources.UpdatePlayerScore(-15);
 
         string resultString = loseText;
         switch (hits)
         {
-            case 1: resources.UpdateBalanceCharges(true, 1); resultString = win10Text; break;
-            case 3: resources.UpdateBalanceCharges(false, 1); resultString = win30Text; break;
-            default: Debug.Log("0"); break;
+            case 1: resources.UpdateBalanceCharges(true, 1); resultString = win10Text; events.PlayCharge(); break;
+            case 3: resources.UpdateBalanceCharges(false, 1); resultString = win30Text; events.PlayCharge(); break;
+            default: events.PlayVibro(); break;
         }
 
         resultText.text = resultString;

@@ -39,13 +39,20 @@ public class Balance : MonoBehaviour
     private void ChoosePercent(int percent)
     {
         balancePercent = percent / 100f;
-        balanceText.text = "Press to activate " + percent + "% balancing!";
+        if (b30c > 0)
+        {
+            button30.image.DOColor(percent > 20 ? activeColor : Color.white, 0.4f);
+        }
+        if (b10c > 0)
+        {
+            button10.image.DOColor(percent < 20 ? activeColor : Color.white, 0.4f);
+        }
+        
         if (!activeBalancing)
         {
             balanceButton.onClick.AddListener(SwitchBalance);
             balanceButton.image.DOColor(Color.white, 0.4f);
             activeBalancing = true;
-            balanceText.enabled = true;
         }        
     }
 
@@ -53,7 +60,6 @@ public class Balance : MonoBehaviour
     {
         isBalancing = !isBalancing;
         balanceButton.image.DOColor(isBalancing ? activeColor : Color.white, 0.4f);
-        balanceText.enabled = isBalancing ? false : true;
     }
 
     private void CheckCharges()

@@ -155,10 +155,6 @@ public class GameplayManager : MonoBehaviour
         float finalPercentage = endValue / cardsSum;
 
         int sign = (finalPercentage > maxBorder || finalPercentage < minBorder) ? -1 : 1;
-        if(sign > 0)
-        {
-            events.DoWin();
-        }
 
         StartCoroutine(Finish(finalPercentage, (int)endValue * sign));
         
@@ -167,6 +163,15 @@ public class GameplayManager : MonoBehaviour
     private IEnumerator Finish(float final, int score)
     {
         yield return new WaitForSeconds(1f);
+        if (score > 0)
+        {
+            events.DoWin(score);
+            events.PlayReward();
+        }
+        else
+        {
+            events.PlayVibro();
+        }
         balanceComp.ShowProcess(false);
         rangeUI.UpdateProgress(final);
         resources.UpdatePlayerScore(score);

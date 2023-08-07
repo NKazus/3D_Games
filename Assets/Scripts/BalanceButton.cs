@@ -31,12 +31,6 @@ public class BalanceButton : MonoBehaviour
         balanceButton.onClick.RemoveAllListeners();
     }
 
-    /*public void Init()
-    {
-        valueText = transform.GetChild(0).GetComponent<Text>();
-        balanceButton = GetComponent<Button>();
-    }*/
-
     public void SetButton(int value, Action<int> buttonCallback)
     {
         buttonValue = value;
