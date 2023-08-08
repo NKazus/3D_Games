@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
@@ -18,6 +19,7 @@ public class Garden : MonoBehaviour
     [SerializeField] private Material dryMaterial;
 
     [SerializeField] private Transform stick;
+    [SerializeField] private ParticleSystem rain;
 
     private Light lightComponent;
 
@@ -50,16 +52,17 @@ public class Garden : MonoBehaviour
         lightComponent.DOColor(color, 0.5f);
     }
 
-    public void UpdateRootPlane(int id)
+    public void UpdateRootPlane(GardenState state)
     {
-        Vector3 targetPosition;
+        Vector3 targetPosition = Vector3.zero;
         Material targetMaterial = dryMaterial;
 
-        switch (id)
+        switch (state)
         {
-            case 1: targetMaterial = wetMaterial; targetPosition = wetSoil; tShift.enabled = true; break;
-            case 2: targetMaterial = dryMaterial; targetPosition = drySoil; tShift.enabled = false; break;
-            default: targetPosition = normalSoil; tShift.enabled = false; break;
+            case GardenState.Rain: targetMaterial = wetMaterial; targetPosition = wetSoil; tShift.enabled = true; break;
+            case GardenState.Heat: targetMaterial = dryMaterial; targetPosition = drySoil; tShift.enabled = false; break;
+            case GardenState.Normal: targetPosition = normalSoil; tShift.enabled = false; break;
+            default: throw new NotSupportedException();
         }
 
         soil.DOLocalMove(normalSoil, 0.5f).OnComplete(() => {
@@ -70,5 +73,17 @@ public class Garden : MonoBehaviour
     public void UpdatePropState(bool isActive)
     {
         stick.DOScale(isActive ? stickScaleY : 0f, 0.6f);
+    }
+
+    public void UpdateRain(bool isActive)
+    {
+        if (isActive)
+        {
+            rain.Play();
+        }
+        else
+        {
+            rain.Stop();
+        }
     }
 }

@@ -35,6 +35,10 @@ public class GameplayHandler : MonoBehaviour
 
     private void OnDisable()
     {
+        if (IsInvoking())
+        {
+            CancelInvoke("Restart");
+        }
         eventManager.SwitchGameState(false);
 
         eventManager.WinEvent -= ChangeTextToWin;

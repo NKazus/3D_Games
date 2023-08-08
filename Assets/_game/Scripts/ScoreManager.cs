@@ -4,21 +4,27 @@ using UnityEngine.UI;
 
 public class ScoreManager : MonoBehaviour
 {
-    [SerializeField] private Text potionsUI;
-    [SerializeField] private Text[] reagentsUI;
+    [SerializeField] private Text seedsUI;
+    [SerializeField] private Text moneyUI;
+    [SerializeField] private Text propsUI;
 
     private void UpdateText(Text uiText, int value)
     {
         uiText.DOText(value.ToString(), 0.5f);
     }
 
-    public void UpdatePotions(int amount)
+    public void UpdateSeeds(int amount)
     {
-        UpdateText(potionsUI, amount);
+        UpdateText(seedsUI, amount);
     }
 
-    public void UpdateReagents(int reagentID, int amount)
+    public void UpdateMoney(int amount)
     {
-        UpdateText(reagentsUI[reagentID], amount);
+        UpdateText(moneyUI, amount);
+    }
+
+    public void UpdateProps(int amount)
+    {
+        UpdateText(propsUI, amount);
     }
 }

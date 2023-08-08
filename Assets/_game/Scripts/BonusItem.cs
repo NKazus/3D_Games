@@ -42,9 +42,9 @@ public class BonusItem : MonoBehaviour
 
     protected virtual void PickItem(PointerEventData data)
     {
-        if(dataHandler.Potions >= itemPrice)
+        if(dataHandler.Seeds >= itemPrice)
         {
-            dataHandler.TradePotions(itemPrice, itemID);
+            //dataHandler.TradePotions(itemPrice, itemID);
             DOTween.Sequence()
                 .SetId(this)
                 .Append(localTransform.DOScaleZ(scale * 0.8f, 0.2f))

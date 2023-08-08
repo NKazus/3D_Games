@@ -2,42 +2,47 @@ using System;
 
 public enum GardenState
 {
-    Normal,
-    Rain,
-    Heat
+    Normal = 0,
+    Rain = 1,
+    Heat = 2
 }
 public class State
 {
-    private GardenState currentState;
+    private Random rand;
+    private int stateNumber;
 
-    private void UpdateNormal()
+    public State()
     {
-
+        rand = new Random();
+        stateNumber = Enum.GetNames(typeof(GardenState)).Length;
     }
 
-    private void UpdateRain()
+    private GardenState UpdateNormal()
     {
-
+        return (GardenState)rand.Next(0, stateNumber);
     }
 
-    private void UpdateHeat()
+    private GardenState UpdateRain()
     {
-
+        int val = rand.Next(0,10);
+        return (val > 4) ? GardenState.Heat : GardenState.Normal;
     }
 
-    public void SetState(GardenState target)
+    private GardenState UpdateHeat()
     {
-        currentState = target;
+        return (GardenState)rand.Next(0, stateNumber - 1);
     }
 
-    public void UpdateState()
+    public GardenState UpdateState(GardenState currentState)
     {
+        GardenState newState;
         switch (currentState)
         {
-            case GardenState.Normal: UpdateNormal(); break;
-            case GardenState.Rain: UpdateRain(); break;
-            case GardenState.Heat: UpdateHeat(); break;
+            case GardenState.Normal: newState = UpdateNormal(); break;
+            case GardenState.Rain: newState = UpdateRain(); break;
+            case GardenState.Heat: newState = UpdateHeat(); break;
             default: throw new NotSupportedException();
         }
+        return newState;
     }
 }

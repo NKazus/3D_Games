@@ -17,15 +17,17 @@ public class Shaking : MonoBehaviour
         localTransform = transform;
         scale = localTransform.localScale.z;
         timeMultiplyer = 1f;
+
+        shakingTween = DOTween.Sequence()
+            .Append(localTransform.DOScaleZ(scale * scaleValue, timeValue * timeMultiplyer))
+            .Append(localTransform.DOScaleZ(scale, timeValue * timeMultiplyer))
+            .SetAutoKill(false)
+            .SetLoops(-1);
     }
 
     private void OnEnable()
     {
-        shakingTween = DOTween.Sequence()
-            .SetId(this)
-            .Append(localTransform.DOScaleZ(scale * scaleValue, timeValue * timeMultiplyer))
-            .Append(localTransform.DOScaleZ(scale, timeValue * timeMultiplyer))
-            .SetLoops(-1);
+        shakingTween.Play();
     }
 
     private void OnDisable()
