@@ -76,6 +76,9 @@ public class GameController : MonoBehaviour
         }
         else
         {
+            currentState = GardenState.Normal;
+            UpdateStateImages();
+
             waterCan.onClick.RemoveListener(UseWaterCan);
             rake.onClick.RemoveListener(UseRake);
             prop.onClick.RemoveListener(UseProp);

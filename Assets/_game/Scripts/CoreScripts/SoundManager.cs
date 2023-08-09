@@ -32,8 +32,14 @@ public class SoundManager : MonoBehaviour
 
     private void Start()
     {
-        TurnSound(PlayerPrefs.GetInt("_SoundEnabled") == 1);
-        TurnVibration(PlayerPrefs.GetInt("_VibroEnabled") == 1);
+        if (!PlayerPrefs.HasKey("_SoundOn"))
+        {
+            PlayerPrefs.SetInt("_SoundOn", 1);
+            PlayerPrefs.SetInt("_VibroOn", 1);
+        }
+
+        TurnSound(PlayerPrefs.GetInt("_SoundOn") == 1);
+        TurnVibration(PlayerPrefs.GetInt("_VibroOn") == 1);
     }
 
     private void OnDisable()
