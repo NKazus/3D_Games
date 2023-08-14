@@ -165,7 +165,7 @@ public class GameController : MonoBehaviour
             eventManager.PlayCoins();
             plant.Grow(plantIterations - 1);
             plant.DoFlower(true);
-            int reward = rand.Next(5, 10);
+            int reward = rand.Next(5, 20);
             data.UpdateMoney(reward);
             data.UpdateSeeds(1);
             eventManager.DoWin(reward);

@@ -14,9 +14,9 @@ public class DataHandler : MonoBehaviour
 
     private void OnEnable()
     {
-        seeds = 1;// PlayerPrefs.HasKey("_Seeds") ? PlayerPrefs.GetInt("_Seeds") : seeds;
-        money = 10;// PlayerPrefs.HasKey("_Money") ? PlayerPrefs.GetInt("_Money") : money;
-        props = 10;// PlayerPrefs.HasKey("_Props") ? PlayerPrefs.GetInt("_Props") : props;
+        seeds = PlayerPrefs.HasKey("_Seeds") ? PlayerPrefs.GetInt("_Seeds") : seeds;
+        money = PlayerPrefs.HasKey("_Money") ? PlayerPrefs.GetInt("_Money") : money;
+        props = PlayerPrefs.HasKey("_Props") ? PlayerPrefs.GetInt("_Props") : props;
         scoreManager.UpdateSeeds(seeds);
         scoreManager.UpdateProps(props);
         scoreManager.UpdateMoney(money);
