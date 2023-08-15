@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public enum Buff
+public enum BuffType
 {
     Boost,
     Heal,
@@ -44,13 +44,13 @@ public class DataHandler : MonoBehaviour
         PlayerPrefs.SetInt("_Damage", damage ? 1 : 0);
     }
 
-    public void UpdateBuff(Buff id, bool activate)
+    public void UpdateBuff(BuffType id, bool activate)
     {
         switch (id)
         {
-            case Buff.Boost: boost = activate; break;
-            case Buff.Heal: heal = activate; break;
-            case Buff.Slow: slow = activate; break;
+            case BuffType.Boost: boost = activate; break;
+            case BuffType.Heal: heal = activate; break;
+            case BuffType.Slow: slow = activate; break;
             default: damage = activate; break;
         }
         ui.UpdateIcons(id, activate);
@@ -60,16 +60,16 @@ public class DataHandler : MonoBehaviour
     {
         if (reset)
         {
-            UpdateBuff(Buff.Boost, false);
-            UpdateBuff(Buff.Heal, false);
-            UpdateBuff(Buff.Slow, false);
-            UpdateBuff(Buff.Damage, false);
+            UpdateBuff(BuffType.Boost, false);
+            UpdateBuff(BuffType.Slow, false);
+            UpdateBuff(BuffType.Heal, false);
+            UpdateBuff(BuffType.Damage, false);
             return;
         }
-        ui.UpdateIcons(Buff.Boost, boost);
-        ui.UpdateIcons(Buff.Heal, boost);
-        ui.UpdateIcons(Buff.Slow, boost);
-        ui.UpdateIcons(Buff.Damage, boost);
+        ui.UpdateIcons(BuffType.Boost, boost);
+        ui.UpdateIcons(BuffType.Heal, boost);
+        ui.UpdateIcons(BuffType.Slow, boost);
+        ui.UpdateIcons(BuffType.Damage, boost);
     }
 
     public void UpdateGlobalScore(int value)

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
@@ -10,16 +11,45 @@ public class RunManager : MonoBehaviour
     [SerializeField] private HealthBar health;
 
     [SerializeField] private Route[] routes;
+
+    [SerializeField] private Spawner spawner;
+    [SerializeField] private Transform slowPlatform;
+    [SerializeField] private Transform damagePlatform;
+
     [SerializeField] private Timer timer;
     [SerializeField] private int maxRounds;
 
+    [SerializeField] private float activeSlowCoefficient;
+    [SerializeField] private float activeBoostCoefficient;
+    [SerializeField] private float activeDamageCoefficient;
+    [SerializeField] private float activeHealCoefficient;
+
+    [SerializeField] private float initialJumpTime;
+    [SerializeField] private float speedModifyer;
+
     [SerializeField] private Button startButton;
+
+    private MaterialInstance slowMat;
+    private MaterialInstance damageMat;
 
     private bool finished;
     private int rounds;
 
+    private float slowCoefficient;
+    private float boostCoefficient;
+    private float damageCoefficient;
+    private float healCoefficient;
+
+    private float jumpTime;
+
     [Inject] private readonly GlobalEventManager events;
     [Inject] private readonly DataHandler dataHandler;
+
+    private void Awake()
+    {
+        slowMat = slowPlatform.GetComponent<MaterialInstance>();
+        damageMat = damagePlatform.GetComponent<MaterialInstance>();
+    }
 
     private void OnEnable()
     {
@@ -41,24 +71,45 @@ public class RunManager : MonoBehaviour
     {
         if (activate)
         {
+            dataHandler.RefreshBuffs();
+
+            finished = false;
             routes[0].ResetRoute();
-            player.position = routes[0].GetCurrent();
-            routes[0].GenerateBuffs();
 
-            //check buffs
+            Vector3 pos = routes[0].GetCurrent();
+            player.position = new Vector3(pos.x, player.position.y, pos.z);
 
-            //health and timer events
-            //other
+            slowMat.ResetColor();
+            damageMat.ResetColor();
+            slowPlatform.position = routes[0].GetById(routes[0].GenerateId());
+            damagePlatform.position = routes[0].GetById(routes[0].GenerateId());
+
+            boostCoefficient = dataHandler.Boost ? activeBoostCoefficient : 1f;
+            slowCoefficient = dataHandler.Slow ? activeSlowCoefficient : 1f;
+            healCoefficient = dataHandler.Heal ? activeHealCoefficient : 1f;
+            damageCoefficient = dataHandler.Damage ? activeDamageCoefficient : 1f;
+
+            health.ResetHp();
 
             rounds = 0;
             dataHandler.UpdateRounds(rounds);
 
+            jumpTime = initialJumpTime;
+
             startButton.gameObject.SetActive(true);
+
+            events.BuffEvent += ApplyBuff;
+            events.FailEvent += CrashPlayer;
+            events.BuffMergeEvent += UpdateRoute;
         }
         else
         {
+            spawner.StopSpawning();
             timer.Deactivate();
-            //events
+
+            events.BuffMergeEvent -= UpdateRoute;
+            events.FailEvent -= CrashPlayer;
+            events.BuffEvent -= ApplyBuff;
         }
     }
 
@@ -67,6 +118,8 @@ public class RunManager : MonoBehaviour
         startButton.gameObject.SetActive(false);
         Jump();
         timer.Activate();
+        spawner.Initialize(routes[0]);
+        spawner.StartSpawning();
     }
 
     private void Jump()
@@ -74,8 +127,8 @@ public class RunManager : MonoBehaviour
         Vector3 cellPosition = routes[0].GetNext();
         DOTween.Sequence()
             .SetId("jump")
-            .Append(player.DOJump(new Vector3(cellPosition.x, player.position.y, cellPosition.z), 0.2f, 1, 0.4f))
-            .Join(player.DOShakeScale(0.4f, new Vector3(0, 0.1f, 0), 5, 90))
+            .Append(player.DOJump(new Vector3(cellPosition.x, player.position.y, cellPosition.z), 0.2f, 1, jumpTime))
+            .Join(player.DOShakeScale(jumpTime, new Vector3(0, 0.1f, 0), 5, 90))
             .OnComplete(() => JumpCallback());
     }
 
@@ -108,24 +161,22 @@ public class RunManager : MonoBehaviour
         events.SwitchGameState(false);
     }
 
-    private void SetKeyPoints()
+    private void ApplyBuff(int id, bool state)
     {
-        /*pRouteIndex = 0;
-        pStart = routes[pRoute].cells[0];
-        pFinish = routes[pRoute].cells[routes[pRoute].cells.Count - 1];
 
-        Vector3 cellPosition = fieldGenerator.field[pStart.cellX, pStart.cellZ].GetCellPosition();
-        player.position = new Vector3(cellPosition.x, player.position.y, cellPosition.z);
-        cellPosition = fieldGenerator.field[pFinish.cellX, pFinish.cellZ].GetCellPosition();
-        playerFinish.position = new Vector3(cellPosition.x, playerFinish.position.y, cellPosition.z + finishOffsetZ);
+        switch (id)
+        {
+            case 1: float newJumpTime = state ? (jumpTime - (speedModifyer * boostCoefficient))
+                    : (jumpTime + (speedModifyer * slowCoefficient));
+                jumpTime = Mathf.Clamp(newJumpTime, 0.4f, 1.5f);
+                break;
+            case 2: health.UpdateHp((state ? 1f : -1f) * (state ? healCoefficient : damageCoefficient)); break;
+            default: throw new NotSupportedException();
+        }
+    }
 
-        bRouteIndex = 0;
-        bStart = routes[bRoute].cells[0];
-        bFinish = routes[bRoute].cells[routes[bRoute].cells.Count - 1];
-
-        cellPosition = fieldGenerator.field[bStart.cellX, bStart.cellZ].GetCellPosition();
-        bot.position = new Vector3(cellPosition.x, bot.position.y, cellPosition.z);
-        cellPosition = fieldGenerator.field[bFinish.cellX, bFinish.cellZ].GetCellPosition();
-        botFinish.position = new Vector3(cellPosition.x, botFinish.position.y, cellPosition.z + finishOffsetZ);*/
+    private void UpdateRoute(int cellId)
+    {
+        routes[0].RemoveId(cellId);
     }
 }

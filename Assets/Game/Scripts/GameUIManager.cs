@@ -30,14 +30,14 @@ public class GameUIManager : MonoBehaviour
         uiText.DOText(value, 0.5f).Play();
     }
 
-    public void UpdateIcons(Buff id, bool active)
+    public void UpdateIcons(BuffType id, bool active)
     {
         Image target;
         switch (id)
         {
-            case Buff.Boost: target = boost; break;
-            case Buff.Heal: target = heal; break;
-            case Buff.Slow: target = slow; break;
+            case BuffType.Boost: target = boost; break;
+            case BuffType.Heal: target = heal; break;
+            case BuffType.Slow: target = slow; break;
             default: target = damage; break;
         }
         target.DOFade(active ? 1f : 0.5f, 0.4f);

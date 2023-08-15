@@ -9,6 +9,7 @@ public class Timer : MonoBehaviour
     [SerializeField] private Text timerUI;
 
     private float timeLeft;
+    private IEnumerator timerCoroutine;
 
     [Inject] private readonly GlobalEventManager events;
 
@@ -22,7 +23,7 @@ public class Timer : MonoBehaviour
         }
         if (timeLeft <= 0)
         {
-            events.TriggerTimeout();
+            events.TriggerFail();
         }
     }
 
@@ -40,11 +41,12 @@ public class Timer : MonoBehaviour
     public void Activate()
     {
         timeLeft = initialTime;
-        StartCoroutine(StartTimer());
+        timerCoroutine = StartTimer();
+        StartCoroutine(timerCoroutine);
     }
 
     public void Deactivate()
     {
-        StopAllCoroutines();
+        StopCoroutine(timerCoroutine);
     }
 }

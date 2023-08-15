@@ -10,8 +10,9 @@ public class GlobalEventManager
     public event Action<bool> SoundSettingsEvent;
 
     public event Action<int> WinEvent;
-    public event Action TimeoutEvent;
-    public event Action CoinEvent;
+    public event Action FailEvent;
+    public event Action<int, bool> BuffEvent;
+    public event Action<int> BuffMergeEvent;
 
     public void SwitchGameState(bool activate)
     {
@@ -48,13 +49,18 @@ public class GlobalEventManager
         WinEvent?.Invoke(value);
     }
 
-    public void TriggerTimeout()
+    public void TriggerFail()
     {
-        TimeoutEvent?.Invoke();
+        FailEvent?.Invoke();
     }
 
-    public void CollectCoin()
+    public void CalculateBuff(int id, bool active)
     {
-        CoinEvent?.Invoke();
+        BuffEvent?.Invoke(id, active);
+    }
+
+    public void RemoveBuff(int id)
+    {
+        BuffMergeEvent?.Invoke(id);
     }
 }
