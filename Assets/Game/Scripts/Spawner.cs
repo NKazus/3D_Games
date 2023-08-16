@@ -49,6 +49,9 @@ public class Spawner : MonoBehaviour
     public void StopSpawning()
     {
         isSpawning = false;
-        StopCoroutine(spawnCoroutine);
+        if(spawnCoroutine != null)
+        {
+            StopCoroutine(spawnCoroutine);
+        }
     }
 }

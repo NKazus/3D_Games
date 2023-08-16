@@ -40,13 +40,21 @@ public class Timer : MonoBehaviour
 
     public void Activate()
     {
-        timeLeft = initialTime;
         timerCoroutine = StartTimer();
         StartCoroutine(timerCoroutine);
     }
 
     public void Deactivate()
     {
-        StopCoroutine(timerCoroutine);
+        if(timerCoroutine != null)
+        {
+            StopCoroutine(timerCoroutine);
+        }
+    }
+
+    public void Refresh()
+    {
+        timeLeft = initialTime;
+        UpdateTimer(timeLeft) ;
     }
 }

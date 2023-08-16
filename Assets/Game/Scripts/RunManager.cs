@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
@@ -42,13 +41,18 @@ public class RunManager : MonoBehaviour
 
     private float jumpTime;
 
+    private Vector3 jumpScale;
+
     [Inject] private readonly GlobalEventManager events;
     [Inject] private readonly DataHandler dataHandler;
+    [Inject] private readonly RandomGenerator random;
 
     private void Awake()
     {
         slowMat = slowPlatform.GetComponent<MaterialInstance>();
         damageMat = damagePlatform.GetComponent<MaterialInstance>();
+
+        jumpScale = new Vector3(0, 0.1f, 0);
     }
 
     private void OnEnable()
@@ -72,6 +76,7 @@ public class RunManager : MonoBehaviour
         if (activate)
         {
             dataHandler.RefreshBuffs();
+            timer.Refresh();
 
             finished = false;
             routes[0].ResetRoute();
@@ -128,7 +133,7 @@ public class RunManager : MonoBehaviour
         DOTween.Sequence()
             .SetId("jump")
             .Append(player.DOJump(new Vector3(cellPosition.x, player.position.y, cellPosition.z), 0.2f, 1, jumpTime))
-            .Join(player.DOShakeScale(jumpTime, new Vector3(0, 0.1f, 0), 5, 90))
+            .Join(player.DOShakeScale(jumpTime, jumpScale, 5, 90))
             .OnComplete(() => JumpCallback());
     }
 
@@ -144,8 +149,11 @@ public class RunManager : MonoBehaviour
             dataHandler.UpdateRounds(rounds);
             if (rounds >= maxRounds)
             {
-                dataHandler.RefreshBuffs();
-                events.DoWin(1);
+                dataHandler.RefreshBuffs(true);
+                events.PlayReward();
+                int reward = random.GenerateInt(25, 51);
+                events.DoWin(reward);
+                dataHandler.UpdateGlobalScore(reward);
                 events.SwitchGameState(false);
                 return;
             }
@@ -157,7 +165,8 @@ public class RunManager : MonoBehaviour
     private void CrashPlayer()
     {
         finished = true;
-        dataHandler.RefreshBuffs();
+        dataHandler.RefreshBuffs(true);
+        events.PlayVibro();
         events.SwitchGameState(false);
     }
 
@@ -168,9 +177,18 @@ public class RunManager : MonoBehaviour
         {
             case 1: float newJumpTime = state ? (jumpTime - (speedModifyer * boostCoefficient))
                     : (jumpTime + (speedModifyer * slowCoefficient));
+                if (state)
+                {
+                    events.PlayBuff(true);
+                }
                 jumpTime = Mathf.Clamp(newJumpTime, 0.4f, 1.5f);
                 break;
-            case 2: health.UpdateHp((state ? 1f : -1f) * (state ? healCoefficient : damageCoefficient)); break;
+            case 2: health.UpdateHp((state ? 1f : -1f) * (state ? healCoefficient : damageCoefficient));
+                if (state)
+                {
+                    events.PlayBuff(false);
+                }
+                break;
             default: throw new NotSupportedException();
         }
     }

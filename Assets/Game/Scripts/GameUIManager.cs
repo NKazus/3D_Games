@@ -40,6 +40,6 @@ public class GameUIManager : MonoBehaviour
             case BuffType.Slow: target = slow; break;
             default: target = damage; break;
         }
-        target.DOFade(active ? 1f : 0.5f, 0.4f);
+        target.DOFade(active ? 1f : 0.3f, 0.4f);
     }
 }

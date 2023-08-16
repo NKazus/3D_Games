@@ -6,6 +6,7 @@ public class GlobalEventManager
     public event Action VibroEvent;
     public event Action RewardSoundEvent;
     public event Action BonusSoundEvent;
+    public event Action<bool> BuffSoundEvent;
     public event Action<bool> VibroSettingsEvent;
     public event Action<bool> SoundSettingsEvent;
 
@@ -32,6 +33,11 @@ public class GlobalEventManager
     public void PlayBonus()
     {
         BonusSoundEvent?.Invoke();
+    }
+
+    public void PlayBuff(bool isSpeed)
+    {
+        BuffSoundEvent?.Invoke(isSpeed);
     }
 
     public void SetVibro(bool value)

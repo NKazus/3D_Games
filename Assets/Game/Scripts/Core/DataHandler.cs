@@ -67,9 +67,9 @@ public class DataHandler : MonoBehaviour
             return;
         }
         ui.UpdateIcons(BuffType.Boost, boost);
-        ui.UpdateIcons(BuffType.Heal, boost);
-        ui.UpdateIcons(BuffType.Slow, boost);
-        ui.UpdateIcons(BuffType.Damage, boost);
+        ui.UpdateIcons(BuffType.Heal, heal);
+        ui.UpdateIcons(BuffType.Slow, slow);
+        ui.UpdateIcons(BuffType.Damage, damage);
     }
 
     public void UpdateGlobalScore(int value)

@@ -6,12 +6,9 @@ public class GameplayHandler : MonoBehaviour
 {
     [SerializeField] private Button restart;
     [SerializeField] private GameObject restartBg;
-    [SerializeField] private Sprite win;
     [SerializeField] private string winText;
-    [SerializeField] private Sprite lose;
     [SerializeField] private string loseText;
 
-    private Image restartIcon;
     private Text restartText;
     private Text restartExtra;
 
@@ -20,7 +17,6 @@ public class GameplayHandler : MonoBehaviour
     #region MONO
     private void Awake()
     {
-        restartIcon = restartBg.transform.GetChild(1).GetComponent<Image>();
         restartText = restartBg.transform.GetChild(2).GetComponent<Text>();
         restartExtra = restartBg.transform.GetChild(3).GetComponent<Text>();
     }
@@ -66,8 +62,6 @@ public class GameplayHandler : MonoBehaviour
         else
         {
             restart.gameObject.SetActive(false);
-            restartIcon.sprite = lose;
-            restartIcon.SetNativeSize();
             restartText.text = loseText;
             restartExtra.enabled = false;
             restartBg.SetActive(false);
@@ -77,8 +71,6 @@ public class GameplayHandler : MonoBehaviour
 
     private void ChangeTextToWin(int points)
     {
-        restartIcon.sprite = win;
-        restartIcon.SetNativeSize();
         restartText.text = winText;
         restartExtra.text = "Funding received: "+ points;
         restartExtra.enabled = true;
