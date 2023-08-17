@@ -32,6 +32,7 @@ public class Setup : MonoBehaviour
     private int sumPrice;
 
     [Inject] private readonly DataHandler dataHandler;
+    [Inject] private readonly GlobalEventManager events;
 
     private void Awake()
     {
@@ -186,6 +187,7 @@ public class Setup : MonoBehaviour
         }
         dataHandler.UpdateGlobalScore(-price);
         ActivateOne(type);
+        events.PlayBonus();
         CheckBuffs();
     }
 
@@ -201,6 +203,7 @@ public class Setup : MonoBehaviour
         {
             ActivateOne(enabledBuffs[i]);
         }
+        events.PlayBonus();
         CheckBuffs();
     }
 }

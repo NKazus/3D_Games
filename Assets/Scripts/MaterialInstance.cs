@@ -21,12 +21,15 @@ public class MaterialInstance : MonoBehaviour
         isChanged = false;
     }
 
-    public bool ChangeColor()
+    public bool ChangeColor(bool check = false)
     {
         bool checkState = isChanged;
         if (!isChanged)
         {
-            meshRenderer.material.color = alternativeColor;
+            if (!check)
+            {
+                meshRenderer.material.color = alternativeColor;
+            }
             isChanged = true;
         }
         return checkState;

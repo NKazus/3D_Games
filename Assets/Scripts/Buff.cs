@@ -49,7 +49,7 @@ public class Buff : MonoBehaviour
 
             events.RemoveBuff(cellId);
             MaterialInstance targetMat = target.GetComponent<MaterialInstance>();
-            if (targetMat.ChangeColor())
+            if (targetMat.ChangeColor(true))
             {
                 pool.PutGameObjectToPool(gameObject);
                 return;

@@ -177,17 +177,11 @@ public class RunManager : MonoBehaviour
         {
             case 1: float newJumpTime = state ? (jumpTime - (speedModifyer * boostCoefficient))
                     : (jumpTime + (speedModifyer * slowCoefficient));
-                if (state)
-                {
-                    events.PlayBuff(true);
-                }
+                events.PlayBuff(true);
                 jumpTime = Mathf.Clamp(newJumpTime, 0.4f, 1.5f);
                 break;
             case 2: health.UpdateHp((state ? 1f : -1f) * (state ? healCoefficient : damageCoefficient));
-                if (state)
-                {
-                    events.PlayBuff(false);
-                }
+                events.PlayBuff(false);
                 break;
             default: throw new NotSupportedException();
         }

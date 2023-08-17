@@ -99,7 +99,7 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 1
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &7020108535245414049
 Rigidbody:
@@ -130,7 +130,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   initialColor: {r: 1, g: 0.08235294, b: 0.38431373, a: 1}
-  alternativeColor: {r: 0.3882353, g: 0.7294118, b: 0.3019608, a: 1}
+  alternativeColor: {r: 0.47895315, g: 0.8490566, b: 0.38848346, a: 1}
 --- !u!114 &7020108535245414079
 MonoBehaviour:
   m_ObjectHideFlags: 0
