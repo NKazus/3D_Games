@@ -11,11 +11,11 @@ GameObject:
   - component: {fileID: 7020108535245414076}
   - component: {fileID: 7020108535245414050}
   - component: {fileID: 7020108535245414051}
-  - component: {fileID: 7020108535245414048}
   - component: {fileID: 7020108535245414049}
   - component: {fileID: 7020108535245414078}
   - component: {fileID: 7020108535245414079}
   - component: {fileID: 6882586625290393764}
+  - component: {fileID: 6615789953868286148}
   m_Layer: 6
   m_Name: DamageBuff
   m_TagString: SlowBuff
@@ -88,19 +88,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!135 &7020108535245414048
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7020108535245414077}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 1
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &7020108535245414049
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -158,3 +145,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Delegates: []
+--- !u!65 &6615789953868286148
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7020108535245414077}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2.3, y: 1, z: 2.3}
+  m_Center: {x: 0, y: 0, z: 0}
