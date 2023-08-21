@@ -22,18 +22,27 @@ public class SwitchToggle : MonoBehaviour
 
     private void OnEnable()
     {
-        toggle.onValueChanged.AddListener(Switch);
+        toggle.onValueChanged.AddListener((bool isOn) => Switch(isOn));
     }
 
     private void OnDisable()
     {
-        toggle.onValueChanged.RemoveListener(Switch);
-        DOTween.KillAll(this);
+        toggle.onValueChanged.RemoveAllListeners();
+        DOTween.Kill("toggle");
     }
     #endregion
 
-    private void Switch(bool isOn)
+    private void Switch(bool isOn, bool animate = true)
     {
-        handleRectTransform.DOAnchorPos(isOn ? handlePosition * (-1) : handlePosition, .4f).SetId(this).SetEase(Ease.InOutBack);        
+        if (!animate)
+        {
+            handleRectTransform.anchoredPosition = isOn ? handlePosition * (-1) : handlePosition;
+        }
+        else
+        {
+            handleRectTransform.DOAnchorPos(isOn ? handlePosition * (-1) : handlePosition, .4f).SetId(this)
+                .SetId("toggle")
+                .SetEase(Ease.InOutBack);        
+        }
     }
 }

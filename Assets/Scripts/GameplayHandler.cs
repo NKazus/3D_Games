@@ -5,39 +5,38 @@ public class GameplayHandler : MonoBehaviour
 {
     [SerializeField] private Button restart;
     [SerializeField] private GameObject restartBg;
-    [SerializeField] private Sprite win;
-    [SerializeField] private Sprite lose;
+    [SerializeField] private string win;
+    [SerializeField] private string lose;
 
-    private DotPositionRandomizer dotRandomizer;
-    private Image restartText;
+    private Text restartText;
+    private Text extraText;
 
     #region MONO
     private void Awake()
     {
-        restartText = restartBg.transform.GetChild(0).GetComponent<Image>();
-        dotRandomizer = GetComponent<DotPositionRandomizer>();
+        restartText = restartBg.transform.GetChild(1).GetComponent<Text>();
     }
 
     private void OnEnable()
     {
-        GlobalEventManager.GameStateEvent += ChangeGameState;
+        /*GlobalEventManager.GameStateEvent += ChangeGameState;
         GlobalEventManager.WinEvent += ChangeTextToWin;
         dotRandomizer.InitializeDots();
-        GlobalEventManager.SwitchGameState(true);
+        GlobalEventManager.SwitchGameState(true);*/
     }
 
     private void OnDisable()
     {
-        GlobalEventManager.SwitchGameState(false);
+        /*GlobalEventManager.SwitchGameState(false);
         dotRandomizer.ResetDots();
         GlobalEventManager.WinEvent -= ChangeTextToWin;
-        GlobalEventManager.GameStateEvent -= ChangeGameState;
+        GlobalEventManager.GameStateEvent -= ChangeGameState;*/
     }
     #endregion
 
     private void Restart()
     {
-        GlobalEventManager.SwitchGameState(true);
+        //GlobalEventManager.SwitchGameState(true);
     }
 
     private void ChangeGameState(bool isActive)
@@ -51,8 +50,7 @@ public class GameplayHandler : MonoBehaviour
         else
         {
             restart.gameObject.SetActive(false);
-            restartText.sprite = lose;
-            restartText.SetNativeSize();
+            restartText.text = lose;
             restartBg.SetActive(false);
             restart.onClick.RemoveListener(Restart);
         }
@@ -60,7 +58,6 @@ public class GameplayHandler : MonoBehaviour
 
     private void ChangeTextToWin()
     {
-        restartText.sprite = win;
-        restartText.SetNativeSize();
+        restartText.text = win;
     }
 }

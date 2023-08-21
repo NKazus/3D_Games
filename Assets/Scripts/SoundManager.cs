@@ -17,9 +17,9 @@ public class SoundManager : MonoBehaviour
 
     private void OnEnable()
     {
-        GlobalEventManager.VibroEvent += PlayVibro;
+       /* GlobalEventManager.VibroEvent += PlayVibro;
         GlobalEventManager.VibroSettingsEvent += TurnVibration;
-        GlobalEventManager.SoundSettingsEvent += TurnSound;
+        GlobalEventManager.SoundSettingsEvent += TurnSound;*/
     }
 
     private void Start()
@@ -30,9 +30,9 @@ public class SoundManager : MonoBehaviour
 
     private void OnDisable()
     {
-        GlobalEventManager.VibroEvent -= PlayVibro;
+        /*GlobalEventManager.VibroEvent -= PlayVibro;
         GlobalEventManager.VibroSettingsEvent -= TurnVibration;
-        GlobalEventManager.SoundSettingsEvent -= TurnSound;
+        GlobalEventManager.SoundSettingsEvent -= TurnSound;*/
     }
     #endregion
 

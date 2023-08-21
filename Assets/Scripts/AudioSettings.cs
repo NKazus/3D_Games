@@ -33,11 +33,11 @@ public class AudioSettings : MonoBehaviour
 
     private void TurnMisic(bool isMusicOn)
     {
-        GlobalEventManager.SetSound(isMusicOn);
+        //GlobalEventManager.SetSound(isMusicOn);
     }
 
     private void TurnVibro(bool isVibroOn)
     {
-        GlobalEventManager.SetVibro(isVibroOn);
+       // GlobalEventManager.SetVibro(isVibroOn);
     }
 }

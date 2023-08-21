@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class SkyboxRotation : MonoBehaviour
 {
-    [SerializeField] private float rotationSpeed = 1f;
+    [SerializeField] private float rotationSpeed;
 
     private void Update()
     {

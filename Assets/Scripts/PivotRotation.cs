@@ -14,6 +14,6 @@ public class PivotRotation : MonoBehaviour
 
     private void Update()
     {
-        localTransform.RotateAround(pivot.position, pivot.forward, rotationSpeed * Time.deltaTime);
+        localTransform.RotateAround(pivot.position, pivot.up, rotationSpeed * Time.deltaTime);
     }
 }
