@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Audio;
+using Zenject;
 
 public class SoundManager : MonoBehaviour
 {
@@ -9,6 +10,8 @@ public class SoundManager : MonoBehaviour
 
     private bool vibroEnabled = true;
 
+    [Inject] private readonly EventManager events;
+
     #region MONO
     private void Awake()
     {
@@ -17,22 +20,27 @@ public class SoundManager : MonoBehaviour
 
     private void OnEnable()
     {
-       /* GlobalEventManager.VibroEvent += PlayVibro;
-        GlobalEventManager.VibroSettingsEvent += TurnVibration;
-        GlobalEventManager.SoundSettingsEvent += TurnSound;*/
+        events.VibroEvent += PlayVibro;
+        events.VibroSettingsEvent += TurnVibration;
+        events.SoundSettingsEvent += TurnSound;
     }
 
     private void Start()
     {
-        TurnSound(PlayerPrefs.GetInt("_SoundEnabled") == 1);
-        TurnVibration(PlayerPrefs.GetInt("_VibroEnabled") == 1);
+        if (!PlayerPrefs.HasKey("_SoundOn"))
+        {
+            PlayerPrefs.SetInt("_SoundOn", 1);
+            PlayerPrefs.SetInt("_VibroOn", 1);
+        }
+        TurnSound(PlayerPrefs.GetInt("_SoundOn") == 1);
+        TurnVibration(PlayerPrefs.GetInt("_VibroOn") == 1);
     }
 
     private void OnDisable()
     {
-        /*GlobalEventManager.VibroEvent -= PlayVibro;
-        GlobalEventManager.VibroSettingsEvent -= TurnVibration;
-        GlobalEventManager.SoundSettingsEvent -= TurnSound;*/
+        events.VibroEvent -= PlayVibro;
+        events.VibroSettingsEvent -= TurnVibration;
+        events.SoundSettingsEvent -= TurnSound;
     }
     #endregion
 

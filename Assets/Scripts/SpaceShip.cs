@@ -13,47 +13,47 @@ public class SpaceShip : MonoBehaviour
     [SerializeField] private Engines engines;
 
     private Transform shipTransform;
-    private Vector3 initialPos;
 
     private void Awake()
     {
         shipTransform = transform;
-        initialPos = shipTransform.localPosition;
     }
 
     private void Shake()
     {
         DOTween.Sequence()
             .SetId("ship_shake")
-            .Append(shipTransform.DOLocalMoveY(initialPos.y + 0.1f, 1f))
-            .Append(shipTransform.DOLocalMoveY(initialPos.y, 1f))
+            .Append(shipTransform.DOMoveY(stopPos.y + 0.1f, 1f))
+            .Append(shipTransform.DOMoveY(stopPos.y, 1f))
             .SetLoops(-1);
     }
 
     public void HideShip(Action callback)
     {
         DOTween.Kill("ship_shake");
-        //engines.BoostEngines();
-        shipTransform.DOLocalMove(endPos, 1f)
+        engines.BoostEngines();
+        shipTransform.DOMove(endPos, 2f)
             .SetId("ship")
-            .OnComplete(() => callback());
+            .OnComplete(() => { engines.ShutEngines(false); callback(); });
     }
 
     public void ShowShip(Action callback)
     {
-        shipTransform.localPosition = startPos;
-        //engines.BoostEngines();
-        shipTransform.DOLocalMove(stopPos, 1f)
+        shipTransform.position = startPos;
+        engines.ShutEngines(true);
+        engines.BoostEngines();
+        shipTransform.DOMove(stopPos, 1.5f)
             .SetId("ship")
             .OnComplete(() => {
-                //engines.SlowEngines();
+                engines.SlowEngines();
                 Shake();
                 callback(); });
     }
 
     public void ResetShip()
     {
-        shipTransform.localPosition = initialPos;
+        engines.ShutEngines(false);
+        shipTransform.position = endPos;
         DOTween.Kill("ship");
         DOTween.Kill("ship_shake");
     }

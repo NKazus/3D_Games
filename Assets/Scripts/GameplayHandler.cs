@@ -1,63 +1,70 @@
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 public class GameplayHandler : MonoBehaviour
 {
     [SerializeField] private Button restart;
     [SerializeField] private GameObject restartBg;
-    [SerializeField] private string win;
-    [SerializeField] private string lose;
 
-    private Text restartText;
-    private Text extraText;
+    private Text repText;
+    private Text incomeText;
+
+    [Inject] private readonly EventManager events;
 
     #region MONO
     private void Awake()
     {
-        restartText = restartBg.transform.GetChild(1).GetComponent<Text>();
+        repText = restartBg.transform.GetChild(1).GetComponent<Text>();
+        incomeText = restartBg.transform.GetChild(2).GetComponent<Text>();
     }
 
     private void OnEnable()
     {
-        /*GlobalEventManager.GameStateEvent += ChangeGameState;
-        GlobalEventManager.WinEvent += ChangeTextToWin;
-        dotRandomizer.InitializeDots();
-        GlobalEventManager.SwitchGameState(true);*/
+        events.GameStateEvent += ChangeGameState;
+        events.ResultEvent += ShowResult;
+
+        Invoke("Restart", 0.5f);
     }
 
     private void OnDisable()
     {
-        /*GlobalEventManager.SwitchGameState(false);
-        dotRandomizer.ResetDots();
-        GlobalEventManager.WinEvent -= ChangeTextToWin;
-        GlobalEventManager.GameStateEvent -= ChangeGameState;*/
+        if (IsInvoking())
+        {
+            CancelInvoke("Restart");
+        }
+        events.SwitchGameState(false);
+
+        events.ResultEvent -= ShowResult;
+        events.GameStateEvent -= ChangeGameState;
+
+        restartBg.SetActive(false);
+        restart.onClick.RemoveListener(Restart);
     }
     #endregion
 
     private void Restart()
     {
-        //GlobalEventManager.SwitchGameState(true);
+        events.SwitchGameState(true);
     }
 
     private void ChangeGameState(bool isActive)
     {
         if (!isActive)
         {
-            restart.gameObject.SetActive(true);
             restartBg.SetActive(true);
             restart.onClick.AddListener(Restart);
         }
         else
         {
-            restart.gameObject.SetActive(false);
-            restartText.text = lose;
             restartBg.SetActive(false);
             restart.onClick.RemoveListener(Restart);
         }
     }
 
-    private void ChangeTextToWin()
+    private void ShowResult(int rep, int money)
     {
-        restartText.text = win;
+        repText.text = rep.ToString();
+        incomeText.text = money.ToString();
     }
 }

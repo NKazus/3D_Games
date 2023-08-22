@@ -23,4 +23,22 @@ public class Engines : MonoBehaviour
             mainM.startSpeed = 20f;
         }
     }
+
+    public void ShutEngines(bool activate)
+    {
+        if (activate)
+        {
+            for (int i = 0; i < particles.Length; i++)
+            {
+                particles[i].Play();
+            }
+        }
+        else
+        {
+            for (int i = 0; i < particles.Length; i++)
+            {
+                particles[i].Stop();
+            }
+        }
+    }
 }

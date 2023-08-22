@@ -16,7 +16,7 @@ public class SwitchToggle : MonoBehaviour
         handlePosition = handleRectTransform.anchoredPosition;
         if (toggle.isOn)
         {
-            Switch(true);
+            Switch(true, false);
         }
     }
 

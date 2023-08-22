@@ -5,7 +5,7 @@ public struct Order
     public int tools;
     public int food;
     public int fuel;
-    public int health;
+    public int meds;
 
     public override bool Equals(object obj)
     {
@@ -22,7 +22,7 @@ public struct Order
         {
             misses++;
         }
-        if (health != ((Order)obj).health)
+        if (meds != ((Order)obj).meds)
         {
             misses++;
         }
@@ -32,5 +32,13 @@ public struct Order
     public int GetMisses()
     {
         return misses;
+    }
+
+    public void ResetOrder()
+    {
+        tools = 0;
+        fuel = 0;
+        food = 0;
+        meds = 0;
     }
 }
