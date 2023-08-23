@@ -1,12 +1,24 @@
+using System;
 using UnityEngine;
 using UnityEngine.Audio;
 using Zenject;
 
+public enum AudioEffect
+{
+    Reward,
+    Resource,
+    Engine,
+    Timer
+}
 public class SoundManager : MonoBehaviour
 {
     [SerializeField] private AudioMixerGroup mixerMasterGroup;
 
     [SerializeField] private AudioSource ambientMusic;
+    [SerializeField] private AudioSource winSound;
+    [SerializeField] private AudioSource resSound;
+    [SerializeField] private AudioSource shipSound;
+    [SerializeField] private AudioSource timerSound;
 
     private bool vibroEnabled = true;
 
@@ -21,6 +33,7 @@ public class SoundManager : MonoBehaviour
     private void OnEnable()
     {
         events.VibroEvent += PlayVibro;
+        events.SoundEvent += PlaySound;
         events.VibroSettingsEvent += TurnVibration;
         events.SoundSettingsEvent += TurnSound;
     }
@@ -39,6 +52,7 @@ public class SoundManager : MonoBehaviour
     private void OnDisable()
     {
         events.VibroEvent -= PlayVibro;
+        events.SoundEvent -= PlaySound;
         events.VibroSettingsEvent -= TurnVibration;
         events.SoundSettingsEvent -= TurnSound;
     }
@@ -51,6 +65,21 @@ public class SoundManager : MonoBehaviour
         {
             Handheld.Vibrate();
         }
+    }
+
+    public void PlaySound(AudioEffect id)
+    {
+        AudioSource source;
+        source = id switch
+        {
+            AudioEffect.Reward => winSound,
+            AudioEffect.Resource => resSound,
+            AudioEffect.Engine => shipSound,
+            AudioEffect.Timer => timerSound,
+            _ => throw new NotSupportedException()
+        };
+
+        source.Play();
     }
 
     #region SETTINGS

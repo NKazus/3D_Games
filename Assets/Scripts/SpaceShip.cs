@@ -1,22 +1,26 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
+using Zenject;
 
 public class SpaceShip : MonoBehaviour
 {
     [SerializeField] private Vector3 startPos;
     [SerializeField] private Vector3 stopPos;
     [SerializeField] private Vector3 endPos;
+    [SerializeField] private float movingTime;
 
     [SerializeField] private Engines engines;
 
     private Transform shipTransform;
+    private bool init = false;
+
+    [Inject] private readonly EventManager events;
 
     private void Awake()
     {
         shipTransform = transform;
+        init = true;
     }
 
     private void Shake()
@@ -31,6 +35,7 @@ public class SpaceShip : MonoBehaviour
     public void HideShip(Action callback)
     {
         DOTween.Kill("ship_shake");
+        events.PlaySound(AudioEffect.Engine);
         engines.BoostEngines();
         shipTransform.DOMove(endPos, 2f)
             .SetId("ship")
@@ -56,5 +61,26 @@ public class SpaceShip : MonoBehaviour
         shipTransform.position = endPos;
         DOTween.Kill("ship");
         DOTween.Kill("ship_shake");
+    }
+
+    public void MoveShip()
+    {        
+        shipTransform.position = startPos;
+        engines.ShutEngines(true);
+        shipTransform.DOMove(endPos, movingTime)
+            .SetId("ship_move")
+            .OnComplete(() => {
+                engines.ShutEngines(false);
+                Invoke("MoveShip", 1f);
+            });
+    }
+
+    public void Init()
+    {
+        if (!init)
+        {
+            shipTransform = transform;
+            init = true;
+        }
     }
 }

@@ -41,7 +41,7 @@ public class Gameplay : MonoBehaviour
 
     private void OnEnable()
     {
-        data.UpdateAllRes();
+        data.UpdateAllRes(true);
         data.UpdateRep(0);
         data.UpdateMoney(0);
 
@@ -98,6 +98,7 @@ public class Gameplay : MonoBehaviour
 
     private void ShipCallback()
     {
+        events.PlaySound(AudioEffect.Timer);
         GenerateOrder();
         orderPanel.transform.localScale = playerPanel.transform.localScale = Vector3.zero;
         orderPanel.SetActive(true);
@@ -112,6 +113,7 @@ public class Gameplay : MonoBehaviour
     private void TriggerTimeout()
     {
         currentRep -= 50;
+        events.PlaySound(AudioEffect.Timer);
     }
 
     private void GenerateOrder()
@@ -136,11 +138,7 @@ public class Gameplay : MonoBehaviour
             currentIncome /= 2;
         }
 
-        if (!sourceOrder.Equals(playerOrder))
-        {
-            currentRep -= 30;            
-        }
-        else
+        if (sourceOrder.Equals(playerOrder))
         {
             currentIncome += 5;
         }
@@ -160,6 +158,7 @@ public class Gameplay : MonoBehaviour
             .Join(playerPanel.transform.DOScale(Vector3.zero, 0.5f))
             .OnKill(() => { playerPanel.SetActive(false); orderPanel.SetActive(false); });
 
+        events.PlaySound(AudioEffect.Reward);
         events.SwitchGameState(false);
     }
 
@@ -171,32 +170,33 @@ public class Gameplay : MonoBehaviour
                 if (data.Food > 0)
                 {
                     playerOrder.food++;
-                    data.UpdateRes(id, -1);
+                    data.UpdateRes(id, -1, true);
                 }
                 break;
             case GameResources.Fuel:
                 if (data.Fuel > 0)
                 {
                     playerOrder.fuel++;
-                    data.UpdateRes(id, -1);
+                    data.UpdateRes(id, -1, true);
                 }
                 break;
             case GameResources.Tools:
                 if (data.Tools > 0)
                 {
                     playerOrder.tools++;
-                    data.UpdateRes(id, -1);
+                    data.UpdateRes(id, -1, true);
                 }
                 break;
             case GameResources.Meds:
                 if (data.Meds > 0)
                 {
                     playerOrder.meds++;
-                    data.UpdateRes(id, -1);
+                    data.UpdateRes(id, -1, true);
                 }
                 break;
             default: throw new NotSupportedException();
         }
+        events.PlaySound(AudioEffect.Resource);
         UpdateOrder(true);
     }
 

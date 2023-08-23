@@ -27,6 +27,9 @@ public class GameData : MonoBehaviour
     public int Tools => tools;
     public int Meds => meds;
 
+    public DateTime IncomeDate => incomeDate;
+    private DateTime incomeDate;
+
     private void OnEnable()
     {
         money = (PlayerPrefs.HasKey("_Money")) ? PlayerPrefs.GetInt("_Money") : money;
@@ -36,6 +39,10 @@ public class GameData : MonoBehaviour
         fuel = 20;//(PlayerPrefs.HasKey("_Fuel")) ? PlayerPrefs.GetInt("_Fuel") : fuel;
         tools = 20;// (PlayerPrefs.HasKey("_Tools")) ? PlayerPrefs.GetInt("_Tools") : tools;
         meds = 20;// (PlayerPrefs.HasKey("_Meds")) ? PlayerPrefs.GetInt("_Meds") : meds;
+
+        incomeDate = PlayerPrefs.HasKey("_DailyIncome") ? new DateTime(
+           Convert.ToInt64(PlayerPrefs.GetString("_DailyIncome")))
+           .ToLocalTime() : DateTime.Now.AddDays(-1);
     }
 
     private void OnDisable()
@@ -47,6 +54,8 @@ public class GameData : MonoBehaviour
         PlayerPrefs.SetInt("_Fuel", fuel);
         PlayerPrefs.SetInt("_Tools", tools);
         PlayerPrefs.SetInt("_Meds", meds);
+
+        PlayerPrefs.SetString("_DailyIncome", "" + incomeDate.ToUniversalTime().Ticks);
     }
 
     public void UpdateMoney(int value)
@@ -66,23 +75,28 @@ public class GameData : MonoBehaviour
         score.UpdateGlobal(true, reputation);
     }
 
-    public void UpdateRes(GameResources id, int value)
+    public void UpdateRes(GameResources id, int value, bool gameplay)
     {
         switch (id)
         {
-            case GameResources.Food: food += value; score.UpdateResources(id, food); break;
-            case GameResources.Fuel: fuel += value; score.UpdateResources(id, fuel); break;
-            case GameResources.Tools: tools += value; score.UpdateResources(id, tools); break;
-            case GameResources.Meds: meds += value; score.UpdateResources(id, meds); break;
+            case GameResources.Food: food += value; score.UpdateResources(id, food, gameplay); break;
+            case GameResources.Fuel: fuel += value; score.UpdateResources(id, fuel, gameplay); break;
+            case GameResources.Tools: tools += value; score.UpdateResources(id, tools, gameplay); break;
+            case GameResources.Meds: meds += value; score.UpdateResources(id, meds, gameplay); break;
             default: throw new NotSupportedException();
         }
     }
 
-    public void UpdateAllRes()
+    public void UpdateAllRes(bool gameplay)
     {
-        UpdateRes(GameResources.Food, 0);
-        UpdateRes(GameResources.Fuel, 0);
-        UpdateRes(GameResources.Tools, 0);
-        UpdateRes(GameResources.Meds, 0);
+        UpdateRes(GameResources.Food, 0, gameplay);
+        UpdateRes(GameResources.Fuel, 0, gameplay);
+        UpdateRes(GameResources.Tools, 0, gameplay);
+        UpdateRes(GameResources.Meds, 0, gameplay);
+    }
+
+    public void RefreshDaily(DateTime newDate)
+    {
+        incomeDate = newDate;
     }
 }
