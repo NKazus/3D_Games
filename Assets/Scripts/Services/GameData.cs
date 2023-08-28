@@ -13,7 +13,7 @@ public class GameData : MonoBehaviour
 {
     [SerializeField] private ScoreManager score;
 
-    [SerializeField] private int money = 100;
+    [SerializeField] private int money = 50;
     [SerializeField] private int reputation = 0;
     [SerializeField] private int food = 20;
     [SerializeField] private int fuel = 20;
@@ -35,10 +35,10 @@ public class GameData : MonoBehaviour
         money = (PlayerPrefs.HasKey("_Money")) ? PlayerPrefs.GetInt("_Money") : money;
         reputation = (PlayerPrefs.HasKey("_Reputation")) ? PlayerPrefs.GetInt("_Reputation") : reputation;
 
-        food = 20;// (PlayerPrefs.HasKey("_Food")) ? PlayerPrefs.GetInt("_Food") : food;
-        fuel = 20;//(PlayerPrefs.HasKey("_Fuel")) ? PlayerPrefs.GetInt("_Fuel") : fuel;
-        tools = 20;// (PlayerPrefs.HasKey("_Tools")) ? PlayerPrefs.GetInt("_Tools") : tools;
-        meds = 20;// (PlayerPrefs.HasKey("_Meds")) ? PlayerPrefs.GetInt("_Meds") : meds;
+        food = (PlayerPrefs.HasKey("_Food")) ? PlayerPrefs.GetInt("_Food") : food;
+        fuel = (PlayerPrefs.HasKey("_Fuel")) ? PlayerPrefs.GetInt("_Fuel") : fuel;
+        tools = (PlayerPrefs.HasKey("_Tools")) ? PlayerPrefs.GetInt("_Tools") : tools;
+        meds = (PlayerPrefs.HasKey("_Meds")) ? PlayerPrefs.GetInt("_Meds") : meds;
 
         incomeDate = PlayerPrefs.HasKey("_DailyIncome") ? new DateTime(
            Convert.ToInt64(PlayerPrefs.GetString("_DailyIncome")))
