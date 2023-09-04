@@ -1,4 +1,3 @@
-using System;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,29 +6,19 @@ using Zenject;
 public class Gameplay : MonoBehaviour
 {
     [SerializeField] private Timer timer;
+    [SerializeField] private Spawner spawner;
+    [SerializeField] private Rotator rotator;
 
-    [SerializeField] private Button foodB;
-    [SerializeField] private Button fuelB;
-    [SerializeField] private Button toolsB;
-    [SerializeField] private Button medsB;
+    [SerializeField] private Text grabbingText;
 
-    [SerializeField] private Button giveB;
+    [SerializeField] private Button collapseB;
+    [SerializeField] private Button leftB;
+    [SerializeField] private Button rightB;
 
-    [SerializeField] private Text foodO;
-    [SerializeField] private Text fuelO;
-    [SerializeField] private Text toolsO;
-    [SerializeField] private Text medsO;
+    private int hits;
+    private int misses;
 
-    [SerializeField] private Text foodP;
-    [SerializeField] private Text fuelP;
-    [SerializeField] private Text toolsP;
-    [SerializeField] private Text medsP;
-
-    [SerializeField] private GameObject orderPanel;
-    [SerializeField] private GameObject playerPanel;
-
-    private int currentRep;
-    private int currentIncome;
+    private bool spawnEnabled;
 
     [Inject] private readonly Randomizer randomizer;
     [Inject] private readonly EventManager events;
@@ -37,67 +26,109 @@ public class Gameplay : MonoBehaviour
 
     private void OnEnable()
     {
-        data.UpdateAllRes(true);
-        data.UpdateRep(0);
-        data.UpdateMoney(0);
-
-        currentRep = 0;
-
         events.GameStateEvent += SwitchGame;
     }
 
     private void OnDisable()
     {
-        data.UpdateRep(currentRep);
-        orderPanel.SetActive(false);
-        playerPanel.SetActive(false);
-
-
-        foodB.onClick.RemoveAllListeners();
-        fuelB.onClick.RemoveAllListeners();
-        toolsB.onClick.RemoveAllListeners();
-        medsB.onClick.RemoveAllListeners();
-
         events.GameStateEvent -= SwitchGame;
+
+        collapseB.onClick.RemoveListener(Collapse);
+        StopAllCoroutines();
+
+        if (IsInvoking())
+        {
+            CancelInvoke("CheckStatus");
+        }
     }
 
     private void SwitchGame(bool activate)
     {
         if (activate)
         {
+            hits = misses = 0;
+            grabbingText.enabled = false;
+
+            if (true)
+            {
+                collapseB.onClick.AddListener(Collapse);
+                collapseB.image.DOFade(1f, 0.4f);
+            }
+            else
+            {
+                collapseB.image.DOFade(0.5f, 0.4f);
+            }
+
+            leftB.onClick.AddListener(() => rotator.RotateView(false));
+            rightB.onClick.AddListener(() => rotator.RotateView(true));
 
             events.TimeOutEvent += TriggerTimeout;
+            events.MeteorEvent += CalculateMeteors;
+            events.MeteorTriggerEvent += ShowGrabState;
+
+            spawnEnabled = true;
+            spawner.StartSpawning();
+            timer.Activate();
 
         }
         else
         {
-            foodB.onClick.RemoveAllListeners();
-            fuelB.onClick.RemoveAllListeners();
-            toolsB.onClick.RemoveAllListeners();
-            medsB.onClick.RemoveAllListeners();
-
-            timer.Deactivate();
             events.TimeOutEvent -= TriggerTimeout;
+            events.MeteorTriggerEvent -= ShowGrabState;
+            events.MeteorEvent -= CalculateMeteors;
+
+            leftB.onClick.RemoveAllListeners();
+            rightB.onClick.RemoveAllListeners();
         }
     }
 
-    private void ShipCallback()
+    private void Collapse()
     {
-        events.PlaySound(AudioEffect.Timer);
-        orderPanel.transform.localScale = playerPanel.transform.localScale = Vector3.zero;
-        orderPanel.SetActive(true);
-        playerPanel.SetActive(true);
-        DOTween.Sequence()
-            .SetId("game_panel")
-            .Append(orderPanel.transform.DOScale(new Vector3(1, 1, 1), 0.5f))
-            .Join(playerPanel.transform.DOScale(new Vector3(1, 1, 1), 0.5f));        
-        timer.Activate();
+        collapseB.onClick.RemoveListener(Collapse);
+        events.CollapseAll();
+        //update data + check
+        if (true)
+        {
+            collapseB.onClick.AddListener(Collapse);
+            return;
+        }
+        collapseB.image.DOFade(0.5f, 0.4f);
     }
 
     private void TriggerTimeout()
     {
-        currentRep -= 50;
-        events.PlaySound(AudioEffect.Timer);
+        Debug.Log("timeout");
+        spawnEnabled = false;
+        spawner.StopSpawning();
+    }
+
+    private void ShowGrabState(bool inactive)
+    {
+        grabbingText.enabled = !inactive;
+    }
+
+    private void CalculateMeteors(bool destroyed)
+    {
+        if (destroyed)
+        {
+            hits++;
+        }
+        else
+        {
+            misses++;
+        }
+
+        Invoke("CheckStatus", 0.5f);
+    }
+
+    private void CheckStatus()
+    {
+        if (!spawnEnabled && spawner.CheckNumber())
+        {
+            //score and data
+            events.DoResult(hits, misses);
+            events.SwitchGameState(false);
+        }
     }
 
 }

@@ -8,17 +8,16 @@ public class Timer : MonoBehaviour
     [SerializeField] private int timeMin;
     [SerializeField] private int timeMax;
     [SerializeField] private Text timerUI;
+    [SerializeField] private Text timerText;
 
     private float timeLeft;
-    private System.Random rand = new System.Random();
-
-    private Color initialColor;
 
     [Inject] private readonly EventManager events;
+    [Inject] private readonly Randomizer rand;
 
-    private void Awake()
+    private void OnEnable()
     {
-        initialColor = timerUI.color;
+        timerText.enabled = false;
     }
 
     private IEnumerator StartTimer()
@@ -31,7 +30,8 @@ public class Timer : MonoBehaviour
         }
         if (timeLeft <= 0)
         {
-            timerUI.color = Color.red;
+            Debug.Log("timer out");
+            timerText.enabled = false;
             events.TriggerTimeout();
         }
     }
@@ -49,14 +49,8 @@ public class Timer : MonoBehaviour
 
     public void Activate()
     {
-        timerUI.color = initialColor;
-        timeLeft = rand.Next(timeMin, timeMax);
+        timerText.enabled = true;
+        timeLeft = rand.GenerateInt(timeMin, timeMax);
         StartCoroutine(StartTimer());
     }
-
-    public void Deactivate()
-    {
-        StopAllCoroutines();
-    }
-
 }

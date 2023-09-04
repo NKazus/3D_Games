@@ -7,16 +7,16 @@ public class GameplayHandler : MonoBehaviour
     [SerializeField] private Button restart;
     [SerializeField] private GameObject restartBg;
 
-    private Text repText;
-    private Text incomeText;
+    private Text hitText;
+    private Text passText;
 
     [Inject] private readonly EventManager events;
 
     #region MONO
     private void Awake()
     {
-        repText = restartBg.transform.GetChild(1).GetComponent<Text>();
-        incomeText = restartBg.transform.GetChild(2).GetComponent<Text>();
+        hitText = restartBg.transform.GetChild(1).GetComponent<Text>();
+        passText = restartBg.transform.GetChild(2).GetComponent<Text>();
     }
 
     private void OnEnable()
@@ -62,9 +62,9 @@ public class GameplayHandler : MonoBehaviour
         }
     }
 
-    private void ShowResult(int rep, int money)
+    private void ShowResult(int hits, int misses)
     {
-        repText.text = rep.ToString();
-        incomeText.text = money.ToString();
+        hitText.text = hits.ToString();
+        passText.text = misses.ToString();
     }
 }

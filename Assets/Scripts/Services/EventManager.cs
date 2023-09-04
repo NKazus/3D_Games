@@ -7,6 +7,10 @@ public class EventManager
     public event Action<AudioEffect> SoundEvent;
     public event Action<bool> VibroSettingsEvent;
     public event Action<bool> SoundSettingsEvent;
+
+    public event Action<bool> MeteorEvent;
+    public event Action<bool> MeteorTriggerEvent;
+    public event Action CollapseEvent;
     public event Action<int, int> ResultEvent;
 
     public event Action TimeOutEvent;
@@ -31,14 +35,29 @@ public class EventManager
         SoundSettingsEvent?.Invoke(value);
     }
 
-    public void DoResult(int rep, int money)
+    public void DoResult(int hits, int misses)
     {
-        ResultEvent?.Invoke(rep, money);
+        ResultEvent?.Invoke(hits, misses);
     }
 
     public void TriggerTimeout()
     {
         TimeOutEvent?.Invoke();
+    }
+
+    public void CalculateMeteor(bool destroyed)
+    {
+        MeteorEvent?.Invoke(destroyed);
+    }
+
+    public void CollapseAll()
+    {
+        CollapseEvent?.Invoke();
+    }
+
+    public void DoTriggerEvent(bool active)
+    {
+        MeteorTriggerEvent?.Invoke(active);
     }
 
     public void PlaySound(AudioEffect id)

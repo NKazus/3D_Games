@@ -26,7 +26,7 @@ public class UIHandler : MonoBehaviour
     }
     #endregion
 
-    private void SwitchState(UIState state)
+    private void SwitchState(GameUIState state)
     {
         int currentStateIndex = (int)state;
         for(int i = 0; i < panels.Length; i++)

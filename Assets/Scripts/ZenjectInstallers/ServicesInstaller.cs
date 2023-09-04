@@ -6,5 +6,6 @@ public class ServicesInstaller : MonoInstaller
     {
         EventsInstaller.Install(Container);
         RandomizerInstaller.Install(Container);
+        PoolInstaller.Install(Container);
     }
 }
