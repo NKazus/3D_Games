@@ -2,41 +2,31 @@ using UnityEngine;
 
 public class Trail : MonoBehaviour
 {
-    [SerializeField] private ParticleSystem[] particles;
+    [SerializeField] private ParticleSystem trail;
+    [SerializeField] private ParticleSystem explosion;
 
-    public void BoostEngines()
+    private void OnDisable()
     {
-        for(int i = 0; i < particles.Length; i++)
-        {
-            var mainM = particles[i].main;
-            mainM.startSpeed = 30f;
-        }
+        trail.Stop();
+        explosion.Stop();
     }
 
-    public void SlowEngines()
+    public void DoTrail(bool active)
     {
-        for (int i = 0; i < particles.Length; i++)
+        if (active)
         {
-            var mainM = particles[i].main;
-            mainM.startSpeed = 20f;
-        }
-    }
-
-    public void ShutEngines(bool activate)
-    {
-        if (activate)
-        {
-            for (int i = 0; i < particles.Length; i++)
-            {
-                particles[i].Play();
-            }
+            trail.Play();
         }
         else
         {
-            for (int i = 0; i < particles.Length; i++)
-            {
-                particles[i].Stop();
-            }
+            trail.Stop();
         }
     }
+
+    public void DoExplosion()
+    {
+        explosion.Stop();
+        explosion.Play();
+    }
+
 }

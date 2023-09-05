@@ -1,44 +1,27 @@
 using System;
 using UnityEngine;
 
-public enum GameResources
-{
-    Food,
-    Fuel,
-    Tools,
-    Meds
-}
-
 public class GameData : MonoBehaviour
 {
     [SerializeField] private ScoreManager score;
 
     [SerializeField] private int money = 50;
-    [SerializeField] private int reputation = 0;
-    [SerializeField] private int food = 20;
-    [SerializeField] private int fuel = 20;
-    [SerializeField] private int tools = 20;
-    [SerializeField] private int meds = 20;
+    [SerializeField] private int charges = 10;
+    [SerializeField] private bool timeScale = false;
 
     public int Money => money;
-    public int Reputation => reputation;
-    public int Food => food;
-    public int Fuel => fuel;
-    public int Tools => tools;
-    public int Meds => meds;
+    public int Charges => charges;
+    public bool TimeScale => timeScale;
 
     public DateTime IncomeDate => incomeDate;
     private DateTime incomeDate;
 
     private void OnEnable()
     {
-        money = (PlayerPrefs.HasKey("_Money")) ? PlayerPrefs.GetInt("_Money") : money;
-        reputation = (PlayerPrefs.HasKey("_Reputation")) ? PlayerPrefs.GetInt("_Reputation") : reputation;
+        money = 100;// (PlayerPrefs.HasKey("_Money")) ? PlayerPrefs.GetInt("_Money") : money;
+        charges = (PlayerPrefs.HasKey("_Charges")) ? PlayerPrefs.GetInt("_Charges") : charges;
 
-        food = (PlayerPrefs.HasKey("_Food")) ? PlayerPrefs.GetInt("_Food") : food;
-        fuel = (PlayerPrefs.HasKey("_Fuel")) ? PlayerPrefs.GetInt("_Fuel") : fuel;
-        tools = (PlayerPrefs.HasKey("_Tools")) ? PlayerPrefs.GetInt("_Tools") : tools;
-        meds = (PlayerPrefs.HasKey("_Meds")) ? PlayerPrefs.GetInt("_Meds") : meds;
+        timeScale = false;// (PlayerPrefs.HasKey("_TimeScale")) ? PlayerPrefs.GetInt("_TimeScale") == 1 : timeScale;
 
         incomeDate = PlayerPrefs.HasKey("_DailyIncome") ? new DateTime(
            Convert.ToInt64(PlayerPrefs.GetString("_DailyIncome")))
@@ -48,13 +31,10 @@ public class GameData : MonoBehaviour
     private void OnDisable()
     {
         PlayerPrefs.SetInt("_Money", money);
-        PlayerPrefs.SetInt("_Reputation", reputation);
+        PlayerPrefs.SetInt("_Charges", charges);
 
-        PlayerPrefs.SetInt("_Food", food);
-        PlayerPrefs.SetInt("_Fuel", fuel);
-        PlayerPrefs.SetInt("_Tools", tools);
-        PlayerPrefs.SetInt("_Meds", meds);
-
+        PlayerPrefs.SetInt("_TimeScale", timeScale ? 1 : 0);
+ 
         PlayerPrefs.SetString("_DailyIncome", "" + incomeDate.ToUniversalTime().Ticks);
     }
 
@@ -68,31 +48,19 @@ public class GameData : MonoBehaviour
         score.UpdateGlobal(false, money);
     }
 
-    public void UpdateRep(int value)
+    public void UpdateCharges(int value)
     {
-        reputation += value;
-        reputation = Mathf.Clamp(reputation, -100, 100);
-        score.UpdateGlobal(true, reputation);
-    }
-
-    public void UpdateRes(GameResources id, int value, bool gameplay)
-    {
-        switch (id)
+        charges += value;
+        if(charges < 0)
         {
-            case GameResources.Food: food += value; score.UpdateResources(id, food, gameplay); break;
-            case GameResources.Fuel: fuel += value; score.UpdateResources(id, fuel, gameplay); break;
-            case GameResources.Tools: tools += value; score.UpdateResources(id, tools, gameplay); break;
-            case GameResources.Meds: meds += value; score.UpdateResources(id, meds, gameplay); break;
-            default: throw new NotSupportedException();
+            charges = 0;
         }
+        score.UpdateGlobal(true, charges);
     }
 
-    public void UpdateAllRes(bool gameplay)
+    public void UpdateTime(bool active)
     {
-        UpdateRes(GameResources.Food, 0, gameplay);
-        UpdateRes(GameResources.Fuel, 0, gameplay);
-        UpdateRes(GameResources.Tools, 0, gameplay);
-        UpdateRes(GameResources.Meds, 0, gameplay);
+        timeScale = active;
     }
 
     public void RefreshDaily(DateTime newDate)

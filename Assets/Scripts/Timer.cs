@@ -5,15 +5,14 @@ using Zenject;
 
 public class Timer : MonoBehaviour
 {
-    [SerializeField] private int timeMin;
-    [SerializeField] private int timeMax;
     [SerializeField] private Text timerUI;
     [SerializeField] private Text timerText;
 
     private float timeLeft;
 
+    private IEnumerator timerCoroutine;
+
     [Inject] private readonly EventManager events;
-    [Inject] private readonly Randomizer rand;
 
     private void OnEnable()
     {
@@ -22,6 +21,7 @@ public class Timer : MonoBehaviour
 
     private IEnumerator StartTimer()
     {
+        Debug.Log("Timer");
         while (timeLeft > 0)
         {
             timeLeft -= Time.deltaTime;
@@ -30,7 +30,6 @@ public class Timer : MonoBehaviour
         }
         if (timeLeft <= 0)
         {
-            Debug.Log("timer out");
             timerText.enabled = false;
             events.TriggerTimeout();
         }
@@ -47,10 +46,22 @@ public class Timer : MonoBehaviour
         timerUI.text = string.Format("{0:00}:{1:00}", minutes, seconds);
     }
 
-    public void Activate()
+    public void Activate(float time)
     {
+        if(timerCoroutine != null)
+        {
+            Deactivate();
+        }
+
         timerText.enabled = true;
-        timeLeft = rand.GenerateInt(timeMin, timeMax);
-        StartCoroutine(StartTimer());
+        timeLeft = time;
+
+        timerCoroutine = StartTimer();
+        StartCoroutine(timerCoroutine);
+    }
+
+    public void Deactivate()
+    {
+        StopCoroutine(timerCoroutine);
     }
 }

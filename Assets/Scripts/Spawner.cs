@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,15 +6,16 @@ using Zenject;
 
 public class Spawner : MonoBehaviour
 {
+    [SerializeField] private Timer timer;
     [SerializeField] private Vector3[] startPos;
     [SerializeField] private Vector3[] stopPos;
 
     [SerializeField] private GameObject prefab;
     [SerializeField] private float interval;
 
-    private int objectNumber;
+    private float timeScale;
 
-    private bool isSpawning;
+    private int spawnedObjects;
 
     private IEnumerator spawnCoroutine;
 
@@ -23,37 +25,33 @@ public class Spawner : MonoBehaviour
     private IEnumerator Spawn()
     {
         GameObject target;
-        while (isSpawning)
+        int i = 0;
+        while(i < spawnedObjects)
         {
             yield return new WaitForSeconds(interval);
-
-            if (isSpawning)
-            {
-                target = pool.GetGameObjectFromPool(prefab);
-                target.GetComponent<Meteor>().PushMeteor(startPos[random.GenerateInt(0, startPos.Length)], stopPos[random.GenerateInt(0, startPos.Length)]);
-                objectNumber++;
-            }
+            
+            target = pool.GetGameObjectFromPool(prefab);
+            target.GetComponent<Meteor>().PushMeteor(startPos[random.GenerateInt(0, startPos.Length)], stopPos[random.GenerateInt(0, startPos.Length)], timeScale);
+            i++;
+            Debug.Log("spawn:"+i);
         }
     }
 
-    public void StartSpawning()
+    public void StartSpawning(int number, bool timeC)
     {
-        pool.ResetCalls();
-        objectNumber = 0;
-        isSpawning = true;
+        spawnedObjects = number;
+        Debug.Log("initial spawn:" + spawnedObjects);
+
+        timeScale = timeC ? 0.6f : 1f;
         spawnCoroutine = Spawn();
         StartCoroutine(spawnCoroutine);
+
+        timer.Activate(number * interval);
     }
 
     public void StopSpawning()
     {
-        Debug.Log("sp:" + objectNumber);
-        isSpawning = false;
         StopCoroutine(spawnCoroutine);
-    }
-
-    public bool CheckNumber()
-    {
-        return pool.CheckCalls();
+        timer.Deactivate();
     }
 }

@@ -39,7 +39,7 @@ public class GameplayHandler : MonoBehaviour
         events.GameStateEvent -= ChangeGameState;
 
         restartBg.SetActive(false);
-        restart.onClick.RemoveListener(Restart);
+        restart.onClick.RemoveAllListeners();
     }
     #endregion
 
@@ -52,6 +52,7 @@ public class GameplayHandler : MonoBehaviour
     {
         if (!isActive)
         {
+            restart.onClick.RemoveAllListeners();
             restartBg.SetActive(true);
             restart.onClick.AddListener(Restart);
         }
