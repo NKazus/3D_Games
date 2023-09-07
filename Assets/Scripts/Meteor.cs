@@ -10,8 +10,9 @@ public class Meteor : MonoBehaviour
     private EventTrigger trigger;
     private SphereCollider meteorCollider;
 
+    private Vector3 meteorScale;
+
     private Transform meteorTransform;
-    private string goName;
 
     private bool isGrabActive;
 
@@ -23,15 +24,14 @@ public class Meteor : MonoBehaviour
     private void Awake()
     {
         meteorTransform = transform;
-        goName = gameObject.name;
+        meteorScale = meteorTransform.localScale;
         trigger = GetComponent<EventTrigger>();
         meteorCollider = GetComponent<SphereCollider>();
     }
 
     private void OnEnable()
     {
-        Debug.Log("meteor_enabled");
-        meteorTransform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+        meteorTransform.localScale = meteorScale;
         meteorTransform.localRotation = Random.rotation;
         isGrabActive = false;
         events.GameStateEvent += ChangeState;
@@ -42,7 +42,6 @@ public class Meteor : MonoBehaviour
 
     private void OnDisable()
     {
-        Debug.Log("meteor_disabled");
         meteorTransform.DOKill();
         RemoveTriggers();
         events.GameStateEvent -= ChangeState;
@@ -80,6 +79,7 @@ public class Meteor : MonoBehaviour
 
             events.GameStateEvent -= ChangeState;
             events.CalculateMeteor(false);
+            events.PlayVibro();
 
             pool.PutGameObjectToPool(gameObject);
         }
@@ -118,6 +118,7 @@ public class Meteor : MonoBehaviour
         isGrabActive = true;
         events.MeteorTriggerEvent -= UpdateTriggers;
         events.DoTriggerEvent(false);
+        events.PlaySound(AudioEffect.Grab);
         GrabMeteor();
     }
 
@@ -127,7 +128,7 @@ public class Meteor : MonoBehaviour
         events.MeteorTriggerEvent -= UpdateTriggers;
         events.CollapseEvent -= GrabMeteor;
         RemoveTriggers();
-        meteorTransform.DOLocalMove(Vector3.zero, 5f * tScale).SetId(goName);
+        meteorTransform.DOLocalMove(Vector3.zero, 5f * tScale);
     }
 
     public void PushMeteor(Vector3 start, Vector3 stop, float tweenScale)
@@ -136,7 +137,7 @@ public class Meteor : MonoBehaviour
         meteorCollider.enabled = true;
 
         trail.DoTrail(true);
-        meteorTransform.DOLocalMove(stop, 20f);
+        meteorTransform.DOLocalMove(stop, 15f);
         tScale = tweenScale;
     }
 

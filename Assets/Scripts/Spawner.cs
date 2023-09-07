@@ -33,14 +33,12 @@ public class Spawner : MonoBehaviour
             target = pool.GetGameObjectFromPool(prefab);
             target.GetComponent<Meteor>().PushMeteor(startPos[random.GenerateInt(0, startPos.Length)], stopPos[random.GenerateInt(0, startPos.Length)], timeScale);
             i++;
-            Debug.Log("spawn:"+i);
         }
     }
 
     public void StartSpawning(int number, bool timeC)
     {
         spawnedObjects = number;
-        Debug.Log("initial spawn:" + spawnedObjects);
 
         timeScale = timeC ? 0.6f : 1f;
         spawnCoroutine = Spawn();

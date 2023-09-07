@@ -5,10 +5,10 @@ using Zenject;
 
 public enum AudioEffect
 {
-    Reward,
+    Result,
     Resource,
-    Engine,
-    Timer
+    Grab,
+    Time
 }
 public class SoundManager : MonoBehaviour
 {
@@ -17,8 +17,8 @@ public class SoundManager : MonoBehaviour
     [SerializeField] private AudioSource ambientMusic;
     [SerializeField] private AudioSource winSound;
     [SerializeField] private AudioSource resSound;
-    [SerializeField] private AudioSource shipSound;
     [SerializeField] private AudioSource timerSound;
+    [SerializeField] private AudioSource grabSound;
 
     private bool vibroEnabled = true;
 
@@ -72,10 +72,10 @@ public class SoundManager : MonoBehaviour
         AudioSource source;
         source = id switch
         {
-            AudioEffect.Reward => winSound,
+            AudioEffect.Result => winSound,
             AudioEffect.Resource => resSound,
-            AudioEffect.Engine => shipSound,
-            AudioEffect.Timer => timerSound,
+            AudioEffect.Grab => grabSound,
+            AudioEffect.Time => timerSound,
             _ => throw new NotSupportedException()
         };
 

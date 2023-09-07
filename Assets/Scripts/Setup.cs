@@ -48,11 +48,12 @@ public class Setup : MonoBehaviour
         timeB.interactable = data.Money >= timeP && !data.TimeScale;
         chargesB.interactable = data.Money >= chargeP;
         timeText.text = data.TimeScale ? activeText : inactiveText;
+        timeText.color = data.TimeScale ? Color.red : Color.white;
     }
 
     private void UpgradeTime()
     {
-        events.PlaySound(AudioEffect.Resource);
+        events.PlaySound(AudioEffect.Time);
         data.UpdateMoney(-timeP);
         data.UpdateTime(true);
         CheckSetup();

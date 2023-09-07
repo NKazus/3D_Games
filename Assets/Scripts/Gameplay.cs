@@ -12,6 +12,7 @@ public class Gameplay : MonoBehaviour
     [SerializeField] private int objectsMax;
 
     [SerializeField] private Text grabbingText;
+    [SerializeField] private Image timeIcon;
 
     [SerializeField] private Button collapseB;
     [SerializeField] private Button leftB;
@@ -29,6 +30,7 @@ public class Gameplay : MonoBehaviour
     {
         data.UpdateMoney(0);
         data.UpdateCharges(0);
+        timeIcon.enabled = data.TimeScale;
 
         events.GameStateEvent += SwitchGame;
     }
@@ -50,7 +52,8 @@ public class Gameplay : MonoBehaviour
     {
         if (activate)
         {
-            Debug.Log("Active");
+            timeIcon.enabled = data.TimeScale;
+
             hits = 0;
             misses = 0;
 
@@ -73,14 +76,11 @@ public class Gameplay : MonoBehaviour
             events.MeteorTriggerEvent += ShowGrabState;
 
             objectsNumber = randomizer.GenerateInt(objectsMin, objectsMax);
-            Debug.Log("oNum:"+objectsNumber);
             spawner.StartSpawning(objectsNumber, data.TimeScale);
 
         }
         else
         {
-            Debug.Log("Inactive");
-
             events.MeteorTriggerEvent -= ShowGrabState;
             events.MeteorEvent -= CalculateMeteors;
 
@@ -118,7 +118,6 @@ public class Gameplay : MonoBehaviour
         {
             misses++;
         }
-        Debug.Log("collis:"+(hits+misses));
         if (hits + misses >= objectsNumber)
         {
             Finish();
@@ -129,6 +128,7 @@ public class Gameplay : MonoBehaviour
     {
         data.UpdateTime(false);
         data.UpdateMoney((hits - misses));
+        events.PlaySound(AudioEffect.Result);
         events.DoResult(hits, misses);
         events.SwitchGameState(false);
     }

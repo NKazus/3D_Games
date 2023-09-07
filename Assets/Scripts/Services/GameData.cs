@@ -18,10 +18,10 @@ public class GameData : MonoBehaviour
 
     private void OnEnable()
     {
-        money = 100;// (PlayerPrefs.HasKey("_Money")) ? PlayerPrefs.GetInt("_Money") : money;
+        money = (PlayerPrefs.HasKey("_Money")) ? PlayerPrefs.GetInt("_Money") : money;
         charges = (PlayerPrefs.HasKey("_Charges")) ? PlayerPrefs.GetInt("_Charges") : charges;
 
-        timeScale = false;// (PlayerPrefs.HasKey("_TimeScale")) ? PlayerPrefs.GetInt("_TimeScale") == 1 : timeScale;
+        timeScale = (PlayerPrefs.HasKey("_TimeScale")) ? PlayerPrefs.GetInt("_TimeScale") == 1 : timeScale;
 
         incomeDate = PlayerPrefs.HasKey("_DailyIncome") ? new DateTime(
            Convert.ToInt64(PlayerPrefs.GetString("_DailyIncome")))
