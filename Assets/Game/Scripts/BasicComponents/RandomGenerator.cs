@@ -9,6 +9,11 @@ public class RandomGenerator
         return random.Next(minValue, maxValue);
     }
 
+    public float GenerateFloat(float minValue, float maxValue)
+    {
+        return minValue + (float)random.NextDouble() * (maxValue - minValue);
+    }
+
     public void RandomizeArray<T>(T[] array)
     {
         int n = array.Length;

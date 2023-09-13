@@ -19,6 +19,9 @@ public class LightwayManager : MonoBehaviour
     private int winRoute;
     private int gemNumber;
 
+    private int currentScore;
+    private int winGems;
+
     private List<Gem> route1Gems;
     private List<Gem> route2Gems;
     private List<Gem> route3Gems;
@@ -34,16 +37,21 @@ public class LightwayManager : MonoBehaviour
         route1Gems = new List<Gem>();
         route2Gems = new List<Gem>();
         route3Gems = new List<Gem>();
+
+        for (int i = 0; i < gemNumber; i++)
+        {
+            gems[i].InitGem();
+        }
     }
 
     private void OnEnable()
     {
         events.GameStateEvent += ChangeState;
         dataHandler.UpdateGlobalScore(0);
+        dataHandler.UpdateHighlights(0);
 
         for (int i = 0; i < gemNumber; i++)
         {
-            gems[i].InitGem();
             gems[i].ShowGem(false);
         }
 
@@ -56,6 +64,13 @@ public class LightwayManager : MonoBehaviour
 
     private void OnDisable()
     {
+        events.GameStateEvent -= ChangeState;
+
+        if (IsInvoking())
+        {
+            CancelInvoke("Calculate");
+            Calculate();
+        }
         pick1Button.onClick.RemoveAllListeners();
         pick2Button.onClick.RemoveAllListeners();
         pick3Button.onClick.RemoveAllListeners();
@@ -64,8 +79,6 @@ public class LightwayManager : MonoBehaviour
         pick3Button.gameObject.SetActive(false);
 
         startButton.onClick.RemoveListener(Play);
-
-        events.GameStateEvent -= ChangeState;
     }
 
     private void ChangeState(bool activate)
@@ -98,8 +111,6 @@ public class LightwayManager : MonoBehaviour
         startButton.gameObject.SetActive(false);
 
         GenerateGems();
-        //staff
-
 
         pick1Button.gameObject.SetActive(true);
         pick2Button.gameObject.SetActive(true);
@@ -126,8 +137,21 @@ public class LightwayManager : MonoBehaviour
 
         if(routeId == winRoute)
         {
-            events.DoWin(10);
+            currentScore = winGems;
+            events.DoWin(winGems);
         }
+        else
+        {
+            currentScore = winGems - gemNumber;
+        }
+        Invoke("Calculate", 1.5f);
+    }
+
+    private void Calculate()
+    {
+        Debug.Log(currentScore);
+        dataHandler.UpdateGlobalScore(currentScore);
+        //sound
         events.SwitchGameState(false);
     }
 
@@ -157,6 +181,8 @@ public class LightwayManager : MonoBehaviour
                 winRoute = i;
             }
         }
+
+        winGems = gemNumbers[winRoute];
 
         route1Gems.Clear();
         route2Gems.Clear();
