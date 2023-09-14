@@ -10,7 +10,7 @@ public class GlobalEventManager
     public event Action<bool> VibroSettingsEvent;
     public event Action<bool> SoundSettingsEvent;
 
-    public event Action<int> WinEvent;
+    public event Action<bool, int> WinEvent;
     public event Action<int, int> CellEvent;
     public event Action HighlightEvent;
 
@@ -49,9 +49,9 @@ public class GlobalEventManager
         SoundSettingsEvent?.Invoke(value);
     }
 
-    public void DoWin(int value)
+    public void DoWin(bool win, int value)
     {
-        WinEvent?.Invoke(value);
+        WinEvent?.Invoke(win, value);
     }
 
     public void ChooseCell(int cellId, int routeId)

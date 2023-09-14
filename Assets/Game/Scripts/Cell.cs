@@ -20,6 +20,7 @@ public class Cell : MonoBehaviour
     {
         cellTransform = transform;
         highlight = cellTransform.GetChild(0).GetComponent<MaterialInstance>();
+        highlight.InitMaterial();
         trigger = GetComponent<EventTrigger>();
     }
 
@@ -39,6 +40,14 @@ public class Cell : MonoBehaviour
     private void PickCell(PointerEventData data)
     {
         events.ChooseCell(cellId, routeId);
+    }
+
+    public void InitCell()
+    {
+        cellTransform = transform;
+        highlight = cellTransform.GetChild(0).GetComponent<MaterialInstance>();
+        highlight.InitMaterial();
+        trigger = GetComponent<EventTrigger>();
     }
 
     public void ActivateCell(bool active)

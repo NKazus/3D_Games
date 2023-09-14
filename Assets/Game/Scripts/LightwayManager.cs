@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
@@ -15,6 +13,8 @@ public class LightwayManager : MonoBehaviour
     [SerializeField] private Button pick1Button;
     [SerializeField] private Button pick2Button;
     [SerializeField] private Button pick3Button;
+
+    [SerializeField] private GameObject pickPanel;
 
     private int winRoute;
     private int gemNumber;
@@ -74,9 +74,7 @@ public class LightwayManager : MonoBehaviour
         pick1Button.onClick.RemoveAllListeners();
         pick2Button.onClick.RemoveAllListeners();
         pick3Button.onClick.RemoveAllListeners();
-        pick1Button.gameObject.SetActive(false);
-        pick2Button.gameObject.SetActive(false);
-        pick3Button.gameObject.SetActive(false);
+        pickPanel.gameObject.SetActive(false);
 
         startButton.onClick.RemoveListener(Play);
     }
@@ -112,9 +110,8 @@ public class LightwayManager : MonoBehaviour
 
         GenerateGems();
 
-        pick1Button.gameObject.SetActive(true);
-        pick2Button.gameObject.SetActive(true);
-        pick3Button.gameObject.SetActive(true);
+        pickPanel.gameObject.SetActive(true);
+
         if (dataHandler.Highlights > 0)
         {
             for (int i = 0; i < routes.Length; i++)
@@ -126,9 +123,7 @@ public class LightwayManager : MonoBehaviour
 
     private void PickRoute(int routeId)
     {
-        pick1Button.gameObject.SetActive(false);
-        pick2Button.gameObject.SetActive(false);
-        pick3Button.gameObject.SetActive(false);
+        pickPanel.gameObject.SetActive(false);
 
         for (int i = 0; i < gemNumber; i++)
         {
@@ -138,18 +133,18 @@ public class LightwayManager : MonoBehaviour
         if(routeId == winRoute)
         {
             currentScore = winGems;
-            events.DoWin(winGems);
+            events.DoWin(true, currentScore);
         }
         else
         {
             currentScore = winGems - gemNumber;
+            events.DoWin(false, -currentScore);
         }
         Invoke("Calculate", 1.5f);
     }
 
     private void Calculate()
     {
-        Debug.Log(currentScore);
         dataHandler.UpdateGlobalScore(currentScore);
         //sound
         events.SwitchGameState(false);
@@ -160,13 +155,13 @@ public class LightwayManager : MonoBehaviour
         int arrayLength = routes.Length;
         int[] gemNumbers = new int[arrayLength];
 
+        gemNumbers[0] = random.GenerateInt(1, gemNumber - 2);
         do
         {
-            gemNumbers[0] = random.GenerateInt(1, gemNumber - 2);
+            gemNumbers[1] = random.GenerateInt(1, gemNumber - gemNumbers[0]);
+            gemNumbers[2] = gemNumber - gemNumbers[0] - gemNumbers[1];
         }
-        while (gemNumbers[0] == 3 || gemNumbers[0] % 2 ==0);
-        gemNumbers[1] = (gemNumber - gemNumbers[0]) / 2;
-        gemNumbers[2] = gemNumber - gemNumbers[0] - gemNumbers[1];
+        while (gemNumbers[1] == gemNumbers[0] || gemNumbers[1] == gemNumbers[2] || gemNumbers[2] == gemNumbers[0]);
 
         random.RandomizeArray(gemNumbers);
 

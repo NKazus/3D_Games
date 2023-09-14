@@ -40,6 +40,7 @@ public class RacePlayer : MonoBehaviour
         {
             wayPos[i] = new Vector3(wayPoints[i].position.x, playerTransform.position.y, wayPoints[i].position.z);
             cells[i] = wayPoints[i].GetComponent<Cell>();
+            cells[i].InitCell();
         }
     }
 

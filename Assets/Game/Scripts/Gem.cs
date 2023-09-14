@@ -13,6 +13,7 @@ public class Gem : MonoBehaviour
     public void PlaceGem(Vector3 pos)
     {
         gemTransform.position = new Vector3(pos.x, gemTransform.position.y, pos.z);
+        gemTransform.rotation = Random.rotation;
     }
 
     public void InitGem()

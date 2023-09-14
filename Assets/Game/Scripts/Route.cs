@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
@@ -8,7 +7,7 @@ public class Route : MonoBehaviour
     [SerializeField] private int routeId;
     [SerializeField] private Cell[] cells;
 
-    private const int WAY_LENGTH = 4;
+    private const int WAY_LENGTH = 3;
 
     private int routeLenght;
     private bool cellPicked;
@@ -52,6 +51,12 @@ public class Route : MonoBehaviour
             {
                 cellPicked = false;
                 ShowWay();
+            }
+            else
+            {
+                cells[pickedCell1].DoHighlight(false, false);
+                pickedCell1 = cell;
+                cells[pickedCell1].DoHighlight(true, false);
             }
         }
     }
@@ -118,6 +123,7 @@ public class Route : MonoBehaviour
     {
         for(int i = 0; i < routeLenght; i++)
         {
+            cells[i].InitCell();
             cells[i].SetId(i, routeId);
         }
     }

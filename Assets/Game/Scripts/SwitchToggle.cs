@@ -5,6 +5,8 @@ using UnityEngine.UI;
 public class SwitchToggle : MonoBehaviour
 {
     [SerializeField] private RectTransform handleRectTransform;
+    [SerializeField] private Text onText;
+    [SerializeField] private Text offText;
 
     private Toggle toggle;
     private Vector2 handlePosition;
@@ -16,23 +18,40 @@ public class SwitchToggle : MonoBehaviour
         handlePosition = handleRectTransform.anchoredPosition;
         if (toggle.isOn)
         {
-            Switch(true);
+            Switch(true, false);
         }
     }
 
     private void OnEnable()
     {
-        toggle.onValueChanged.AddListener(Switch);
+        toggle.onValueChanged.AddListener((bool isOn) => Switch(isOn, true));
     }
 
     private void OnDisable()
     {
-        toggle.onValueChanged.RemoveListener(Switch);
+        toggle.onValueChanged.RemoveAllListeners();
     }
     #endregion
 
-    private void Switch(bool isOn)
-    {
-        handleRectTransform.DOAnchorPos(isOn ? handlePosition * (-1) : handlePosition, .4f).SetId(this).SetEase(Ease.InOutBack).Play();        
+    private void Switch(bool isOn, bool animate)
+    {        
+        if (animate)
+        {
+            onText.enabled = offText.enabled = false;
+            handleRectTransform.DOAnchorPos(isOn ? handlePosition * (-1) : handlePosition, .4f)
+                .SetId(this)
+                .SetEase(Ease.InOutBack)
+                .OnComplete(() =>
+                {
+                    onText.enabled = isOn;
+                    offText.enabled = !isOn;
+                });        
+        }
+        else
+        {
+            handleRectTransform.anchoredPosition = isOn ? handlePosition * (-1) : handlePosition;
+            onText.enabled = isOn;
+            offText.enabled = !isOn;
+        }
     }
 }

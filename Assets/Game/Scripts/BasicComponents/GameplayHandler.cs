@@ -8,17 +8,21 @@ public class GameplayHandler : MonoBehaviour
     [SerializeField] private GameObject restartBg;
     [SerializeField] private string winText;
     [SerializeField] private string loseText;
+    [SerializeField] private Sprite winSprite;
+    [SerializeField] private Sprite loseSprite;
 
     private Text restartText;
     private Text restartExtra;
+    private Image restartImage;
 
     [Inject] private readonly GlobalEventManager events;
 
     #region MONO
     private void Awake()
     {
+        restartImage = restartBg.transform.GetChild(1).GetComponent<Image>();
         restartText = restartBg.transform.GetChild(2).GetComponent<Text>();
-        restartExtra = restartBg.transform.GetChild(3).GetComponent<Text>();
+        restartExtra = restartBg.transform.GetChild(3).GetComponent<Text>();        
     }
 
     private void OnEnable()
@@ -61,17 +65,16 @@ public class GameplayHandler : MonoBehaviour
         else
         {
             restart.gameObject.SetActive(false);
-            restartText.text = loseText;
-            restartExtra.enabled = false;
             restartBg.SetActive(false);
             restart.onClick.RemoveListener(Restart);
         }
     }
 
-    private void ChangeTextToWin(int points)
+    private void ChangeTextToWin(bool win, int points)
     {
-        restartText.text = winText;
-        restartExtra.text = "Funding received: "+ points;
-        restartExtra.enabled = true;
+        restartText.text = win ? winText : loseText;
+        restartExtra.text = win ? "Gems gained: "+ points.ToString() : "Gems lost: " + points.ToString();
+
+        restartImage.sprite = win ? winSprite : loseSprite;
     }
 }

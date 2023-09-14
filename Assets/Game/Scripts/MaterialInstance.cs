@@ -7,16 +7,11 @@ public class MaterialInstance : MonoBehaviour
 
     private MeshRenderer meshRenderer;
 
-    private void Awake()
+    public void InitMaterial()
     {
         meshRenderer = GetComponent<MeshRenderer>();
         Material target = Instantiate(meshRenderer.material);
         meshRenderer.material = target;
-    }
-
-    private void OnEnable()
-    {
-        meshRenderer.material.color = initialColor;
     }
 
     public void Show(bool show, bool active)

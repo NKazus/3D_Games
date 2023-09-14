@@ -15,10 +15,14 @@ public class RaceManager : MonoBehaviour
     [SerializeField] private RacePlayer player2;
 
     [SerializeField] private GameObject resultPanel;
+    [SerializeField] private GameObject pickPanel;
     [SerializeField] private string resultWin;
     [SerializeField] private string resultLose;
+    [SerializeField] private Sprite winSprite;
+    [SerializeField] private Sprite loseSprite;
 
     private Text resultText;
+    private Image resultImage;
 
     private int winPlayer;
     private int pickedPlayer;
@@ -30,7 +34,9 @@ public class RaceManager : MonoBehaviour
 
     private void Awake()
     {
+        resultImage = resultPanel.transform.GetChild(1).GetComponent<Image>();
         resultText = resultPanel.transform.GetChild(2).GetComponent<Text>();
+       
         player1.InitPlayer();
         player2.InitPlayer();
     }
@@ -46,8 +52,7 @@ public class RaceManager : MonoBehaviour
 
         startButton.onClick.AddListener(Play);
 
-        pick1Button.gameObject.SetActive(false);
-        pick2Button.gameObject.SetActive(false);
+        pickPanel.SetActive(false);
 
         player1.ResetPlayer();
         player2.ResetPlayer();
@@ -72,7 +77,7 @@ public class RaceManager : MonoBehaviour
         startButton.gameObject.SetActive(false);
 
         float timeInterval = random.GenerateFloat(0.5f, 0.8f);
-        float delta = 0.1f * (random.GenerateInt(0, 2) * 2 - 1);
+        float delta = 0.07f * (random.GenerateInt(0, 2) * 2 - 1);
         player1.SetTime(timeInterval);
         player2.SetTime(timeInterval + delta);
 
@@ -91,15 +96,13 @@ public class RaceManager : MonoBehaviour
         }
         else
         {
-            pick1Button.gameObject.SetActive(true);
-            pick2Button.gameObject.SetActive(true);
+            pickPanel.SetActive(true);
         }
     }
 
     private void PickPlayer(int value)
     {
-        pick1Button.gameObject.SetActive(false);
-        pick2Button.gameObject.SetActive(false);
+        pickPanel.SetActive(false);
 
         pickedPlayer = value;
 
@@ -118,6 +121,7 @@ public class RaceManager : MonoBehaviour
         {
             bool win = winPlayer == pickedPlayer;
             resultText.text = win ? resultWin : resultLose;
+            resultImage.sprite = win ? winSprite : loseSprite;
             resultPanel.SetActive(true);
 
             dataHandler.UpdateGlobalScore(-5);

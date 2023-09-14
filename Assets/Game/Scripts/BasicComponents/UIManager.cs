@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-public enum UIState
+public enum GameUIState
 {
     Menu = 0,
     Gameplay = 1,
@@ -12,7 +12,7 @@ public enum UIState
 }
 public class UIManager : MonoBehaviour
 {
-    public event Action<UIState> ChangeStateEvent;
+    public event Action<GameUIState> ChangeStateEvent;
 
     [SerializeField] private Button[] toMenu;
     [SerializeField] private Button toSettings;
@@ -22,24 +22,24 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Button toPrivacy;
     [SerializeField] private string privacyURL;
 
-    private UIState currentState;
+    private GameUIState currentState;
 
     #region MONO
     private void Awake()
     {
-       currentState = UIState.Menu;
+       currentState = GameUIState.Menu;
     }
 
     private void OnEnable()
     {
         for (int i = 0; i < toMenu.Length; i++)
         {
-            toMenu[i].onClick.AddListener(() => { TriggerChange(UIState.Menu); });
+            toMenu[i].onClick.AddListener(() => { TriggerChange(GameUIState.Menu); });
         }
-        toSettings.onClick.AddListener(() => { TriggerChange(UIState.Settings); });
-        toMagicDice.onClick.AddListener(() => { TriggerChange(UIState.MagicDice); });
-        toGameplay.onClick.AddListener(() => { TriggerChange(UIState.Gameplay); });
-        toRules.onClick.AddListener(() => { TriggerChange(UIState.Rules); });
+        toSettings.onClick.AddListener(() => { TriggerChange(GameUIState.Settings); });
+        toMagicDice.onClick.AddListener(() => { TriggerChange(GameUIState.MagicDice); });
+        toGameplay.onClick.AddListener(() => { TriggerChange(GameUIState.Gameplay); });
+        toRules.onClick.AddListener(() => { TriggerChange(GameUIState.Rules); });
 
         toPrivacy.onClick.AddListener(CheckPrivacy);
     }
@@ -65,7 +65,7 @@ public class UIManager : MonoBehaviour
     #endregion
 
 
-    private void TriggerChange(UIState state)
+    private void TriggerChange(GameUIState state)
     {
         currentState = state;
         ChangeStateEvent?.Invoke(state);
