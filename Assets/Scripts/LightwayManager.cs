@@ -15,6 +15,7 @@ public class LightwayManager : MonoBehaviour
     [SerializeField] private Button pick3Button;
 
     [SerializeField] private GameObject pickPanel;
+    [SerializeField] private GameObject scanPanel;
 
     private int winRoute;
     private int gemNumber;
@@ -75,6 +76,7 @@ public class LightwayManager : MonoBehaviour
         pick2Button.onClick.RemoveAllListeners();
         pick3Button.onClick.RemoveAllListeners();
         pickPanel.gameObject.SetActive(false);
+        scanPanel.gameObject.SetActive(false);
 
         startButton.onClick.RemoveListener(Play);
     }
@@ -114,6 +116,7 @@ public class LightwayManager : MonoBehaviour
 
         if (dataHandler.Highlights > 0)
         {
+            scanPanel.gameObject.SetActive(true);
             for (int i = 0; i < routes.Length; i++)
             {
                 routes[i].ActivateRoute(true);
@@ -124,6 +127,7 @@ public class LightwayManager : MonoBehaviour
     private void PickRoute(int routeId)
     {
         pickPanel.gameObject.SetActive(false);
+        scanPanel.gameObject.SetActive(false);
 
         for (int i = 0; i < gemNumber; i++)
         {
@@ -134,11 +138,13 @@ public class LightwayManager : MonoBehaviour
         {
             currentScore = winGems;
             events.DoWin(true, currentScore);
+            events.PlayReward();
         }
         else
         {
             currentScore = winGems - gemNumber;
             events.DoWin(false, -currentScore);
+            events.PlayVibro();
         }
         Invoke("Calculate", 1.5f);
     }
@@ -146,7 +152,6 @@ public class LightwayManager : MonoBehaviour
     private void Calculate()
     {
         dataHandler.UpdateGlobalScore(currentScore);
-        //sound
         events.SwitchGameState(false);
     }
 
@@ -208,8 +213,9 @@ public class LightwayManager : MonoBehaviour
     private void CheckHighlights()
     {
         dataHandler.UpdateHighlights(-1);
-        if(dataHandler.Highlights <= 0)
+        if (dataHandler.Highlights <= 0)
         {
+            scanPanel.gameObject.SetActive(false);
             for (int i = 0; i < routes.Length; i++)
             {
                 routes[i].ActivateRoute(false);

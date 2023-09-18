@@ -1,4 +1,3 @@
-using System;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
@@ -31,6 +30,7 @@ public class RaceManager : MonoBehaviour
 
     [Inject] private readonly DataHandler dataHandler;
     [Inject] private readonly RandomGenerator random;
+    [Inject] private readonly GlobalEventManager events;
 
     private void Awake()
     {
@@ -119,7 +119,15 @@ public class RaceManager : MonoBehaviour
         }
         else
         {
-            bool win = winPlayer == pickedPlayer;
+            bool win = (winPlayer == pickedPlayer);
+            if (win)
+            {
+                events.PlayBonus();
+            }
+            else
+            {
+                events.PlayVibro();
+            }
             resultText.text = win ? resultWin : resultLose;
             resultImage.sprite = win ? winSprite : loseSprite;
             resultPanel.SetActive(true);

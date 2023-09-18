@@ -74,6 +74,7 @@ public class Route : MonoBehaviour
         while (counter <= counterFinish);
 
         events.CheckHighlight();
+        events.PlayBonus();
     }
 
     public void ResetRoute()
