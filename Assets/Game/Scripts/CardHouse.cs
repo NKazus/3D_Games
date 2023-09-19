@@ -1,27 +1,53 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 
 public class CardHouse : MonoBehaviour
 {
     [SerializeField] private CardHouseLayer[] layers;
 
-    private int currentLayer; //if complete layers.Lenght => win else complete layer
+    private int layerNumber;
+    private int currentLayer;
 
-    public void AddCard(Action callback)
+    private void Awake()
     {
-        //current layer add card
-        //check completion
-        //if complete win
-        //else callback
+        layerNumber = layers.Length;
+        for (int i = 0; i < layerNumber; i++)
+        {
+            layers[i].InitLayer();
+        }
     }
 
-    public void ResetHouse()
+    private void OnEnable()
     {
-        for(int i = 0; i < layers.Length; i++)
+        ResetHouse(true);
+    }
+
+    public bool AddCard()
+    {
+        if (layers[currentLayer].AddElement())
         {
-            layers[i].ResetLayer();
+            layers[currentLayer].CompleteLayer();
+            currentLayer++;
+        }
+
+        bool finished = currentLayer >= layerNumber;
+        return finished;
+    }
+
+    public void ResetHouse(bool full)
+    {
+        if (full)
+        {
+            DOTween.Kill("card_house");
+            for(int i = 0; i < layerNumber; i++)
+            {
+                layers[i].ResetLayer(true);
+            }
+            currentLayer = 0;
+        }
+        else
+        {
+            layers[currentLayer].ResetLayer(false);
         }
     }
 }

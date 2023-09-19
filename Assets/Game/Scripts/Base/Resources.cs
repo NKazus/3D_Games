@@ -18,7 +18,7 @@ public class Resources : MonoBehaviour
     private void OnEnable()
     {
         playerScore = PlayerPrefs.HasKey("_PlayerScore") ? PlayerPrefs.GetInt("_PlayerScore") : playerScore;
-        inspiration = PlayerPrefs.HasKey("_Inspiration") ? PlayerPrefs.GetInt("_Inspiration") : inspiration;
+        inspiration = 5;// PlayerPrefs.HasKey("_Inspiration") ? PlayerPrefs.GetInt("_Inspiration") : inspiration;
     }
 
     private void OnDisable()

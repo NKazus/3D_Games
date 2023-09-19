@@ -10,9 +10,14 @@ public class Randomizer
         return random.Next(minValue, maxValue);
     }
 
-    public void RandomizeList<T>(List<T> array)
+    public float GenerateFloat(float minValue, float maxValue)
     {
-        int n = array.Count;
+        return minValue + (float) random.NextDouble() * (maxValue - minValue);
+    }
+
+    public void RandomizeArray<T>(T[] array)
+    {
+        int n = array.Length;
         int k;
         T temp;
         while (n > 1)

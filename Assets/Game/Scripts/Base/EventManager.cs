@@ -10,8 +10,7 @@ public class EventManager
     public event Action<bool> SoundSettingsEvent;
 
     public event Action DiceActivationEvent;
-    public event Action<int> WinEvent;
-
+    public event Action WinEvent;
 
     public void SwitchGameState(bool activate)
     {
@@ -43,9 +42,9 @@ public class EventManager
         SoundSettingsEvent?.Invoke(value);
     }
 
-    public void DoWin(int value)
+    public void DoWin()
     {
-        WinEvent?.Invoke(value);
+        WinEvent?.Invoke();
     }
 
     public void ActivateDices()

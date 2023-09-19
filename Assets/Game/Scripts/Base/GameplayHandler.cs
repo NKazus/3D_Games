@@ -65,7 +65,7 @@ public class GameplayHandler : MonoBehaviour
         }
     }
 
-    private void ChangeTextToWin(int points)
+    private void ChangeTextToWin()
     {
         restartIcon.sprite = win;
         restartIcon.SetNativeSize();
