@@ -31283,7 +31283,7 @@ MonoBehaviour:
   toGameplay: {fileID: 1922600207}
   toRules: {fileID: 1972264838}
   toPrivacy: {fileID: 2106902490}
-  privacyURL: 
+  privacyURL: https://spectralcardhouse.com/privacy-policy.html
 --- !u!114 &1440539142
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -31297,7 +31297,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerScore: 10
-  inspiration: 1
+  inspiration: 5
   score: {fileID: 1440539143}
 --- !u!114 &1440539143
 MonoBehaviour:

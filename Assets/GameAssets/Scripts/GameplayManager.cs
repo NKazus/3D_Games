@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
@@ -118,7 +117,6 @@ public class GameplayManager : MonoBehaviour
         {
             options[i].image.color = colorOptions[i].optionColor;
             bool rightOption = colorOptions[i].complementary;
-            Debug.Log(rightOption);
             options[i].onClick.AddListener(() => ChooseOption(rightOption));
         }
 
