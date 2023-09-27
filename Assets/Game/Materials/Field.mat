@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Custom_ShieldShader
+  m_Name: Field
   m_Shader: {fileID: -6465566751694194690, guid: dcb6e670e018044a6b4e0489e11f1da1, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
