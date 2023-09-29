@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70d0520c53bc34f7688ae2d5017b2497, type: 3}
+  m_Name: WallParams
+  m_EditorClassIdentifier: 
+  staticWall: {fileID: 2800000, guid: 4bf18fd8b47f644d5ab375e9083dd15e, type: 3}
+  movingWall: {fileID: 2800000, guid: d52955b0932704bc587e04914dfb4e97, type: 3}
+  staticColor1: {r: 0.7607843, g: 0.28627452, b: 0.90588236, a: 1}
+  staticColor2: {r: 0.8235294, g: 0.5529412, b: 0.90588236, a: 1}
+  movingColor1: {r: 0.3137255, g: 0.54509807, b: 0.90588236, a: 1}
+  movingColor2: {r: 0.5568628, g: 0.6862745, b: 0.8901961, a: 1}

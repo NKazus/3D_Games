@@ -1,43 +1,29 @@
+using DG.Tweening;
 using UnityEngine;
 
 public class MaterialInstance : MonoBehaviour
 {
-    [SerializeField] private Color initialColor;
-    [SerializeField] private Color alternativeColor;
-
     private MeshRenderer meshRenderer;
-    private bool isChanged;
+    private Material target;
 
-    private void Awake()
+    public void Init()
     {
         meshRenderer = GetComponent<MeshRenderer>();
-        Material target = Instantiate(meshRenderer.material);
+        target = Instantiate(meshRenderer.material);
         meshRenderer.material = target;
     }
 
-    private void OnEnable()
+    public void ShiftColor(Color targetColor, Color defaultColor)
     {
-        meshRenderer.material.color = initialColor;
-        isChanged = false;
+        DOTween.Sequence()
+            .SetId("mat_instance")
+            .Append(target.DOColor(targetColor, "_MainColor", 0.1f))
+            .Append(target.DOColor(defaultColor, "_MainColor", 0.1f));
     }
 
-    public bool ChangeColor(bool check = false)
+    public void SetMaterial(Color targetColor, Texture2D targetTexture)
     {
-        bool checkState = isChanged;
-        if (!isChanged)
-        {
-            if (!check)
-            {
-                meshRenderer.material.color = alternativeColor;
-            }
-            isChanged = true;
-        }
-        return checkState;
-    }
-
-    public void ResetColor()
-    {
-        meshRenderer.material.color = initialColor;
-        isChanged = false;
+        target.SetColor("_MainColor", targetColor);
+        target.SetTexture("_AlphaTexture", targetTexture);
     }
 }

@@ -1,0 +1,15 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4847574bbc13b4eb79cc8c5d2bb6b4f3, type: 3}
+  m_Name: WallParamsInstaller
+  m_EditorClassIdentifier: 
+  target: {fileID: 11400000, guid: b6d1b378884d146569d238522c15b686, type: 2}

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
 
-public class MenuVisuals : MonoBehaviour
+public class MenuEffect : MonoBehaviour
 {
     [SerializeField] private Transform[] cells;
     [SerializeField] private Transform player;

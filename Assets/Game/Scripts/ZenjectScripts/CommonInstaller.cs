@@ -6,6 +6,5 @@ public class CommonInstaller : MonoInstaller
     {
         EventInstaller.Install(Container);
         RandomInstaller.Install(Container);
-        PoolInstaller.Install(Container);
     }
 }
