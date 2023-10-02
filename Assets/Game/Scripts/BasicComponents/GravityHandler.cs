@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
 
-public class GameplayHandler : MonoBehaviour
+public class GravityHandler : MonoBehaviour
 {
     [SerializeField] private Button restart;
     [SerializeField] private GameObject restartBg;
@@ -12,7 +12,7 @@ public class GameplayHandler : MonoBehaviour
     private Text restartText;
     private Text restartExtra;
 
-    [Inject] private readonly GlobalEventManager events;
+    [Inject] private readonly GlobalEvents events;
 
     #region MONO
     private void Awake()
@@ -72,7 +72,7 @@ public class GameplayHandler : MonoBehaviour
     private void ChangeTextToWin(int points)
     {
         restartText.text = winText;
-        restartExtra.text = "Funding received: "+ points;
+        restartExtra.text = "Points gained: "+ points;
         restartExtra.enabled = true;
     }
 }

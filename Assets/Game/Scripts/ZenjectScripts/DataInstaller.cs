@@ -3,10 +3,10 @@ using Zenject;
 
 public class DataInstaller : MonoInstaller
 {
-    [SerializeField] DataHandler data;
+    [SerializeField] GameData data;
 
     public override void InstallBindings()
     {
-        Container.Bind<DataHandler>().FromInstance(data).AsSingle().NonLazy();
+        Container.Bind<GameData>().FromInstance(data).AsSingle().NonLazy();
     }
 }

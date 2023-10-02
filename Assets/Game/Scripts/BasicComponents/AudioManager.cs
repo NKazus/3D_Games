@@ -14,7 +14,7 @@ public class AudioManager : MonoBehaviour
 
     private bool vibroEnabled = true;
 
-    [Inject] private readonly GlobalEventManager events;
+    [Inject] private readonly GlobalEvents events;
 
     #region MONO
     private void Awake()

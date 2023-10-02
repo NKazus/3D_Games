@@ -17,8 +17,8 @@ public class MaterialInstance : MonoBehaviour
     {
         DOTween.Sequence()
             .SetId("mat_instance")
-            .Append(target.DOColor(targetColor, "_MainColor", 0.1f))
-            .Append(target.DOColor(defaultColor, "_MainColor", 0.1f));
+            .Append(target.DOColor(targetColor, "_MainColor", 0.4f))
+            .Append(target.DOColor(defaultColor, "_MainColor", 0.4f));
     }
 
     public void SetMaterial(Color targetColor, Texture2D targetTexture)

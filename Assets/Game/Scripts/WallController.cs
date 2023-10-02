@@ -59,8 +59,9 @@ public class WallController : MonoBehaviour
 
     public void MoveWall(WallDirection dir)
     {
-        if(currentDirection == dir || staticDirection == dir)
+        if(currentDirection == dir || (isStaticSet && staticDirection == dir))
         {
+            walls[(int)dir].Blink();
             return;
         }
         walls[(int)currentDirection].ResetWall();
@@ -70,7 +71,7 @@ public class WallController : MonoBehaviour
 
     public bool ApplyGravity(WallDirection dir)//true if blocked
     {
-        if(currentDirection == dir || staticDirection == dir)
+        if(currentDirection == dir || (isStaticSet && staticDirection == dir))
         {
             walls[(int)dir].Blink();
             return true;

@@ -7,7 +7,7 @@ public class AudioSettings : MonoBehaviour
     [SerializeField] private Toggle musicToggle;
     [SerializeField] private Toggle vibroToggle;
 
-    [Inject] private readonly GlobalEventManager events;
+    [Inject] private readonly GlobalEvents events;
 
     #region MONO
     private void OnEnable()

@@ -1,6 +1,6 @@
 using System;
 
-public class GlobalEventManager
+public class GlobalEvents
 {
     public event Action<bool> GameStateEvent;
     public event Action VibroEvent;
