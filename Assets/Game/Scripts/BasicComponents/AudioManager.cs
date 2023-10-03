@@ -8,9 +8,9 @@ public class AudioManager : MonoBehaviour
 
     [SerializeField] private AudioSource ambientMusic;
     [SerializeField] private AudioSource rewardSound;
-    [SerializeField] private AudioSource bonusSound;
-    [SerializeField] private AudioSource healSound;
-    [SerializeField] private AudioSource boostSound;
+    [SerializeField] private AudioSource wallSound;
+    [SerializeField] private AudioSource staticWallSound;
+    [SerializeField] private AudioSource gravitySound;
 
     private bool vibroEnabled = true;
 
@@ -26,8 +26,8 @@ public class AudioManager : MonoBehaviour
     {
         events.VibroEvent += PlayVibro;
         events.RewardSoundEvent += PlayReward;
-        events.BonusSoundEvent += PlayBonus;
-        events.BuffSoundEvent += PlayBuff;
+        events.GravitySoundEvent += PlayGravity;
+        events.WallSoundEvent += PlayWall;
   
         events.VibroSettingsEvent += TurnVibration;
         events.SoundSettingsEvent += TurnSound;
@@ -49,8 +49,8 @@ public class AudioManager : MonoBehaviour
     {
         events.VibroEvent -= PlayVibro;
         events.RewardSoundEvent -= PlayReward;
-        events.BonusSoundEvent -= PlayBonus;
-        events.BuffSoundEvent -= PlayBuff;
+        events.GravitySoundEvent -= PlayGravity;
+        events.WallSoundEvent -= PlayWall;
 
         events.VibroSettingsEvent -= TurnVibration;
         events.SoundSettingsEvent -= TurnSound;
@@ -71,21 +71,21 @@ public class AudioManager : MonoBehaviour
         rewardSound.Play();
     }
 
-    private void PlayBonus()
+    private void PlayGravity()
     {
-        bonusSound.Play();
+        gravitySound.Play();
     }
 
-    private void PlayBuff(bool speed)
+    private void PlayWall(bool isStatic)
     {
-        if (speed)
+        if(isStatic)
         {
-            boostSound.Play();
+            staticWallSound.Play();
         }
         else
         {
-            healSound.Play();
-        }
+            wallSound.Play();
+        }        
     }
 
     #region SETTINGS

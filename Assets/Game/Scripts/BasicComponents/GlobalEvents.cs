@@ -5,8 +5,8 @@ public class GlobalEvents
     public event Action<bool> GameStateEvent;
     public event Action VibroEvent;
     public event Action RewardSoundEvent;
-    public event Action BonusSoundEvent;
-    public event Action<bool> BuffSoundEvent;
+    public event Action GravitySoundEvent;
+    public event Action<bool> WallSoundEvent;
     public event Action<bool> VibroSettingsEvent;
     public event Action<bool> SoundSettingsEvent;
 
@@ -30,14 +30,14 @@ public class GlobalEvents
         RewardSoundEvent?.Invoke();
     }
 
-    public void PlayBonus()
+    public void PlayGravity()
     {
-        BonusSoundEvent?.Invoke();
+        GravitySoundEvent?.Invoke();
     }
 
-    public void PlayBuff(bool isSpeed)
+    public void PlayWall(bool isStatic)
     {
-        BuffSoundEvent?.Invoke(isSpeed);
+        WallSoundEvent?.Invoke(isStatic);
     }
 
     public void SetVibro(bool value)

@@ -39,6 +39,7 @@ public class GravityMode : MonoBehaviour
         events.GameStateEvent += ActivateGameplay;
         data.UpdateResource(GameResource.Score, 0);
         data.UpdateResource(GameResource.Walls, 0);
+        data.UpdateRounds(0);
     }
 
     private void OnDisable()
@@ -129,13 +130,13 @@ public class GravityMode : MonoBehaviour
     private void SetDirection(WallDirection dir)
     {
         wallController.MoveWall(dir);
-        //sound
+        events.PlayWall(false);
     }
 
     private void SetStaticDirection(WallDirection dir)
     {
         wallController.SetStatic(dir);
-        //sound
+        events.PlayWall(true);
         data.UpdateResource(GameResource.Walls, -1);
         SwitchStaticControls();
         staticWallButton.onClick.RemoveListener(SwitchStaticControls);
@@ -153,7 +154,6 @@ public class GravityMode : MonoBehaviour
         SwitchListeners(false);
         WallDirection newDirection = GenerateGravity();
         bool blockedGravity = wallController.ApplyGravity(newDirection);
-        //sound
         if (!blockedGravity)
         {
             Vector3 shiftDir = newDirection switch
@@ -165,6 +165,7 @@ public class GravityMode : MonoBehaviour
                 _ => throw new NotSupportedException()
             };
             blobController.MoveBlob(shiftDir, CalculateTurn);
+            events.PlayGravity();
         }
         else
         {
@@ -182,7 +183,7 @@ public class GravityMode : MonoBehaviour
         if (!isBlobInside)
         {
             data.UpdateResource(GameResource.Score, -5);
-            //sound
+            events.PlayVibro();
             shield.ShiftColor(true);
             Invoke("Finish", 1f);
             return;
@@ -194,7 +195,7 @@ public class GravityMode : MonoBehaviour
         {
             events.DoWin(10);
             data.UpdateResource(GameResource.Score, 10);
-            //sound
+            events.PlayReward();
             Invoke("Finish", 1f);
         }
         else
