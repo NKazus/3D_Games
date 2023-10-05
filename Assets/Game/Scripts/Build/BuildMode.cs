@@ -107,7 +107,6 @@ public class BuildMode : MonoBehaviour
     private void GenerateValues()
     {
         currentId = scaleGenerator.GenerateId(bricks.Length);
-        Debug.Log("id:"+ currentId);
         for (int i = 0; i < bricks.Length; i++)
         {
             bricks[i].SetScale(scaleGenerator.GenerateDefault(), true);
