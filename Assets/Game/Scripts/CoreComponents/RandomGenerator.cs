@@ -14,15 +14,14 @@ public class RandomGenerator
         return minValue + (float) random.NextDouble() * (maxValue - minValue);
     }
 
-    public void RandomizeArray<T>(T[] array, bool all = false)
+    public void RandomizeArray<T>(T[] array)
     {
-        int extra = all ? 0 : 1;
         int n = array.Length;
         int k;
         T temp;
-        while (n > 1 + extra)
+        while (n > 1)
         {
-            k = random.Next(extra, n--);
+            k = random.Next(0, n--);
             temp = array[n];
             array[n] = array[k];
             array[k] = temp;

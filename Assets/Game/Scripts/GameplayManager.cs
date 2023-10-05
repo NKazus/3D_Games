@@ -14,12 +14,23 @@ public class GameplayManager : MonoBehaviour
     [SerializeField] private HighlightController highlight;
 
     private int stage;
+    private int[] colors;
 
     private bool move;
     private bool win;
 
     [Inject] private readonly ResourceHandler resources;
     [Inject] private readonly EventManager eventManager;
+    [Inject] private readonly RandomGenerator random;
+
+    private void Awake()
+    {
+        colors = new int[4];
+        for(int i = 0; i < 4; i++)
+        {
+            colors[i] = i;
+        }
+    }
 
     private void OnEnable()
     {
@@ -61,8 +72,10 @@ public class GameplayManager : MonoBehaviour
             {
                 pins[i].ResetPin();
             }
+
+            random.RandomizeArray(colors);
             stage = 0;
-            highlight.UpdateHighlight(stage);
+            highlight.UpdateHighlight(colors[stage]);
             stick.SetStick(stage, StickCallback);
 
             eventManager.ButtonPressEvent += CheckStage;
@@ -108,7 +121,7 @@ public class GameplayManager : MonoBehaviour
         }
         if (move)
         {
-            highlight.UpdateHighlight(stage);
+            highlight.UpdateHighlight(colors[stage]);
             stick.SetStick(stage, StickCallback);
             move = false;
         }
@@ -121,7 +134,7 @@ public class GameplayManager : MonoBehaviour
 
     private void CheckStage(int id)
     {
-        if(stage == id)
+        if(colors[stage] == id)
         {
             pins[stage].DeactivatePin();
             tryButton.image.color = Color.gray;
