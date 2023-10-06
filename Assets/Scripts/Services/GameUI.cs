@@ -2,7 +2,7 @@ using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GameUIManager : MonoBehaviour
+public class GameUI : MonoBehaviour
 {
     [SerializeField] private Text scoreUI;
     [SerializeField] private Text wallsUI;

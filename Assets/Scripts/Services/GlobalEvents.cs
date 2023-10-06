@@ -2,7 +2,7 @@ using System;
 
 public class GlobalEvents
 {
-    public event Action<bool> GameStateEvent;
+    public event Action<bool> GameEvent;
     public event Action VibroEvent;
     public event Action RewardSoundEvent;
     public event Action GravitySoundEvent;
@@ -15,9 +15,9 @@ public class GlobalEvents
     public event Action<int, bool> BuffEvent;
     public event Action<int> BuffMergeEvent;
 
-    public void SwitchGameState(bool activate)
+    public void SwitchGravityMode(bool activate)
     {
-        GameStateEvent?.Invoke(activate);
+        GameEvent?.Invoke(activate);
     }
 
     public void PlayVibro()

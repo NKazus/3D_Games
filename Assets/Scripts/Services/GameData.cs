@@ -7,7 +7,7 @@ public enum GameResource
 }
 public class GameData : MonoBehaviour
 {
-    [SerializeField] private GameUIManager ui;
+    [SerializeField] private GameUI ui;
     [SerializeField] private int gameScore;
     [SerializeField] private int wallNumber;
 
@@ -16,17 +16,17 @@ public class GameData : MonoBehaviour
 
     private void OnEnable()
     {
-        gameScore = PlayerPrefs.HasKey("_GameScore") ? PlayerPrefs.GetInt("_GameScore") : gameScore;
-        wallNumber = PlayerPrefs.HasKey("_WallNumber") ? PlayerPrefs.GetInt("_WallNumber") : wallNumber;
+        gameScore = PlayerPrefs.HasKey("_GL_Score") ? PlayerPrefs.GetInt("_GL_Score") : gameScore;
+        wallNumber = PlayerPrefs.HasKey("_GL_Walls") ? PlayerPrefs.GetInt("_GL_Walls") : wallNumber;
     }
 
     private void OnDisable()
     {
-        PlayerPrefs.SetInt("_GameScore", gameScore);
-        PlayerPrefs.SetInt("_WallNumber", wallNumber);
+        PlayerPrefs.SetInt("_GL_Score", gameScore);
+        PlayerPrefs.SetInt("_GL_Walls", wallNumber);
     }
 
-    public void UpdateResource(GameResource target, int value)
+    public void UpdateResourceValue(GameResource target, int value)
     {
         switch (target)
         {
@@ -46,7 +46,7 @@ public class GameData : MonoBehaviour
         }
     }
 
-    public void UpdateRounds(int value)
+    public void UpdateRoundsValue(int value)
     {
         ui.UpdateRoundsValue(value);
     }

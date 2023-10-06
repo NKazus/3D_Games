@@ -22,7 +22,7 @@ public class WallController : MonoBehaviour
 
     private bool isStaticSet;
 
-    [Inject] private readonly RandomGenerator random; 
+    [Inject] private readonly RandomProvider random; 
 
     private void Awake()
     {

@@ -1,0 +1,18 @@
+{
+    "name": "GameGravityMode",
+    "rootNamespace": "",
+    "references": [
+        "GUID:46aabba0a77ec4b9881028516f9ce053",
+        "GUID:ba3508d7f6bb542d58ae0bfc854a4d41",
+        "GUID:bdde0d341ade74afd905112956aca0d1"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

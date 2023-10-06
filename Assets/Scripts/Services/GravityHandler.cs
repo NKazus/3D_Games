@@ -23,7 +23,7 @@ public class GravityHandler : MonoBehaviour
 
     private void OnEnable()
     {
-        events.GameStateEvent += ChangeGameState;
+        events.GameEvent += ChangeGameState;
         events.WinEvent += ChangeTextToWin;
 
         Invoke("Restart", 1f);
@@ -35,10 +35,10 @@ public class GravityHandler : MonoBehaviour
         {
             CancelInvoke("Restart");
         }
-        events.SwitchGameState(false);
+        events.SwitchGravityMode(false);
 
         events.WinEvent -= ChangeTextToWin;
-        events.GameStateEvent -= ChangeGameState;
+        events.GameEvent -= ChangeGameState;
 
         restart.gameObject.SetActive(false);
         restartBg.SetActive(false);
@@ -48,7 +48,7 @@ public class GravityHandler : MonoBehaviour
 
     private void Restart()
     {
-        events.SwitchGameState(true);
+        events.SwitchGravityMode(true);
     }
 
     private void ChangeGameState(bool isActive)

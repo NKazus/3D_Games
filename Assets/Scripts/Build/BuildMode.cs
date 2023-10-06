@@ -39,8 +39,8 @@ public class BuildMode : MonoBehaviour
     {
         ActivateBricks(false);
 
-        data.UpdateResource(GameResource.Score, 0);
-        data.UpdateResource(GameResource.Walls, 0);
+        data.UpdateResourceValue(GameResource.Score, 0);
+        data.UpdateResourceValue(GameResource.Walls, 0);
         Restart();
         restartButton.onClick.AddListener(Restart);
     }
@@ -54,7 +54,7 @@ public class BuildMode : MonoBehaviour
     private void InitCallback(int id)
     {
         currentRound++;
-        data.UpdateRounds(currentRound);
+        data.UpdateRoundsValue(currentRound);
         initialText.enabled = false;
         ActivateBricks(false);
         scaleGenerator.SetScale(bricks[id].GetScale());
@@ -69,7 +69,7 @@ public class BuildMode : MonoBehaviour
     {
         ActivateBricks(false);
         currentRound++;
-        data.UpdateRounds(currentRound);
+        data.UpdateRoundsValue(currentRound);
         if (id == currentId)
         {
             if (currentRound >= 10)
@@ -138,10 +138,10 @@ public class BuildMode : MonoBehaviour
     private void Finish(bool win)
     {
         pickText.enabled = false;
-        data.UpdateResource(GameResource.Score, -5);
+        data.UpdateResourceValue(GameResource.Score, -5);
         if (win)
         {
-            data.UpdateResource(GameResource.Walls, 1);
+            data.UpdateResourceValue(GameResource.Walls, 1);
             events.PlayWall(true);
         }
         else
@@ -155,7 +155,7 @@ public class BuildMode : MonoBehaviour
     private void Restart()
     {
         currentRound = 0;
-        data.UpdateRounds(currentRound);
+        data.UpdateRoundsValue(currentRound);
         restartPanel.SetActive(false);
         ResetBricks();
         if(data.GameScore >= 5)

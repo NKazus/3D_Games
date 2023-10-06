@@ -26,7 +26,7 @@ public class GravityMode : MonoBehaviour
     private bool staticControlActive;
 
     [Inject] private readonly GlobalEvents events;
-    [Inject] private readonly RandomGenerator random;
+    [Inject] private readonly RandomProvider random;
     [Inject] private readonly GameData data;
 
     private void Awake()
@@ -36,15 +36,15 @@ public class GravityMode : MonoBehaviour
 
     private void OnEnable()
     {
-        events.GameStateEvent += ActivateGameplay;
-        data.UpdateResource(GameResource.Score, 0);
-        data.UpdateResource(GameResource.Walls, 0);
-        data.UpdateRounds(0);
+        events.GameEvent += ActivateGameplay;
+        data.UpdateResourceValue(GameResource.Score, 0);
+        data.UpdateResourceValue(GameResource.Walls, 0);
+        data.UpdateRoundsValue(0);
     }
 
     private void OnDisable()
     {
-        events.GameStateEvent -= ActivateGameplay;
+        events.GameEvent -= ActivateGameplay;
         staticWallButton.onClick.RemoveListener(SwitchStaticControls);
         SwitchListeners(false);
 
@@ -61,7 +61,7 @@ public class GravityMode : MonoBehaviour
         if (activate)
         {
             currentTurn = 0;
-            data.UpdateRounds(currentTurn);
+            data.UpdateRoundsValue(currentTurn);
             wallController.ResetAll();
             wallController.ResetCurrent();
             blobController.ResetBlob();
@@ -137,7 +137,7 @@ public class GravityMode : MonoBehaviour
     {
         wallController.SetStatic(dir);
         events.PlayWall(true);
-        data.UpdateResource(GameResource.Walls, -1);
+        data.UpdateResourceValue(GameResource.Walls, -1);
         SwitchStaticControls();
         staticWallButton.onClick.RemoveListener(SwitchStaticControls);
         staticWallButton.image.DOFade(0.5f, 0.4f);
@@ -182,19 +182,19 @@ public class GravityMode : MonoBehaviour
     {
         if (!isBlobInside)
         {
-            data.UpdateResource(GameResource.Score, -5);
+            data.UpdateResourceValue(GameResource.Score, -5);
             events.PlayVibro();
             shield.ShiftColor(true);
             Invoke("Finish", 1f);
             return;
         }
         currentTurn++;
-        data.UpdateRounds(currentTurn);
+        data.UpdateRoundsValue(currentTurn);
 
         if (currentTurn >= turns)
         {
             events.DoWin(10);
-            data.UpdateResource(GameResource.Score, 10);
+            data.UpdateResourceValue(GameResource.Score, 10);
             events.PlayReward();
             Invoke("Finish", 1f);
         }
@@ -207,6 +207,6 @@ public class GravityMode : MonoBehaviour
 
     private void Finish()
     {
-        events.SwitchGameState(false);
+        events.SwitchGravityMode(false);
     }
 }

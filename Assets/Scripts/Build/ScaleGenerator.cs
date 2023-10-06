@@ -11,7 +11,7 @@ public class ScaleGenerator : MonoBehaviour
 
     private Vector3 targetScale;
 
-    [Inject] private readonly RandomGenerator random;
+    [Inject] private readonly RandomProvider random;
 
     public void SetScale(Vector3 scaleValue)
     {
