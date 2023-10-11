@@ -3,44 +3,37 @@ using UnityEngine;
 public class ResourceController : MonoBehaviour
 {
     [SerializeField] private ScoreManager scoreManager;
-    [SerializeField] private int treasureScore;
-    [SerializeField] private int sticks;
+    [SerializeField] private int gameProgress;
+    [SerializeField] private bool scanActive;
 
-    public int Sticks => sticks;
-    public int TreasureScore => treasureScore;
+    public bool ScanActive => scanActive;
+    public int GameProgress => gameProgress;
 
     private void OnEnable()
     {
-        treasureScore = PlayerPrefs.HasKey("_TreasureScore") ? PlayerPrefs.GetInt("_TreasureScore") : treasureScore;
-        sticks = PlayerPrefs.HasKey("_Sticks") ? PlayerPrefs.GetInt("_Sticks") : sticks;
+        gameProgress = PlayerPrefs.HasKey("_GameProgress") ? PlayerPrefs.GetInt("_GameProgress") : gameProgress;
+        scanActive = PlayerPrefs.HasKey("_ScanActive") ? (PlayerPrefs.GetInt("_ScanActive") == 1) : scanActive;
     }
 
     private void OnDisable()
     {
-        PlayerPrefs.SetInt("_TreasureScore", treasureScore);
-        PlayerPrefs.SetInt("_Sticks", sticks);
+        PlayerPrefs.SetInt("_GameProgress", gameProgress);
+        PlayerPrefs.SetInt("_ScanActive", scanActive ? 1 : 0);
     }
 
-    public void UpdateSticks(int value)
+    public void SetScanStatus(bool value)
     {
-        if (sticks < 1)
-        {
-            sticks = 1;
-            scoreManager.UpdateSticks(sticks);
-            return;
-        }
-        sticks += value;
-        scoreManager.UpdateSticks(sticks);
+        scanActive = value;
     }
 
-    public void UpdateTreasure(int value)
+    public void UpdateProgress(int value)
     {
-        treasureScore += value;
-        if(treasureScore < 0)
+        gameProgress += value;
+        if(gameProgress < 0)
         {
-            treasureScore = 0;
+            gameProgress = 0;
         }
-        scoreManager.UpdateScore(treasureScore);
+        scoreManager.UpdateScore(gameProgress);
     }
 
     public void UpdateTries(int value)

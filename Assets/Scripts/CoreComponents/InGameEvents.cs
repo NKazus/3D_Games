@@ -13,8 +13,6 @@ public class InGameEvents
     public event Action<bool> VibroSettingsEvent;
     public event Action<bool> SoundSettingsEvent;
 
-    public event Action<int> ButtonPressEvent;
-    public event Action StickEvent;
 
     public void SwitchGameState(bool activate)
     {
@@ -54,15 +52,5 @@ public class InGameEvents
     public void DoWin()
     {
         WinEvent?.Invoke();
-    }
-
-    public void PressButton(int buttonId)
-    {
-        ButtonPressEvent?.Invoke(buttonId);
-    }
-
-    public void BreakStick()
-    {
-        StickEvent?.Invoke();
     }
 }

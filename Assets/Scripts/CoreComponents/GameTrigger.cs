@@ -28,7 +28,7 @@ public class GameTrigger : MonoBehaviour
         eventManager.GameStateEvent += ChangeGameState;
         eventManager.WinEvent += ChangeTextToWin;
 
-        Restart();
+        ChangeGameState(true);
     }
 
     private void OnDisable()
