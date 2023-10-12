@@ -33,13 +33,18 @@ public class Scanner : MonoBehaviour
         return currentUse < scansNumber;
     }
 
-    public void ResetScanner(bool active)
+    public void ResetScanner(bool active, bool hard = false)
     {
-        scanValue.text = "0";
+        
         isActive = active;
         scanStatus.text = isActive ? statusActive : statusInactive;
         scanStatus.color = isActive ? colorActive : colorInactive;
-        currentUse = 0;
-        scanUses.text = currentUse.ToString();
+
+        if (hard)
+        {
+            scanValue.text = "0";
+            currentUse = 0;
+            scanUses.text = currentUse.ToString();
+        }
     }
 }

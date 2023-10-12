@@ -6,7 +6,15 @@ public class CageManager : MonoBehaviour
 {
     [SerializeField] private Button startButton;
 
+    [SerializeField] private GameObject controlPanel;
+    [SerializeField] private Button upControlM;
+    [SerializeField] private Button downControlM;
+    [SerializeField] private Button upControlR;
+    [SerializeField] private Button downControlR;
+
     [SerializeField] private Cage cage;
+    [SerializeField] private Timer timer;
+    [SerializeField] private int breakAttempts;
 
     [SerializeField] private GameObject scanPanel;
     [SerializeField] private Scanner scanner;
@@ -15,31 +23,33 @@ public class CageManager : MonoBehaviour
     private int winMStage;
     private int winRStage;
 
-    private bool move;
-    private bool win;
+    private int currentAttempt;
+    private bool activePhase;
 
     [Inject] private readonly ResourceController resources;
-    [Inject] private readonly InGameEvents eventManager;
+    [Inject] private readonly InGameEvents globalEvents;
     [Inject] private readonly Randomizer random;
-
-    private void Awake()
-    {
-        
-    }
 
     private void OnEnable()
     {
         resources.UpdateProgress(0);
 
         startButton.gameObject.SetActive(true);
+        SetControls(false, false, true);
         startButton.onClick.AddListener(Initialize);
 
+        scanPanel.SetActive(false);
         scanButton.onClick.AddListener(Scan);
+
+        SwitchControlsListeners(true);
     }
 
     private void OnDisable()
     {
-        eventManager.GameStateEvent -= Activate;
+        timer.Deactivate();
+        SwitchControlsListeners(false);
+
+        globalEvents.GameStateEvent -= Activate;
 
         startButton.onClick.RemoveListener(Initialize);
         scanButton.onClick.RemoveListener(Scan);
@@ -48,8 +58,15 @@ public class CageManager : MonoBehaviour
     private void Initialize()
     {
         startButton.gameObject.SetActive(false);
+        SetControls(true, true, true);
+
+        timer.SetCallback(TimerCallback);
+        cage.SetPhaseCallback(ActivePhaseCallback);
+        cage.SetRotatorCallback(RotationCallback);
+        cage.SetSwitchCallback(BeginRotationCallback);
+
         Activate(true);
-        eventManager.GameStateEvent += Activate;        
+        globalEvents.GameStateEvent += Activate;        
     }
 
     private void Activate(bool activate)
@@ -58,17 +75,18 @@ public class CageManager : MonoBehaviour
         {
             scanPanel.SetActive(true);
             scanButton.interactable = true;
-            scanner.ResetScanner(resources.ScanActive);
+            scanner.ResetScanner(resources.ScanActive, true);
 
             cage.GenerateWinStage(random, out winMStage, out winRStage);
-            cage.ResetCage();
-            cage.SetControls(true);
-
+            Debug.Log("m:"+ winMStage + " r:" + winRStage);
+            cage.ResetCage(true);
+            SetControls(true, true);
+            currentAttempt = 0;
             
         }
         else
         {
-            cage.SetControls(false);
+            SetControls(false, false);
             scanPanel.SetActive(false);
         }
     }
@@ -77,7 +95,98 @@ public class CageManager : MonoBehaviour
     {
         int value = cage.GetCurrentStage();
         bool scannerEnabled = scanner.Scan(random, value == winMStage);
-        scanButton.interactable = scannerEnabled;
+        if (!scannerEnabled)
+        {
+            scanButton.interactable = false;
+            resources.SetScanStatus(false);
+        }
     }
-    
+
+    private void RotationCallback(int rotationStage)
+    {
+        Debug.Log("rotation");
+        if (!activePhase)
+        {
+            return;
+        }
+        if((cage.GetCurrentStage() == winMStage) && (rotationStage == winRStage))
+        {
+            activePhase = false;
+            timer.Deactivate();
+            cage.Break();
+            Debug.Log("win");
+            resources.UpdateProgress(2);
+            resources.SetScanStatus(false);
+            globalEvents.DoWin();
+            globalEvents.SwitchGameState(false);
+        }
+        else
+        {
+            SetControls(false, true);
+        }
+    }
+
+    private void BeginRotationCallback()
+    {
+        SetControls(false, false);
+        Debug.Log("rot_begin_iter");
+    }
+
+    private void TimerCallback()
+    {
+        Debug.Log("timeout");
+        activePhase = false;
+        cage.ResetCage();
+        currentAttempt++;
+        if(currentAttempt >= breakAttempts)
+        {
+            cage.Fail();
+            SetControls(false, false);
+            Debug.Log("lose");
+            globalEvents.SwitchGameState(false);
+        }
+        else
+        {
+            SetControls(true, true);
+        }
+    }
+
+    private void ActivePhaseCallback()
+    {
+        timer.Activate();
+        activePhase = true;
+    }
+
+    private void SwitchControlsListeners(bool active)
+    {
+        if (active)
+        {
+            upControlM.onClick.AddListener(() => cage.SwitchCage(CageAction.MoveUp));
+            downControlM.onClick.AddListener(() => cage.SwitchCage(CageAction.MoveDown));
+            upControlR.onClick.AddListener(() => cage.SwitchCage(CageAction.RotateFast));
+            downControlR.onClick.AddListener(() => cage.SwitchCage(CageAction.RotateSlow));
+        }
+        else
+        {
+            upControlM.onClick.RemoveAllListeners();
+            downControlM.onClick.RemoveAllListeners();
+            upControlR.onClick.RemoveAllListeners();
+            downControlR.onClick.RemoveAllListeners();
+        }
+    }
+
+    private void SetControls(bool mActive, bool rActive, bool visuals = false)
+    {
+        if (visuals)
+        {
+            controlPanel.SetActive(mActive);
+        }
+        else
+        {
+            upControlM.interactable = downControlM.interactable = mActive;
+            upControlR.interactable = downControlR.interactable = rActive;
+        }
+        
+    }
+
 }

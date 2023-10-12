@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 using Zenject;
 
@@ -8,21 +7,24 @@ public class Rotator : MonoBehaviour
     [SerializeField] private float[] rotationStages;
 
     private Transform ringTransform;
+    private Quaternion ringRotation;
 
     private int currentStage;
-    private bool isActive;
 
     private float rotationSpeed;
+    private System.Action<int> rotationCallback;
 
     [Inject] private UpdateController updateController;
 
     private void Awake()
     {
         ringTransform = transform;
+        ringRotation = transform.rotation;
     }
 
     private void OnEnable()
     {
+        ringTransform.rotation = ringRotation;
         updateController.FixedUpdateEvent += Rotate;
     }
 
@@ -33,7 +35,12 @@ public class Rotator : MonoBehaviour
 
     private void Rotate()
     {
-        ringTransform.Rotate(0, rotationSpeed * Time.fixedDeltaTime, 0, Space.Self);
+        ringTransform.RotateAround(new Vector3(0, ringTransform.position.y, 0), Vector3.up, rotationSpeed * Time.fixedDeltaTime);
+    }
+
+    public void SetCallback(System.Action<int> callback)
+    {
+        rotationCallback = callback;
     }
 
     public int GetRotationStagesMax()
@@ -41,35 +48,42 @@ public class Rotator : MonoBehaviour
         return rotationStages.Length;
     }
 
-    public int GeRotationStagesCurrent()
+    public int GetRotationStagesCurrent()
     {
         return currentStage;
     }
 
-    public int RotateFaster()
+    public void RotateFaster()
     {
         if(currentStage < rotationStages.Length - 1)
         {
             currentStage++;
-            rotationSpeed = rotationStages[currentStage];
-        }        
-        return currentStage;
+            DOTween.To(() => rotationSpeed, x => rotationSpeed = x, rotationStages[currentStage], 1f)
+                .OnComplete(() => rotationCallback(currentStage));
+        }
     }
 
-    public int RotateSlower()
+    public void RotateSlower()
     {
         if(currentStage > 0)
         {
             currentStage--;
-            rotationSpeed = rotationStages[currentStage];
+            DOTween.To(() => rotationSpeed, x => rotationSpeed = x, rotationStages[currentStage], 1f)
+                .OnComplete(() => rotationCallback(currentStage));
         }
-        return currentStage;
+        else
+        {
+            rotationCallback(currentStage);
+        }
     }
 
-    public void ResetRotator()
+    public void ResetRotator(bool hard)
     {
-        isActive = false;
         currentStage = 0;
         rotationSpeed = rotationStages[currentStage];
+        if (hard)
+        {
+            ringTransform.rotation = ringRotation;
+        }
     }
 }

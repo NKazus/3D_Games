@@ -6,12 +6,9 @@ public class GameTrigger : MonoBehaviour
 {
     [SerializeField] private Button restart;
     [SerializeField] private GameObject restartBg;
-    [SerializeField] private Sprite win;
-    [SerializeField] private Sprite lose;
     [SerializeField] private string winText;
     [SerializeField] private string loseText;
 
-    private Image restartIcon;
     private Text restartText;
 
     [Inject] private readonly InGameEvents eventManager;
@@ -19,8 +16,7 @@ public class GameTrigger : MonoBehaviour
     #region MONO
     private void Awake()
     {
-        restartIcon = restartBg.transform.GetChild(1).GetComponent<Image>();
-        restartText = restartBg.transform.GetChild(2).GetComponent<Text>();
+        restartText = restartBg.transform.GetChild(1).GetComponent<Text>();
     }
 
     private void OnEnable()
@@ -60,9 +56,7 @@ public class GameTrigger : MonoBehaviour
         else
         {
             restart.gameObject.SetActive(false);
-            restartIcon.sprite = lose;
             restartText.text = loseText;
-            restartIcon.SetNativeSize();
             restartBg.SetActive(false);
             restart.onClick.RemoveListener(Restart);
         }
@@ -70,8 +64,6 @@ public class GameTrigger : MonoBehaviour
 
     private void ChangeTextToWin()
     {
-        restartIcon.sprite = win;
-        restartIcon.SetNativeSize();
         restartText.text = winText;
     }
 }

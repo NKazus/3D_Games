@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
 
@@ -8,12 +6,19 @@ public class Mover : MonoBehaviour
     [SerializeField] private float[] movementStages;
 
     private Transform ringTransform;
+    private Vector3 ringPosition;
 
     private int currentStage;
 
     private void Awake()
     {
         ringTransform = transform;
+        ringPosition = ringTransform.position;
+    }
+
+    private void OnEnable()
+    {
+        ringTransform.position = ringPosition;
     }
 
     public int GetMovementStagesMax()
@@ -46,8 +51,12 @@ public class Mover : MonoBehaviour
         return currentStage;
     }
 
-    public void ResetMover()
+    public void ResetMover(bool hard)
     {
+        if (hard)
+        {
+            ringTransform.position = ringPosition;
+        }
         currentStage = 0;
         ringTransform.DOLocalMoveY(movementStages[currentStage], 0.5f);
     }

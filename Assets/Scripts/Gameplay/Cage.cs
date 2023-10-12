@@ -1,37 +1,36 @@
 using UnityEngine;
-using UnityEngine.UI;
 
-
+public enum CageAction
+{
+    MoveUp,
+    MoveDown,
+    RotateFast,
+    RotateSlow
+}
 public class Cage : MonoBehaviour
 {
     [SerializeField] private CageHighlight highlight;
     [SerializeField] private Rotator rotator;
     [SerializeField] private Mover mover;
+    [SerializeField] private ParticleSystem explosion;
+    [SerializeField] private MeshRenderer glass;
 
-    [SerializeField] private Button upControlM;
-    [SerializeField] private Button downControlM;
-    [SerializeField] private Button upControlR;
-    [SerializeField] private Button downControlR;
+    private System.Action activePhaseCallback;
+    private System.Action switchRotationCallback;
 
-    private void OnEnable()
+    public void SetPhaseCallback(System.Action callback)
     {
-        upControlM.onClick.AddListener(() => mover.MoveUp());
-        downControlM.onClick.AddListener(() => mover.MoveDown());
-        upControlR.onClick.AddListener(() => rotator.RotateFaster());
-        downControlR.onClick.AddListener(() => rotator.RotateSlower());
+        activePhaseCallback = callback;
     }
 
-    private void OnDisable()
+    public void SetSwitchCallback(System.Action callback)
     {
-        upControlM.onClick.RemoveAllListeners();
-        downControlM.onClick.RemoveAllListeners();
-        upControlR.onClick.RemoveAllListeners();
-        downControlR.onClick.RemoveAllListeners();
+        switchRotationCallback = callback;
     }
 
-    public void SetControls(bool active)
+    public void SetRotatorCallback(System.Action<int> callback)
     {
-        upControlM.interactable = downControlM.interactable = upControlR.interactable = downControlR.interactable = active;
+        rotator.SetCallback(callback);
     }
 
     public void GenerateWinStage(Randomizer random, out int mStage, out int rStage)
@@ -45,15 +44,52 @@ public class Cage : MonoBehaviour
         return mover.GetMovementStageCurrent();
     }
 
-    public void ActivateCage()
+    public void SwitchCage(CageAction action)
     {
-
+        switch (action)
+        {
+            case CageAction.MoveUp:
+                mover.MoveUp();
+                break;
+            case CageAction.MoveDown:
+                mover.MoveDown();
+                break;
+            case CageAction.RotateFast:
+                switchRotationCallback();
+                if(rotator.GetRotationStagesCurrent() == 0)
+                {
+                    activePhaseCallback();
+                    highlight.SetHighlight(Highlight.Active);
+                }
+                rotator.RotateFaster();
+                break;
+            case CageAction.RotateSlow:
+                rotator.RotateSlower();
+                break;
+            default: throw new System.NotSupportedException();
+        }
     }
 
-    public void ResetCage()
+    public void ResetCage(bool hard = false)
     {
         highlight.SetHighlight(Highlight.Normal);
-        rotator.ResetRotator();
-        mover.ResetMover();
+        rotator.ResetRotator(hard);
+        if (hard)
+        {
+            glass.enabled = true;
+            mover.ResetMover(hard);
+        }
+    }
+
+    public void Break()
+    {
+        highlight.SetHighlight(Highlight.Normal);
+        glass.enabled = false;
+        explosion.Play();
+    }
+
+    public void Fail()
+    {
+        highlight.SetHighlight(Highlight.Failed);
     }
 }
