@@ -26,7 +26,7 @@ public class ScannerSetup : MonoBehaviour
     private const float PATH_VALUE = 1f;
 
     [Inject] private readonly ResourceController resources;
-    [Inject] private readonly InGameEvents eventManager;
+    [Inject] private readonly InGameEvents gameEvents;
     [Inject] private readonly Randomizer randomGenerator;
 
     private void OnEnable()
@@ -132,14 +132,14 @@ public class ScannerSetup : MonoBehaviour
             weakButton.gameObject.SetActive(false);
             strongButton.gameObject.SetActive(false);
             hintText.SetActive(false);
-            eventManager.PlayVibro();
+            gameEvents.PlayVibro();
             startButton.gameObject.SetActive(true);
         }        
     }
 
     private void Finish()
     {
-        eventManager.PlayStick();
+        gameEvents.PlayScanner();
         winPanel.SetActive(true);
         hintText.SetActive(false);
         weakButton.gameObject.SetActive(false);

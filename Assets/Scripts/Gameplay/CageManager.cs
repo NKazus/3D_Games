@@ -78,7 +78,6 @@ public class CageManager : MonoBehaviour
             scanner.ResetScanner(resources.ScanActive, true);
 
             cage.GenerateWinStage(random, out winMStage, out winRStage);
-            Debug.Log("m:"+ winMStage + " r:" + winRStage);
             cage.ResetCage(true);
             SetControls(true, true);
             currentAttempt = 0;
@@ -93,6 +92,7 @@ public class CageManager : MonoBehaviour
 
     private void Scan()
     {
+        globalEvents.PlayScanner();
         int value = cage.GetCurrentStage();
         bool scannerEnabled = scanner.Scan(random, value == winMStage);
         if (!scannerEnabled)
@@ -104,7 +104,6 @@ public class CageManager : MonoBehaviour
 
     private void RotationCallback(int rotationStage)
     {
-        Debug.Log("rotation");
         if (!activePhase)
         {
             return;
@@ -114,7 +113,7 @@ public class CageManager : MonoBehaviour
             activePhase = false;
             timer.Deactivate();
             cage.Break();
-            Debug.Log("win");
+            globalEvents.PlayBreak();
             resources.UpdateProgress(2);
             resources.SetScanStatus(false);
             globalEvents.DoWin();
@@ -129,12 +128,11 @@ public class CageManager : MonoBehaviour
     private void BeginRotationCallback()
     {
         SetControls(false, false);
-        Debug.Log("rot_begin_iter");
     }
 
     private void TimerCallback()
     {
-        Debug.Log("timeout");
+        globalEvents.PlayVibro();
         activePhase = false;
         cage.ResetCage();
         currentAttempt++;
@@ -142,7 +140,7 @@ public class CageManager : MonoBehaviour
         {
             cage.Fail();
             SetControls(false, false);
-            Debug.Log("lose");
+            globalEvents.PlayAlert();
             globalEvents.SwitchGameState(false);
         }
         else
@@ -154,6 +152,7 @@ public class CageManager : MonoBehaviour
     private void ActivePhaseCallback()
     {
         timer.Activate();
+        globalEvents.PlayActive();
         activePhase = true;
     }
 

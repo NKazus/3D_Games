@@ -6,8 +6,9 @@ public class InGameEvents
     public event Action WinEvent;
 
     public event Action VibroEvent;
-    public event Action RewardSoundEvent;
-    public event Action StickSoundEvent;
+    public event Action ActiveSoundEvent;
+    public event Action AlertSoundEvent;
+    public event Action ScanSoundEvent;
     public event Action BreakSoundEvent;
 
     public event Action<bool> VibroSettingsEvent;
@@ -24,19 +25,24 @@ public class InGameEvents
         VibroEvent?.Invoke();
     }
 
-    public void PlayReward()
+    public void PlayActive()
     {
-        RewardSoundEvent?.Invoke();
+        ActiveSoundEvent?.Invoke();
     }
 
-    public void PlayStick()
+    public void PlayScanner()
     {
-        StickSoundEvent?.Invoke();
+        ScanSoundEvent?.Invoke();
     }
 
     public void PlayBreak()
     {
         BreakSoundEvent?.Invoke();
+    }
+
+    public void PlayAlert()
+    {
+        AlertSoundEvent?.Invoke();
     }
 
     public void SetVibro(bool value)

@@ -1,6 +1,5 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class Timer : MonoBehaviour
 {
@@ -43,7 +42,6 @@ public class Timer : MonoBehaviour
         timerCoroutine = StartTimer();
         StartCoroutine(timerCoroutine);
         isRunning = true;
-        Debug.Log("timer_act");
     }
 
     public void Deactivate()
@@ -52,7 +50,6 @@ public class Timer : MonoBehaviour
         {
             isRunning = false;
             StopCoroutine(timerCoroutine);
-            Debug.Log("timer_off");
         }
     }
 }
