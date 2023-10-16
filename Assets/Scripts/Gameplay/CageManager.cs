@@ -80,8 +80,7 @@ public class CageManager : MonoBehaviour
             cage.GenerateWinStage(random, out winMStage, out winRStage);
             cage.ResetCage(true);
             SetControls(true, true);
-            currentAttempt = 0;
-            
+            currentAttempt = 0;            
         }
         else
         {

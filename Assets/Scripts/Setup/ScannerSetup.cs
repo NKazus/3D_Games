@@ -98,7 +98,6 @@ public class ScannerSetup : MonoBehaviour
         initCoeff *= randomGenerator.GetInt(0, 10) > 5 ? 1 : -1;
 
         positionShiftL = PATH_VALUE / 2f + initCoeff;
-        Debug.Log("init l shift:" + positionShiftL);
         positionShiftU = PATH_VALUE - positionShiftL;
 
         target.SetPosition(positionShiftL);
@@ -111,7 +110,6 @@ public class ScannerSetup : MonoBehaviour
 
         float dirValue = positionShiftL > positionShiftU ? -1 : 1;
         positionShiftL += dirValue * value;
-        Debug.Log("l shift:" + positionShiftL);
         positionShiftU = PATH_VALUE - positionShiftL;
 
         target.SetPosition(positionShiftL);
