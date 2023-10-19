@@ -12201,7 +12201,7 @@ MonoBehaviour:
   toGameplay: {fileID: 1922600207}
   toRules: {fileID: 1972264838}
   toPrivacy: {fileID: 2106902490}
-  privacyURL: 
+  privacyURL: https://breakthecagegame.com/privacy-policy.html
 --- !u!114 &1440539142
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14882,7 +14882,7 @@ MonoBehaviour:
   statusInactive: inactive
   colorActive: {r: 0.29063714, g: 1, b: 0, a: 1}
   colorInactive: {r: 1, g: 0.1273585, b: 0.24485028, a: 1}
-  hitDefaultValue: 80
+  hitDefaultValue: 70
   missDefaultValue: 55
   activeRange: 10
   inactiveRange: 20

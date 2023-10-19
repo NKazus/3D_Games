@@ -120,6 +120,8 @@ public class ScannerSetup : MonoBehaviour
     {
         if (Mathf.Abs(positionShiftL - positionShiftU) < 0.02)
         {
+            weakButton.gameObject.SetActive(false);
+            strongButton.gameObject.SetActive(false);
             resources.SetScanStatus(true);
             resources.UpdateProgress(-1);
             Invoke("Finish", 1f);            
@@ -139,9 +141,7 @@ public class ScannerSetup : MonoBehaviour
     {
         gameEvents.PlayScanner();
         winPanel.SetActive(true);
-        hintText.SetActive(false);
-        weakButton.gameObject.SetActive(false);
-        strongButton.gameObject.SetActive(false);
+        hintText.SetActive(false);        
         triesPanel.SetActive(false);
     }
 }
