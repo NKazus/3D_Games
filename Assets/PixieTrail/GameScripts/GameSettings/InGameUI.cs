@@ -52,4 +52,9 @@ public class InGameUI : MonoBehaviour
 
         UpdateText(ui, value.ToString());
     }
+
+    public void UpdateIncome(int value)
+    {
+        UpdateText(playerIncomeUI, value.ToString());
+    }
 }

@@ -13,6 +13,7 @@ public class BezierPath : MonoBehaviour
     private Vector3 targetPosition;
     private float targetSpeed;
     private Transform targetTransform;
+    private Vector3 targetDirection;
 
     private Vector3 p0;
     private Vector3 p1;
@@ -31,6 +32,10 @@ public class BezierPath : MonoBehaviour
             tParam += Time.deltaTime * targetSpeed;
             targetPosition = Mathf.Pow(1 - tParam, 3) * p0 + 3 * Mathf.Pow(1 - tParam, 2) * tParam * p1
                 + 3 * (1 - tParam) * Mathf.Pow(tParam, 2) * p2 + Mathf.Pow(tParam, 3) * p3;
+
+            targetDirection = targetPosition - targetTransform.position;
+            targetTransform.forward = targetDirection;
+
             targetTransform.position = targetPosition;
         }
         else
@@ -110,6 +115,7 @@ public class BezierPath : MonoBehaviour
         tParam = 0f;
 
         targetTransform.position = curves[0].GetControlPoint(0);
+        targetTransform.rotation = Quaternion.Euler(Vector3.forward);
     }
 
     public void SetTarget(Transform targetT)

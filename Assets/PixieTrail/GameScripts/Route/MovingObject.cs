@@ -3,21 +3,21 @@ using Zenject;
 
 public class MovingObject : MonoBehaviour
 {
-    [SerializeField] private BezierPath[] paths;
-    [SerializeField] private float movementSpeed;
+    [SerializeField] protected BezierPath[] paths;
+    [SerializeField] protected float movementSpeed;
 
-    private Transform objectTransform;
+    protected Transform objectTransform;
 
-    private int currentPath;
+    protected int currentPath;
 
-    [Inject] private readonly RandomValueProvider rand;
+    [Inject] protected readonly RandomValueProvider rand;
 
-    private void Awake()
+    protected virtual void Awake()
     {
         objectTransform = transform;
     }
 
-    public void ResetObject(System.Action callback)
+    public virtual void ResetObject(System.Action callback)
     {
         currentPath = rand.GetInt(0, paths.Length);
         paths[currentPath].SetTarget(objectTransform);
@@ -31,13 +31,13 @@ public class MovingObject : MonoBehaviour
         paths[currentPath].FollowPath();
     }
 
-    public void UpdateSpeed(float modifyer)
-    {
-        paths[currentPath].SetSpeed(movementSpeed * modifyer);
-    }
-
     public void Stop()
     {
         paths[currentPath].UnfollowPath();
+    }
+
+    public void UpdateSpeed(float modifyer)
+    {
+        paths[currentPath].SetSpeed(movementSpeed * modifyer);
     }
 }

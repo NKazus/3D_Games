@@ -24,7 +24,7 @@ public class GameTrigger : MonoBehaviour
     private void OnEnable()
     {
         events.SwitchGameEvent += ChangeGameState;
-        events.WinEvent += ChangeTextToWin;
+        events.CompleteEvent += UpdateResult;
 
         Invoke("Restart", 1f);
     }
@@ -37,7 +37,7 @@ public class GameTrigger : MonoBehaviour
         }
         events.SwitchGame(false);
 
-        events.WinEvent -= ChangeTextToWin;
+        events.CompleteEvent -= UpdateResult;
         events.SwitchGameEvent -= ChangeGameState;
 
         restart.gameObject.SetActive(false);
@@ -69,10 +69,10 @@ public class GameTrigger : MonoBehaviour
         }
     }
 
-    private void ChangeTextToWin(int points)
+    private void UpdateResult(int points)
     {
         restartText.text = winText;
-        restartExtra.text = "Funding received: "+ points;
+        restartExtra.text = "+ "+ points + " points";
         restartExtra.enabled = true;
     }
 }
