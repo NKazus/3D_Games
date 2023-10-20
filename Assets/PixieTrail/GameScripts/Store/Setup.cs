@@ -1,209 +1,126 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
 
+public enum SetupOption
+{
+    ShieldAdd,
+    PollenAdd,
+    ShieldUpgrade,
+    PollenUpgrade
+}
+
 public class Setup : MonoBehaviour
 {
-    [SerializeField] private Button slow;
-    [SerializeField] private Button boost;
-    [SerializeField] private Button damage;
-    [SerializeField] private Button heal;
-    [SerializeField] private Button get;
+    [SerializeField] private Button shieldButton;
+    [SerializeField] private Button pollenButton;
+    [SerializeField] private Button shieldUpgradeButton;
+    [SerializeField] private Button pollenUpgradeButton;
 
-    [SerializeField] private int slowPrice;
-    [SerializeField] private int boostPrice;
-    [SerializeField] private int damagePrice;
-    [SerializeField] private int healPrice;
+    [SerializeField] private int shieldPrice;
+    [SerializeField] private int pollenPrice;
+    [SerializeField] private int shieldUpgradePrice;
+    [SerializeField] private int pollenUpgradePrice;
 
-    [SerializeField] private Text slowText;
-    [SerializeField] private Text boostText;
-    [SerializeField] private Text damageText;
-    [SerializeField] private Text healText;
-    [SerializeField] private Text sumText;
+    [SerializeField] private Text shieldText;
+    [SerializeField] private Text pollenText;
+    [SerializeField] private Text shieldUpgradeText;
+    [SerializeField] private Text pollenUpgradeText;
 
-    [SerializeField] private Image slowIcon;
-    [SerializeField] private Image boostIcon;
-    [SerializeField] private Image damageIcon;
-    [SerializeField] private Image healIcon;
-
-    private List<AbilityType> enabledBuffs;
-    private int sumPrice;
-
-    [Inject] private readonly InGameResources dataHandler;
+    [Inject] private readonly InGameResources resources;
     [Inject] private readonly InGameEvents events;
 
-   /* private void Awake()
+    private void Awake()
     {
-        slowText.text = slowPrice.ToString();
-        healText.text = healPrice.ToString();
-        boostText.text = boostPrice.ToString();
-        damageText.text = damagePrice.ToString();
-
-        enabledBuffs = new List<AbilityType>();
+        shieldText.text = shieldPrice.ToString();
+        pollenText.text = pollenPrice.ToString();
+        shieldUpgradeText.text = shieldUpgradePrice.ToString();
+        pollenUpgradeText.text = pollenUpgradePrice.ToString();
     }
 
     private void OnEnable()
     {
-        dataHandler.UpdatePlayerIncome(0);
+        resources.UpdatePlayerIncome(0);
         CheckBuffs();
 
-        get.onClick.AddListener(ActivateMany);
-        slow.onClick.AddListener(() => PickBuff(AbilityType.Slow));
-        boost.onClick.AddListener(() => PickBuff(AbilityType.Boost));
-        heal.onClick.AddListener(() => PickBuff(AbilityType.Heal));
-        damage.onClick.AddListener(() => PickBuff(AbilityType.Damage));
+        shieldButton.onClick.AddListener(() => PickBuff(SetupOption.ShieldAdd));
+        pollenButton.onClick.AddListener(() => PickBuff(SetupOption.PollenAdd));
+        shieldUpgradeButton.onClick.AddListener(() => PickBuff(SetupOption.ShieldUpgrade));
+        pollenUpgradeButton.onClick.AddListener(() => PickBuff(SetupOption.PollenUpgrade));
 
     }
 
     private void OnDisable()
     {
-        get.onClick.RemoveListener(ActivateMany);
-        slow.onClick.RemoveAllListeners();
-        boost.onClick.RemoveAllListeners();
-        heal.onClick.RemoveAllListeners();
-        damage.onClick.RemoveAllListeners();
+        shieldButton.onClick.RemoveAllListeners();
+        pollenButton.onClick.RemoveAllListeners();
+        shieldUpgradeButton.onClick.RemoveAllListeners();
+        pollenUpgradeButton.onClick.RemoveAllListeners();
     }
 
     private void CheckBuffs()
     {
-        sumPrice = 0;
-        enabledBuffs.Clear();
-        CheckBuff(AbilityType.Boost);
-        CheckBuff(AbilityType.Heal);
-        CheckBuff(AbilityType.Slow);
-        CheckBuff(AbilityType.Damage);
-
-        sumText.text = sumPrice.ToString();
-        if (sumPrice == 0)
-        {
-            get.interactable = false;
-        }
-        else
-        {
-            if(sumPrice <= dataHandler.PlayerIncome)
-            {
-                sumText.color = Color.white;
-                get.interactable = true;
-            }
-            else
-            {
-                sumText.color = Color.red;
-                get.interactable = false;
-            }
-        }        
+        CheckBuff(SetupOption.ShieldAdd);
+        CheckBuff(SetupOption.PollenAdd);
+        CheckBuff(SetupOption.ShieldUpgrade);
+        CheckBuff(SetupOption.PollenUpgrade);
     }
 
-    private void CheckBuff(AbilityType type)
+    private void CheckBuff(SetupOption option)
     {
         bool cash;
-        switch (type)
+        switch (option)
         {
-            case AbilityType.Boost:
-                boostText.color = Color.white;
-                cash = dataHandler.PlayerIncome >= boostPrice;
-                if (!dataHandler.Boost && cash)
-                {
-                    boost.interactable = true;
-                    boostIcon.color = Color.white;
-                    sumPrice += boostPrice;
-                    enabledBuffs.Add(type);
-                    return;
-                }
-                else if (!cash)
-                {
-                    boostText.color = Color.red;
-                }
-                boost.interactable = false;
-                boostIcon.color = Color.gray;
+            case SetupOption.ShieldAdd:                
+                cash = resources.PlayerIncome >= shieldPrice;
+                shieldText.color = cash ? Color.white : Color.red;
+                shieldButton.interactable = cash;
                 break;
-            case AbilityType.Heal:
-                healText.color = Color.white;
-                cash = dataHandler.PlayerIncome >= healPrice;
-                if (!dataHandler.Heal && cash)
-                {
-                    heal.interactable = true;
-                    healIcon.color = Color.white;
-                    sumPrice += healPrice;
-                    enabledBuffs.Add(type);
-                    return;
-                }
-                else if (!cash)
-                {
-                    healText.color = Color.red;
-                }
-                heal.interactable = false;
-                healIcon.color = Color.gray;
+            case SetupOption.PollenAdd:
+                cash = resources.PlayerIncome >= pollenPrice;
+                pollenText.color = cash ? Color.white : Color.red;
+                pollenButton.interactable = cash;
                 break;
-            case AbilityType.Slow:
-                slowText.color = Color.white;
-                cash = dataHandler.PlayerIncome >= slowPrice;
-                if (!dataHandler.Slow && cash)
-                {
-                    slow.interactable = true;
-                    slowIcon.color = Color.white;
-                    sumPrice += slowPrice;
-                    enabledBuffs.Add(type);
-                    return;
-                }
-                else if (!cash)
-                {
-                    slowText.color = Color.red;
-                }
-                slow.interactable = false;
-                slowIcon.color = Color.gray;
+            case SetupOption.ShieldUpgrade:
+                cash = resources.PlayerIncome >= shieldUpgradePrice;
+                shieldUpgradeText.color = cash ? Color.white : Color.red;
+                shieldUpgradeButton.interactable = cash && !resources.ShieldUpgrade;
                 break;
-            default:
-                damageText.color = Color.white;
-                cash = dataHandler.PlayerIncome >= damagePrice;
-                if (!dataHandler.Damage && cash)
-                {
-                    damage.interactable = true;
-                    damageIcon.color = Color.white;
-                    sumPrice += damagePrice;
-                    enabledBuffs.Add(type);
-                    return;
-                }
-                else if (!cash)
-                {
-                    damageText.color = Color.red;
-                }
-                damage.interactable = false;
-                damageIcon.color = Color.gray;
+            case SetupOption.PollenUpgrade:
+                cash = resources.PlayerIncome >= pollenUpgradePrice;
+                pollenUpgradeText.color = cash ? Color.white : Color.red;
+                pollenUpgradeButton.interactable = cash && !resources.PollenUpgrade;
                 break;
+            default: throw new System.NotSupportedException();
         }
     }
 
-    private void PickBuff(AbilityType type)
+    private void PickBuff(SetupOption option)
     {
         int price;
-        switch (type)
+        switch (option)
         {
-            case AbilityType.Boost: price = boostPrice; break;
-            case AbilityType.Heal: price = healPrice; break;
-            case AbilityType.Slow: price = slowPrice; break;
-            default: price = damagePrice; break;
+            case SetupOption.ShieldAdd:
+                price = shieldPrice;
+                resources.UpdateResource(AbilityType.Shield, 1);
+                break;
+            case SetupOption.PollenAdd:
+                price = pollenPrice;
+                resources.UpdateResource(AbilityType.Pollen, 1);
+                break;
+            case SetupOption.ShieldUpgrade:
+                price = shieldUpgradePrice;
+                resources.UpgradeTool(AbilityType.Shield, true);
+                break;
+            case SetupOption.PollenUpgrade:
+                price = pollenUpgradePrice;
+                resources.UpgradeTool(AbilityType.Pollen, true);
+                break;
+            default: throw new System.NotSupportedException();
         }
-        dataHandler.UpdatePlayerIncome(-price);
-        ActivateOne(type);
-        events.PlayBonus();
+        resources.UpdatePlayerIncome(-price);
+
+        events.PlaySFX(SFXType.CoinSound);
         CheckBuffs();
     }
-
-    private void ActivateOne(AbilityType type)
-    {
-        dataHandler.UpdateResources(type, true);
-    }
-
-    private void ActivateMany()
-    {
-        dataHandler.UpdatePlayerIncome(-sumPrice);
-        for (int i = 0; i < enabledBuffs.Count; i++)
-        {
-            ActivateOne(enabledBuffs[i]);
-        }
-        events.PlayBonus();
-        CheckBuffs();
-    }*/
 }

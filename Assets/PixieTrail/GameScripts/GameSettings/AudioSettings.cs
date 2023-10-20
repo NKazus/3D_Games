@@ -31,7 +31,7 @@ public class AudioSettings : MonoBehaviour
 
     private void SwitchMisic(bool isMusicOn)
     {
-        events.SetSound(isMusicOn);
+        events.SetVolume(isMusicOn);
     }
 
     private void SwitchVibration(bool isVibroOn)

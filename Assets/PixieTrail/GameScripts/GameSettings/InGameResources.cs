@@ -5,6 +5,7 @@ public enum AbilityType
     Shield,
     Pollen
 }
+
 public class InGameResources : MonoBehaviour
 {
     [SerializeField] private InGameUI ui;
@@ -32,7 +33,7 @@ public class InGameResources : MonoBehaviour
     public int Pollen => pollenNumber;
 
     public bool ShieldUpgrade => shieldUpgrade;
-    public bool PollenUpdrade => pollenUpgrade;
+    public bool PollenUpgrade => pollenUpgrade;
 
     public float CurrentSpeedModifyer => currentSpeedModifyer;
     public float CurrentShieldCharges => currentShieldCharges;

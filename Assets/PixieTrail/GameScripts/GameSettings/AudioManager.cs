@@ -2,35 +2,36 @@ using UnityEngine;
 using UnityEngine.Audio;
 using Zenject;
 
+public enum SFXType
+{
+    ShieldSound,
+    PollenSound,
+    CoinSound,
+    DeliverySound,
+    CollisionSound
+}
+
 public class AudioManager : MonoBehaviour
 {
     [SerializeField] private AudioMixerGroup mixerMasterGroup;
 
-    [SerializeField] private AudioSource ambientMusic;
-    [SerializeField] private AudioSource rewardSound;
-    [SerializeField] private AudioSource bonusSound;
-    [SerializeField] private AudioSource healSound;
-    [SerializeField] private AudioSource boostSound;
+    [SerializeField] private AudioSource shieldAS;
+    [SerializeField] private AudioSource pollenAS;
+    [SerializeField] private AudioSource optionAS;
+    [SerializeField] private AudioSource collisionAS;
+    [SerializeField] private AudioSource deliveryAS;
 
     private bool vibroEnabled = true;
 
     [Inject] private readonly InGameEvents events;
 
-    #region MONO
-    private void Awake()
-    {
-        ambientMusic.loop = true;
-    }
-
     private void OnEnable()
     {
         events.VibroEvent += PlayVibro;
-        events.RewardSoundEvent += PlayReward;
-        events.BonusSoundEvent += PlayBonus;
-        events.BuffSoundEvent += PlayBuff;
+        events.SFXEvent += PlaySFX;
   
-        events.VibroSettingsEvent += TurnVibration;
-        events.SoundSettingsEvent += SwitchSound;
+        events.VibroSetEvent += SwitchVibration;
+        events.VolumeSetEvent += SwitchVolume;
     }
 
     private void Start()
@@ -41,21 +42,18 @@ public class AudioManager : MonoBehaviour
             PlayerPrefs.SetInt("_PT_VibrationEnabled", 1);
         }
 
-        SwitchSound(PlayerPrefs.GetInt("_PT_VolumeEnabled") == 1);
-        TurnVibration(PlayerPrefs.GetInt("_PT_VibrationEnabled") == 1);
+        SwitchVolume(PlayerPrefs.GetInt("_PT_VolumeEnabled") == 1);
+        SwitchVibration(PlayerPrefs.GetInt("_PT_VibrationEnabled") == 1);
     }
 
     private void OnDisable()
     {
         events.VibroEvent -= PlayVibro;
-        events.RewardSoundEvent -= PlayReward;
-        events.BonusSoundEvent -= PlayBonus;
-        events.BuffSoundEvent -= PlayBuff;
+        events.SFXEvent -= PlaySFX;
 
-        events.VibroSettingsEvent -= TurnVibration;
-        events.SoundSettingsEvent -= SwitchSound;
+        events.VibroSetEvent -= SwitchVibration;
+        events.VolumeSetEvent -= SwitchVolume;
     }
-    #endregion
 
 
     private void PlayVibro()
@@ -66,30 +64,20 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    private void PlayReward()
+    private void PlaySFX(SFXType type)
     {
-        rewardSound.Play();
-    }
-
-    private void PlayBonus()
-    {
-        bonusSound.Play();
-    }
-
-    private void PlayBuff(bool speed)
-    {
-        if (speed)
+        switch (type)
         {
-            boostSound.Play();
-        }
-        else
-        {
-            healSound.Play();
+            case SFXType.ShieldSound: shieldAS.Play(); break;
+            case SFXType.PollenSound: pollenAS.Play(); break;
+            case SFXType.CoinSound: optionAS.Play(); break;
+            case SFXType.DeliverySound: deliveryAS.Play(); break;
+            case SFXType.CollisionSound: collisionAS.Play(); break;
+            default: throw new System.NotSupportedException();
         }
     }
 
-    #region SETTINGS
-    private void SwitchSound(bool isSoundOn)
+    private void SwitchVolume(bool isSoundOn)
     {
         if (isSoundOn)
         {
@@ -101,9 +89,8 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    private void TurnVibration(bool isVibroOn)
+    private void SwitchVibration(bool isVibroOn)
     {
         vibroEnabled = isVibroOn;
     }
-    #endregion
 }

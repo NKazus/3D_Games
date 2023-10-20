@@ -145,6 +145,7 @@ public class GameController : MonoBehaviour
             case AbilityType.Shield:
                 Debug.Log("shield_on");
                 shieldButton.interactable = false;
+                events.PlaySFX(SFXType.ShieldSound);
                 UseShield(true);
                 break;
             case AbilityType.Pollen:
@@ -154,6 +155,7 @@ public class GameController : MonoBehaviour
                 {
                     pixies[i].UpdateSpeed(resources.CurrentSpeedModifyer);
                 }
+                events.PlaySFX(SFXType.PollenSound);
                 UsePollen(true);
                 timer.Activate();
                 break;
@@ -199,6 +201,7 @@ public class GameController : MonoBehaviour
     {
         Debug.Log("collision");
         currentCollisions++;
+        events.PlaySFX(SFXType.CollisionSound);
         
         if(currentCollisions >= resources.CurrentShieldCharges)
         {
@@ -206,6 +209,8 @@ public class GameController : MonoBehaviour
 
             resources.UpgradeTool(AbilityType.Shield, false);
             resources.UpgradeTool(AbilityType.Pollen, false);
+
+            events.PlayVibro();
             events.SwitchGame(false);
             return;
         }
@@ -228,6 +233,7 @@ public class GameController : MonoBehaviour
 
         int income = rand.GetInt(10, 20);
         resources.UpdatePlayerIncome(income);
+        events.PlaySFX(SFXType.DeliverySound);
         events.CompletePath(income);
         events.SwitchGame(false);
     }
