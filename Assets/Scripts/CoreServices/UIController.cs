@@ -19,8 +19,6 @@ public class UIController : MonoBehaviour
     [SerializeField] private Button toMagicDice;
     [SerializeField] private Button toGameplay;
     [SerializeField] private Button toRules;
-    [SerializeField] private Button toPrivacy;
-    [SerializeField] private string privacyURL;
 
     private UICondition currentState;
 
@@ -40,8 +38,6 @@ public class UIController : MonoBehaviour
         toMagicDice.onClick.AddListener(() => { TriggerChange(UICondition.MagicDice); });
         toGameplay.onClick.AddListener(() => { TriggerChange(UICondition.Gameplay); });
         toRules.onClick.AddListener(() => { TriggerChange(UICondition.Rules); });
-
-        toPrivacy.onClick.AddListener(CheckPrivacy);
     }
 
     private void Start()
@@ -59,8 +55,6 @@ public class UIController : MonoBehaviour
         toMagicDice.onClick.RemoveAllListeners();
         toGameplay.onClick.RemoveAllListeners();
         toRules.onClick.RemoveAllListeners();
-
-        toPrivacy.onClick.RemoveListener(CheckPrivacy);
     }
     #endregion
 
@@ -70,10 +64,4 @@ public class UIController : MonoBehaviour
         currentState = state;
         ChangeStateEvent?.Invoke(state);
     }
-
-    private void CheckPrivacy()
-    {
-        Application.OpenURL(privacyURL);
-    }
-
 }
