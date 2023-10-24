@@ -6,9 +6,10 @@ public enum UICondition
 {
     Menu = 0,
     Gameplay = 1,
-    MagicDice = 2,
+    Setup = 2,
     Settings = 3,
-    Rules = 4
+    Rules = 4,
+    Bonus = 5
 }
 public class UIController : MonoBehaviour
 {
@@ -16,9 +17,10 @@ public class UIController : MonoBehaviour
 
     [SerializeField] private Button[] toMenu;
     [SerializeField] private Button toSettings;
-    [SerializeField] private Button toMagicDice;
+    [SerializeField] private Button toSetup;
     [SerializeField] private Button toGameplay;
     [SerializeField] private Button toRules;
+    [SerializeField] private Button toBonus;
 
     private UICondition currentState;
 
@@ -35,9 +37,10 @@ public class UIController : MonoBehaviour
             toMenu[i].onClick.AddListener(() => { TriggerChange(UICondition.Menu); });
         }
         toSettings.onClick.AddListener(() => { TriggerChange(UICondition.Settings); });
-        toMagicDice.onClick.AddListener(() => { TriggerChange(UICondition.MagicDice); });
+        toSetup.onClick.AddListener(() => { TriggerChange(UICondition.Setup); });
         toGameplay.onClick.AddListener(() => { TriggerChange(UICondition.Gameplay); });
         toRules.onClick.AddListener(() => { TriggerChange(UICondition.Rules); });
+        toBonus.onClick.AddListener(() => { TriggerChange(UICondition.Bonus); });
     }
 
     private void Start()
@@ -52,9 +55,10 @@ public class UIController : MonoBehaviour
             toMenu[i].onClick.RemoveAllListeners();
         }
         toSettings.onClick.RemoveAllListeners();
-        toMagicDice.onClick.RemoveAllListeners();
+        toSetup.onClick.RemoveAllListeners();
         toGameplay.onClick.RemoveAllListeners();
         toRules.onClick.RemoveAllListeners();
+        toBonus.onClick.RemoveAllListeners();
     }
     #endregion
 

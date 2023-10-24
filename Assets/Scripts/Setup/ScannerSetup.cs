@@ -4,7 +4,8 @@ using Zenject;
 
 public class ScannerSetup : MonoBehaviour
 {
-    [SerializeField] private ScannerElement target;
+    [SerializeField] private ScannerElement targetMain;
+    [SerializeField] private ScannerElement[] targetAdd;
 
     [SerializeField] private Button startButton;
     [SerializeField] private Button strongButton;
@@ -15,6 +16,8 @@ public class ScannerSetup : MonoBehaviour
     [SerializeField] private GameObject winPanel;
     [SerializeField] private GameObject triesPanel;
 
+    [SerializeField] private Text maxTriesText;
+
     [SerializeField] private int tries;
     [SerializeField] private float strongValue;
     [SerializeField] private float weakValue;
@@ -23,11 +26,19 @@ public class ScannerSetup : MonoBehaviour
     private float positionShiftL;
     private float positionShiftU;
 
+    private float positionShiftAdd1;
+    private float positionShiftAdd2;
+
     private const float PATH_VALUE = 1f;
 
     [Inject] private readonly ResourceController resources;
     [Inject] private readonly InGameEvents gameEvents;
     [Inject] private readonly Randomizer randomGenerator;
+
+    private void Awake()
+    {
+        maxTriesText.text = "/" + tries;
+    }
 
     private void OnEnable()
     {
@@ -94,13 +105,18 @@ public class ScannerSetup : MonoBehaviour
 
     private void InitializeComponents()
     {
-        float initCoeff = randomGenerator.GetInt(2, 4) / 10f;
+        float initCoeff = (randomGenerator.GetInt(4, 9) * 5) / 100f;
         initCoeff *= randomGenerator.GetInt(0, 10) > 5 ? 1 : -1;
 
         positionShiftL = PATH_VALUE / 2f + initCoeff;
         positionShiftU = PATH_VALUE - positionShiftL;
 
-        target.SetPosition(positionShiftL);
+        targetMain.SetPosition(positionShiftL);
+
+        positionShiftAdd1 = positionShiftL - initCoeff / 2f;
+        targetAdd[0].SetPosition(positionShiftAdd1);
+        positionShiftAdd2 = PATH_VALUE - positionShiftAdd1;
+        targetAdd[1].SetPosition(positionShiftAdd2);
     }
 
     private void CalculateScale(float value)
@@ -112,13 +128,19 @@ public class ScannerSetup : MonoBehaviour
         positionShiftL += dirValue * value;
         positionShiftU = PATH_VALUE - positionShiftL;
 
-        target.SetPosition(positionShiftL);
+        targetMain.SetPosition(positionShiftL);
+
+        positionShiftAdd1 += (dirValue * (value / 2f));
+        targetAdd[0].SetPosition(positionShiftAdd1);
+        positionShiftAdd2 = PATH_VALUE - positionShiftAdd1;
+        targetAdd[1].SetPosition(positionShiftAdd2);
+
         CheckResult();
     }
 
     private void CheckResult()
     {
-        if (Mathf.Abs(positionShiftL - positionShiftU) < 0.02)
+        if (Mathf.Abs(positionShiftL - positionShiftU) < 0.1)
         {
             weakButton.gameObject.SetActive(false);
             strongButton.gameObject.SetActive(false);

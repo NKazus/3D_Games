@@ -34,8 +34,7 @@ public class Scanner : MonoBehaviour
     }
 
     public void ResetScanner(bool active, bool hard = false)
-    {
-        
+    {        
         isActive = active;
         scanStatus.text = isActive ? statusActive : statusInactive;
         scanStatus.color = isActive ? colorActive : colorInactive;

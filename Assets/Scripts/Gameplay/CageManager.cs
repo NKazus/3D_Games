@@ -26,6 +26,8 @@ public class CageManager : MonoBehaviour
     private int currentAttempt;
     private bool activePhase;
 
+    private bool useExtraCharges;
+
     [Inject] private readonly ResourceController resources;
     [Inject] private readonly InGameEvents globalEvents;
     [Inject] private readonly Randomizer random;
@@ -33,6 +35,7 @@ public class CageManager : MonoBehaviour
     private void OnEnable()
     {
         resources.UpdateProgress(0);
+        resources.UpdateScanExtra(0);
 
         startButton.gameObject.SetActive(true);
         SetControls(false, false, true);
@@ -76,6 +79,7 @@ public class CageManager : MonoBehaviour
             scanPanel.SetActive(true);
             scanButton.interactable = true;
             scanner.ResetScanner(resources.ScanActive, true);
+            useExtraCharges = false;
 
             cage.GenerateWinStage(random, out winMStage, out winRStage);
             cage.ResetCage(true);
@@ -91,13 +95,25 @@ public class CageManager : MonoBehaviour
 
     private void Scan()
     {
+        if (useExtraCharges)
+        {
+            resources.UpdateScanExtra(-1);
+        }
         globalEvents.PlayScanner();
         int value = cage.GetCurrentStage();
         bool scannerEnabled = scanner.Scan(random, value == winMStage);
+
         if (!scannerEnabled)
         {
-            scanButton.interactable = false;
-            resources.SetScanStatus(false);
+            if(resources.ExtraScanCharges > 0)
+            {
+                useExtraCharges = true;
+            }
+            else
+            {
+                scanButton.interactable = false;
+                resources.SetScanStatus(false);
+            }            
         }
     }
 
@@ -183,8 +199,6 @@ public class CageManager : MonoBehaviour
         {
             upControlM.interactable = downControlM.interactable = mActive;
             upControlR.interactable = downControlR.interactable = rActive;
-        }
-        
+        }        
     }
-
 }
