@@ -26,7 +26,7 @@ public class GameTrigger : MonoBehaviour
         events.SwitchGameEvent += ChangeGameState;
         events.CompleteEvent += UpdateResult;
 
-        Invoke("Restart", 1f);
+        Invoke("Restart", 0.5f);
     }
 
     private void OnDisable()

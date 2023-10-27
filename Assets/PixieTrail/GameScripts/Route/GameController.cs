@@ -110,7 +110,7 @@ public class GameController : MonoBehaviour
 
     private void CalculateTimeout()
     {
-        Debug.Log("pollen_off");
+        //Debug.Log("pollen_off");
         resources.ActivateTool(AbilityType.Pollen, false);
         UsePollen(false);
 
@@ -143,13 +143,13 @@ public class GameController : MonoBehaviour
         switch (type)
         {
             case AbilityType.Shield:
-                Debug.Log("shield_on");
+                //Debug.Log("shield_on");
                 shieldButton.interactable = false;
                 events.PlaySFX(SFXType.ShieldSound);
                 UseShield(true);
                 break;
             case AbilityType.Pollen:
-                Debug.Log("pollen_on");
+                //Debug.Log("pollen_on");
                 pollenButton.interactable = false;
                 for (int i = 0; i < pixies.Length; i++)
                 {
@@ -199,13 +199,13 @@ public class GameController : MonoBehaviour
 
     private void CheckCollision()
     {
-        Debug.Log("collision");
+        //Debug.Log("collision");
         currentCollisions++;
         events.PlaySFX(SFXType.CollisionSound);
         
         if(currentCollisions >= resources.CurrentShieldCharges)
         {
-            Debug.Log("lose");
+            //Debug.Log("lose");
 
             resources.UpgradeTool(AbilityType.Shield, false);
             resources.UpgradeTool(AbilityType.Pollen, false);
@@ -216,7 +216,7 @@ public class GameController : MonoBehaviour
         }
         if (currentCollisions >= resources.CurrentShieldCharges - 1)
         {
-            Debug.Log("shield_off");
+            //Debug.Log("shield_off");
             currentCollisions = 0;
             resources.ActivateTool(AbilityType.Shield, false);
             UseShield(false);
@@ -226,12 +226,12 @@ public class GameController : MonoBehaviour
 
     private void FinishPathCallback()
     {
-        Debug.Log("win");
+        //Debug.Log("win");
 
         resources.UpgradeTool(AbilityType.Shield, false);
         resources.UpgradeTool(AbilityType.Pollen, false);
 
-        int income = rand.GetInt(10, 20);
+        int income = rand.GetInt(8, 15);
         resources.UpdatePlayerIncome(income);
         events.PlaySFX(SFXType.DeliverySound);
         events.CompletePath(income);

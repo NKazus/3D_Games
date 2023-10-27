@@ -108,12 +108,12 @@ public class InGameResources : MonoBehaviour
             case AbilityType.Shield:
                 currentShieldCharges = value ? (shieldUpgrade ? upgradeShieldCharges : activeShieldCharges)
                     : defaultShieldCharges;
-                Debug.Log("curr_shields:"+currentShieldCharges);
+                //Debug.Log("curr_shields:"+currentShieldCharges);
                 break;
             case AbilityType.Pollen:
                 currentSpeedModifyer = value ? (pollenUpgrade ? upgradeSpeedModif : activeSpeedModif)
                     : defaultSpeedModif;
-                Debug.Log("curr_speed:" + currentSpeedModifyer);
+                //Debug.Log("curr_speed:" + currentSpeedModifyer);
                 break;
             default: throw new System.NotSupportedException();
         }

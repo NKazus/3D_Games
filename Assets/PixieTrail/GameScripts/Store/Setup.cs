@@ -41,6 +41,8 @@ public class Setup : MonoBehaviour
     private void OnEnable()
     {
         resources.UpdatePlayerIncome(0);
+        resources.UpdateResources();
+
         CheckBuffs();
 
         shieldButton.onClick.AddListener(() => PickBuff(SetupOption.ShieldAdd));

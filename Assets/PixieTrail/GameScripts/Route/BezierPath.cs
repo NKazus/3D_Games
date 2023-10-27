@@ -93,7 +93,7 @@ public class BezierPath : MonoBehaviour
 
         isFollowing = true;
         globalUpdate.GlobalUpdateEvent += PathUpdate;
-        Debug.Log("follow" + targetTransform.gameObject.name);
+        //Debug.Log("follow" + targetTransform.gameObject.name);
     }
 
     public void UnfollowPath()
@@ -105,7 +105,7 @@ public class BezierPath : MonoBehaviour
 
         isFollowing = false;
         globalUpdate.GlobalUpdateEvent -= PathUpdate;
-        Debug.Log("unfollow" + targetTransform.gameObject.name);
+        //Debug.Log("unfollow" + targetTransform.gameObject.name);
     }
 
     public void ResetPath()
