@@ -27120,7 +27120,7 @@ MonoBehaviour:
   toMain: {fileID: 1922600207}
   toRules: {fileID: 1972264838}
   toPrivacy: {fileID: 2106902490}
-  privacyURL: 
+  privacyURL: https://pixietrail.com/privacy-policy.html
 --- !u!114 &1440539142
 MonoBehaviour:
   m_ObjectHideFlags: 0
