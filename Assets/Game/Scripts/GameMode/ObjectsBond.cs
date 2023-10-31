@@ -8,20 +8,19 @@ public class ObjectsBond : MonoBehaviour
     [SerializeField] private Transform obj1;
     [SerializeField] private Transform obj2;
 
-    [SerializeField] private float maxLenght;
+    [SerializeField] private float maxLength;
+    [SerializeField] private float initialLength;
 
     [Inject] private readonly UpdateManager updateManager;
-    [Inject] private readonly GameGlobalEvents globalEvents;
 
     private void Awake()
     {
-        bondRenderer.positionCount = 2;
+        bondRenderer.positionCount = 5;
     }
 
     private void OnEnable()
     {
-        globalEvents.GameStateEvent += SwitchBond;
-        Debug.Log("bond_on");
+        SwitchBond(true);
     }
 
     private void Start()
@@ -37,14 +36,11 @@ public class ObjectsBond : MonoBehaviour
 
     private void OnDisable()
     {
-        globalEvents.GameStateEvent -= SwitchBond;
-        Debug.Log("bond_off");
         SwitchBond(false);
     }
 
     private void SwitchBond(bool activate)
     {
-        Debug.Log("update:"+activate);
         if (activate)
         {
             updateManager.UpdateEvent += LocalUpdate;
@@ -57,13 +53,21 @@ public class ObjectsBond : MonoBehaviour
 
     private void LocalUpdate()
     {
-        Vector3 pos1 = obj1.position;
-        Vector3 pos2 = obj2.position;
+        Vector3 startPos = obj1.position;
+        Vector3 endPos = obj2.position;
 
-        bondRenderer.SetPosition(0, pos1);
-        bondRenderer.SetPosition(1, pos2);
+        Vector3 direction = endPos - startPos;
 
-        /*if(Vector3.Distance(pos1, pos2) > maxLenght)
+        bondRenderer.SetPosition(0, startPos);
+        bondRenderer.SetPosition(1, startPos + 0.2f * direction);
+        bondRenderer.SetPosition(2, startPos + 0.5f * direction);
+        bondRenderer.SetPosition(3, startPos + 0.8f * direction);
+        bondRenderer.SetPosition(4, endPos);
+
+        float currentMagnitude = direction.magnitude;
+        bondColors.SetMidAlteredGradient(bondRenderer, (currentMagnitude - initialLength) / (maxLength - initialLength));
+
+        /*if(currentMagnitude > maxLenght)
         {
             Debug.Log("oops");
         }*/
