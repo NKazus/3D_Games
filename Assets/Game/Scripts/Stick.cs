@@ -36,7 +36,7 @@ public class Stick : MonoBehaviour
     {
         if (collider.gameObject.CompareTag("Pin"))
         {
-            eventManager.BreakStick();
+  
             stickCollider.enabled = false;
             DOTween.Kill("stick_move");
         }

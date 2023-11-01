@@ -11,7 +11,8 @@ public class ObjectsBond : MonoBehaviour
     [SerializeField] private float maxLength;
     [SerializeField] private float initialLength;
 
-    [Inject] private readonly UpdateManager updateManager;
+    [Inject] private readonly GameUpdateHandler updateManager;
+    [Inject] private readonly GameGlobalEvents globalEvents;
 
     private void Awake()
     {
@@ -20,23 +21,18 @@ public class ObjectsBond : MonoBehaviour
 
     private void OnEnable()
     {
-        SwitchBond(true);
+        LocalUpdate();
+        globalEvents.EvacuationEvent += SwitchBond;
     }
 
     private void Start()
-    {
-        Vector3 pos1 = obj1.position;
-        Vector3 pos2 = obj2.position;
-
-        bondRenderer.SetPosition(0, pos1);
-        bondRenderer.SetPosition(1, pos2);
-
+    {       
         bondRenderer.colorGradient = bondColors.GetColorGradient();
     }
 
     private void OnDisable()
     {
-        SwitchBond(false);
+        globalEvents.EvacuationEvent -= SwitchBond;
     }
 
     private void SwitchBond(bool activate)
@@ -67,9 +63,11 @@ public class ObjectsBond : MonoBehaviour
         float currentMagnitude = direction.magnitude;
         bondColors.SetMidAlteredGradient(bondRenderer, (currentMagnitude - initialLength) / (maxLength - initialLength));
 
-        /*if(currentMagnitude > maxLenght)
+        if(currentMagnitude > maxLength)
         {
             Debug.Log("oops");
-        }*/
+            globalEvents.FinishGame(FinishCondition.Bond);
+            globalEvents.SwitchGame(false);
+        }
     }
 }

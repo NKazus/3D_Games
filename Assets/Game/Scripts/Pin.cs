@@ -19,7 +19,7 @@ public class Pin : MonoBehaviour
 
     private Sequence movingSequence;
 
-    [Inject] private readonly UpdateManager updateManager;
+    [Inject] private readonly GameUpdateHandler updateManager;
     [Inject] private readonly RandomProvider randomGenerator;
 
     private void Awake()

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class UpdateManager : MonoBehaviour
+public class GameUpdateHandler : MonoBehaviour
 {
     public event Action UpdateEvent;
 

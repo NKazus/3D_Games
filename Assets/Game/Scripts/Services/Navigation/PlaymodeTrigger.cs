@@ -2,10 +2,17 @@ using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
 
+public enum FinishCondition
+{
+    Bond,
+    Collision,
+    Finish
+}
+
 public class PlaymodeTrigger : MonoBehaviour
 {
     [SerializeField] private Button restart;
-    [SerializeField] private GameObject restartBg;
+    [SerializeField] private GameObject finishPanel;
     [SerializeField] private Sprite win;
     [SerializeField] private Sprite lose;
     [SerializeField] private string winText;
@@ -19,14 +26,16 @@ public class PlaymodeTrigger : MonoBehaviour
     #region MONO
     private void Awake()
     {
-        restartIcon = restartBg.transform.GetChild(1).GetComponent<Image>();
-        restartText = restartBg.transform.GetChild(2).GetComponent<Text>();
+        restartIcon = finishPanel.transform.GetChild(1).GetComponent<Image>();
+        restartText = finishPanel.transform.GetChild(2).GetComponent<Text>();
     }
 
     private void OnEnable()
     {
-        globalEvents.GameStateEvent += ChangeGameState;
-        globalEvents.WinEvent += ChangeTextToWin;
+        restart.onClick.AddListener(Restart);
+
+        globalEvents.EvacuationEvent += ChangeGameState;
+        globalEvents.GameFinishEvent += FinishStage;
 
         Invoke("Restart", 0.5f);
     }
@@ -35,11 +44,10 @@ public class PlaymodeTrigger : MonoBehaviour
     {
         globalEvents.SwitchGame(false);
     
-        globalEvents.WinEvent -= ChangeTextToWin;
-        globalEvents.GameStateEvent -= ChangeGameState;
+        globalEvents.GameFinishEvent -= FinishStage;
+        globalEvents.EvacuationEvent -= ChangeGameState;
 
-        restart.gameObject.SetActive(false);
-        restartBg.SetActive(false);
+        finishPanel.SetActive(false);
         restart.onClick.RemoveListener(Restart);
     }
     #endregion
@@ -51,27 +59,11 @@ public class PlaymodeTrigger : MonoBehaviour
 
     private void ChangeGameState(bool isActive)
     {
-        if (!isActive)
-        {
-            restart.gameObject.SetActive(true);
-            restartBg.SetActive(true);
-            restart.onClick.AddListener(Restart);
-        }
-        else
-        {
-            restart.gameObject.SetActive(false);
-            restartIcon.sprite = lose;
-            restartText.text = loseText;
-            restartIcon.SetNativeSize();
-            restartBg.SetActive(false);
-            restart.onClick.RemoveListener(Restart);
-        }
+        finishPanel.SetActive(!isActive);
     }
 
-    private void ChangeTextToWin()
+    private void FinishStage(FinishCondition condition)
     {
-        restartIcon.sprite = win;
-        restartIcon.SetNativeSize();
-        restartText.text = winText;
+        Debug.Log("finish:"+condition);
     }
 }

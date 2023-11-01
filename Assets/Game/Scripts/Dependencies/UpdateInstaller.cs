@@ -3,10 +3,10 @@ using Zenject;
 
 public class UpdateInstaller : MonoInstaller
 {
-    [SerializeField] private UpdateManager updateManager;
+    [SerializeField] private GameUpdateHandler updateHandler;
 
     public override void InstallBindings()
     {
-        Container.Bind<UpdateManager>().FromInstance(updateManager).AsSingle().NonLazy();
+        Container.Bind<GameUpdateHandler>().FromInstance(updateHandler).AsSingle().NonLazy();
     }
 }

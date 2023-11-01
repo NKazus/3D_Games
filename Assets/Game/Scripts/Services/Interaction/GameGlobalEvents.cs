@@ -2,8 +2,8 @@ using System;
 
 public class GameGlobalEvents
 {
-    public event Action<bool> GameStateEvent;
-    public event Action WinEvent;
+    public event Action<bool> EvacuationEvent;
+    public event Action<FinishCondition> GameFinishEvent;
 
     public event Action VibroEvent;
     public event Action RewardSoundEvent;
@@ -13,12 +13,12 @@ public class GameGlobalEvents
     public event Action<bool> VibroSetupEvent;
     public event Action<bool> VolumeSetupEvent;
 
-    public event Action<int> ButtonPressEvent;
-    public event Action StickEvent;
+    public event Action<PlayerID> FinishEvent;
+    public event Action<PlayerID> CollisionEvent;
 
     public void SwitchGame(bool activate)
     {
-        GameStateEvent?.Invoke(activate);
+        EvacuationEvent?.Invoke(activate);
     }
 
     public void PlayVibro()
@@ -51,18 +51,18 @@ public class GameGlobalEvents
         VolumeSetupEvent?.Invoke(value);
     }
 
-    public void DoWin()
+    public void FinishGame(FinishCondition value)
     {
-        WinEvent?.Invoke();
+        GameFinishEvent?.Invoke(value);
     }
 
-    public void PressButton(int buttonId)
+    public void FinishPlayer(PlayerID id)
     {
-        ButtonPressEvent?.Invoke(buttonId);
+        FinishEvent?.Invoke(id);
     }
 
-    public void BreakStick()
+    public void CollidePlayer(PlayerID id)
     {
-        StickEvent?.Invoke();
+        CollisionEvent?.Invoke(id);
     }
 }

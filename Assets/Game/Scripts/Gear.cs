@@ -10,7 +10,7 @@ public class Gear : MonoBehaviour
 
     bool isRotating;
 
-    [Inject] private readonly UpdateManager updateManager;
+    [Inject] private readonly GameUpdateHandler updateManager;
 
     private void Awake()
     {

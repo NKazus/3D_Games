@@ -3,7 +3,13 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Finish1
+  - Finish2
+  - Trace1
+  - Trace2
+  - Obstacle
+  - Wanderer
   layers:
   - Default
   - TransparentFX

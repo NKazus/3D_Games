@@ -45,7 +45,7 @@ public class GameplayManager : MonoBehaviour
     private void OnDisable()
     {
         highlight.ResetHighlight();
-        eventManager.GameStateEvent -= Activate;
+        eventManager.EvacuationEvent -= Activate;
 
         startButton.onClick.RemoveAllListeners();
         tryButton.onClick.RemoveAllListeners();
@@ -56,7 +56,7 @@ public class GameplayManager : MonoBehaviour
         startButton.onClick.RemoveListener(Initialize);
         startButton.gameObject.SetActive(false);
         Activate(true);
-        eventManager.GameStateEvent += Activate;        
+        eventManager.EvacuationEvent += Activate;        
     }
 
     private void Activate(bool activate)
@@ -78,8 +78,6 @@ public class GameplayManager : MonoBehaviour
             highlight.UpdateHighlight(colors[stage]);
             stick.SetStick(stage, StickCallback);
 
-            eventManager.ButtonPressEvent += CheckStage;
-            eventManager.StickEvent += CheckSticks;
         }
         else
         {
@@ -91,8 +89,6 @@ public class GameplayManager : MonoBehaviour
             tryButton.onClick.RemoveAllListeners();
             tryButton.gameObject.SetActive(false);
             
-            eventManager.ButtonPressEvent -= CheckStage;
-            eventManager.StickEvent -= CheckSticks;
         }
     }
 
@@ -144,7 +140,6 @@ public class GameplayManager : MonoBehaviour
                 gear.ActivateGear(false);
                 highlight.ResetHighlight();
                 win = true;
-                eventManager.DoWin();
                 eventManager.PlayReward();
                 resources.UpdateTreasure(1);
                 eventManager.SwitchGame(false);

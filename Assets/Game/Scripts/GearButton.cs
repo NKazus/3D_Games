@@ -20,7 +20,6 @@ public class GearButton : MonoBehaviour
     {
         if (collider.gameObject.CompareTag("Stick"))
         {
-            eventManager.PressButton(id);
         }
     }
 }
