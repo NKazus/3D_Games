@@ -108,6 +108,7 @@ public class Player : MonoBehaviour
 
     public void ResetPlayer()
     {
+        movement.SwitchParent(defaultParent);
         movement.ResetPosition();
         EnableCollisions(true);
         input.ActivateInput(playerID);
@@ -118,5 +119,10 @@ public class Player : MonoBehaviour
     {
         input.DeactivateInput(playerID);
         movement.SwitchMovement(false);
+    }
+
+    public void SetMovementSpeed(float modValue)
+    {
+        movement.SetSpeed(modValue);
     }
 }

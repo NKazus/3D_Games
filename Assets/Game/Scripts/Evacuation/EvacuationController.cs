@@ -1,31 +1,29 @@
-using System.Collections;
-using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
-using UnityEngine.UI;
 using Zenject;
 
 public class EvacuationController : MonoBehaviour
 {
     [SerializeField] private Player player1;
     [SerializeField] private Player player2;
+    [SerializeField] private ObjectsBond bond;
     [SerializeField] private WandererSystem wanderers;
+
+    [Header("Effects:")]
+    [SerializeField] private float grabSpeedBoosted;
+    [SerializeField] private float bondLenghtBoosted;
 
     private int finished;
     private int bondCharges;
 
     [Inject] private readonly GameResourceHandler resources;
     [Inject] private readonly GameGlobalEvents globalEvents;
-    [Inject] private readonly RandomProvider random;
-
-    private void Awake()
-    {
-
-    }
 
     private void OnEnable()
     {
-        //resources.UpdateTreasure(0);
-        //resources.UpdateSticks(0);
+        resources.ChangePointsValue(0);
+        resources.RefreshBonuses();
+
         globalEvents.EvacuationEvent += StartEvacuation;
     }
 
@@ -34,7 +32,42 @@ public class EvacuationController : MonoBehaviour
         globalEvents.EvacuationEvent -= StartEvacuation;
 
         wanderers.StopWanderers();
-        //kill all tweens for players, wanderers and obstacles
+        DOTween.Kill("player");
+    }
+
+    private void StartEvacuation(bool activate)
+    {
+        if (activate)
+        {
+            player1.ResetPlayer();
+            player2.ResetPlayer();
+
+            float currentGrabSpeed = resources.GrabSpeed ? 1.5f : 1f;
+            Debug.Log("speed:"+currentGrabSpeed);
+            player1.SetMovementSpeed(currentGrabSpeed);
+            player2.SetMovementSpeed(currentGrabSpeed);
+            bond.UpdateBondLength(resources.BondLength ? 0.1f : 0f);
+            bondCharges = resources.LinkCharges;
+            Debug.Log("links:" + bondCharges);
+
+            wanderers.SetWanderersPath();
+            wanderers.MoveWanderers();
+
+            finished = 0;
+
+            globalEvents.FinishEvent += Complete;
+            globalEvents.CollisionEvent += Collide;
+        }
+        else
+        {
+            globalEvents.FinishEvent -= Complete;
+            globalEvents.CollisionEvent -= Collide;
+
+            wanderers.StopWanderers();            
+
+            player1.DeactivatePlayer();
+            player2.DeactivatePlayer();
+        }
     }
 
     private void Complete(PlayerID id)
@@ -50,38 +83,12 @@ public class EvacuationController : MonoBehaviour
             default: throw new System.NotSupportedException();
         }
         finished++;
-        if(finished >= 2)
+        if (finished >= 2)
         {
             Debug.Log("WIN");
+            resources.RefreshBonuses(true);
             globalEvents.FinishGame(FinishCondition.Finish);
             globalEvents.SwitchGame(false);
-        }
-    }
-
-    private void StartEvacuation(bool activate)
-    {
-        if (activate)
-        {
-            player1.ResetPlayer();
-            player2.ResetPlayer();
-
-            wanderers.StopWanderers();
-            wanderers.SetWanderersPath();
-            wanderers.MoveWanderers();
-
-            finished = 0;
-            bondCharges = 2;
-
-            globalEvents.FinishEvent += Complete;
-            globalEvents.CollisionEvent += Collide;
-        }
-        else
-        {
-            globalEvents.FinishEvent -= Complete;
-            globalEvents.CollisionEvent -= Collide;
-
-            player1.DeactivatePlayer();
-            player2.DeactivatePlayer();
         }
     }
 
@@ -89,7 +96,8 @@ public class EvacuationController : MonoBehaviour
     {
         Debug.Log("collide");
         bondCharges--;
-        //ui and res
+        resources.ChangeBonusValue(ResourceType.Link, false, -1);
+
         bool restore = bondCharges > 0;
         switch (id)
         {

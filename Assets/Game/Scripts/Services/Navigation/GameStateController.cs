@@ -16,7 +16,7 @@ public class GameStateController : MonoBehaviour
 
     [SerializeField] private Button[] toMenu;
     [SerializeField] private Button toSettings;
-    [SerializeField] private Button toMagicDice;
+    [SerializeField] private Button toSetup;
     [SerializeField] private Button toGameplay;
     [SerializeField] private Button toRules;
     [SerializeField] private Button toPrivacy;
@@ -37,7 +37,7 @@ public class GameStateController : MonoBehaviour
             toMenu[i].onClick.AddListener(() => { TriggerChange(GameState.Menu); });
         }
         toSettings.onClick.AddListener(() => { TriggerChange(GameState.Settings); });
-        toMagicDice.onClick.AddListener(() => { TriggerChange(GameState.Shop); });
+        toSetup.onClick.AddListener(() => { TriggerChange(GameState.Shop); });
         toGameplay.onClick.AddListener(() => { TriggerChange(GameState.Gameplay); });
         toRules.onClick.AddListener(() => { TriggerChange(GameState.Rules); });
 
@@ -56,7 +56,7 @@ public class GameStateController : MonoBehaviour
             toMenu[i].onClick.RemoveAllListeners();
         }
         toSettings.onClick.RemoveAllListeners();
-        toMagicDice.onClick.RemoveAllListeners();
+        toSetup.onClick.RemoveAllListeners();
         toGameplay.onClick.RemoveAllListeners();
         toRules.onClick.RemoveAllListeners();
 

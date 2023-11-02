@@ -9,6 +9,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float movingSpeed;
 
     private Transform playerTransform;
+    private float currentSpeed;
 
     [Inject] private readonly GameUpdateHandler updateHandler;
 
@@ -19,12 +20,13 @@ public class PlayerMovement : MonoBehaviour
 
     private void LocalUpdate()
     {
-        playerTransform.position += new Vector3(0, 0, - movingSpeed * Time.deltaTime);
+        playerTransform.position += new Vector3(0, 0, - currentSpeed * Time.deltaTime);
     }
 
     public void Init()
     {
         playerTransform = transform;
+        currentSpeed = movingSpeed;
     }
 
     public void SwitchMovement(bool activate)
@@ -53,5 +55,10 @@ public class PlayerMovement : MonoBehaviour
     public void ResetPosition()
     {
         playerTransform.position = startObject.position;
+    }
+
+    public void SetSpeed(float value)
+    {
+        currentSpeed = movingSpeed * value;
     }
 }

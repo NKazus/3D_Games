@@ -15,14 +15,14 @@ public class GameVolumeSettings : MonoBehaviour
         volumeToggle.onValueChanged.AddListener(SwitchVolume);
         vibroToggle.onValueChanged.AddListener(SwitchVibro);
 
-        volumeToggle.isOn = (PlayerPrefs.GetInt("_GameAudio_Volume") == 1);
-        vibroToggle.isOn = (PlayerPrefs.GetInt("_GameAudio_Vibro") == 1);
+        volumeToggle.isOn = (PlayerPrefs.GetInt("BOOL_VolumeValue") == 1);
+        vibroToggle.isOn = (PlayerPrefs.GetInt("BOOL_VibroValue") == 1);
     }
 
     private void OnDisable()
     {
-        PlayerPrefs.SetInt("_GameAudio_Volume", volumeToggle.isOn ? 1 : 0);
-        PlayerPrefs.SetInt("_GameAudio_Vibro", vibroToggle.isOn ? 1 : 0);
+        PlayerPrefs.SetInt("BOOL_VolumeValue", volumeToggle.isOn ? 1 : 0);
+        PlayerPrefs.SetInt("BOOL_VibroValue", vibroToggle.isOn ? 1 : 0);
 
         volumeToggle.onValueChanged.RemoveListener(SwitchVolume);
         vibroToggle.onValueChanged.RemoveListener(SwitchVibro);

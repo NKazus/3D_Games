@@ -20,10 +20,10 @@ public class VolumeController : MonoBehaviour
     {
         ambientMusic.loop = true;
 
-        if (!PlayerPrefs.HasKey("_GameAudio_Volume"))
+        if (!PlayerPrefs.HasKey("BOOL_VolumeValue"))
         {
-            PlayerPrefs.SetInt("_GameAudio_Volume", 1);
-            PlayerPrefs.SetInt("_GameAudio_Vibro", 1);
+            PlayerPrefs.SetInt("BOOL_VolumeValue", 1);
+            PlayerPrefs.SetInt("BOOL_VibroValue", 1);
         }
     }
 
@@ -40,8 +40,8 @@ public class VolumeController : MonoBehaviour
 
     private void Start()
     {
-        SwitchAppVolume(PlayerPrefs.GetInt("_GameAudio_Volume") == 1);
-        SwitchAppVibro(PlayerPrefs.GetInt("_GameAudio_Vibro") == 1);
+        SwitchAppVolume(PlayerPrefs.GetInt("BOOL_VolumeValue") == 1);
+        SwitchAppVibro(PlayerPrefs.GetInt("BOOL_VibroValue") == 1);
     }
 
     private void OnDisable()

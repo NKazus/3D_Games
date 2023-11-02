@@ -11,12 +11,15 @@ public class ObjectsBond : MonoBehaviour
     [SerializeField] private float maxLength;
     [SerializeField] private float initialLength;
 
+    private float currentTargetLength;
+
     [Inject] private readonly GameUpdateHandler updateManager;
     [Inject] private readonly GameGlobalEvents globalEvents;
 
     private void Awake()
     {
         bondRenderer.positionCount = 5;
+        currentTargetLength = maxLength;
     }
 
     private void OnEnable()
@@ -61,13 +64,19 @@ public class ObjectsBond : MonoBehaviour
         bondRenderer.SetPosition(4, endPos);
 
         float currentMagnitude = direction.magnitude;
-        bondColors.SetMidAlteredGradient(bondRenderer, (currentMagnitude - initialLength) / (maxLength - initialLength));
+        bondColors.SetMidAlteredGradient(bondRenderer, (currentMagnitude - initialLength) / (currentTargetLength - initialLength));
 
-        if(currentMagnitude > maxLength)
+        if(currentMagnitude > currentTargetLength)
         {
             Debug.Log("oops");
             globalEvents.FinishGame(FinishCondition.Bond);
             globalEvents.SwitchGame(false);
         }
+    }
+
+    public void UpdateBondLength(float value)
+    {
+        currentTargetLength = maxLength + value;
+        Debug.Log("length:" + currentTargetLength);
     }
 }
