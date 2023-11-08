@@ -1,6 +1,8 @@
 using DG.Tweening;
 using UnityEngine;
 using Zenject;
+using MEGame.Interactions;
+using MEGame.Player;
 
 public class EvacuationController : MonoBehaviour
 {

@@ -8,6 +8,7 @@ public class Wanderer : MonoBehaviour
     private CustomPath currentPath;
     private int maxSteps;
     private int currentStep;
+    private bool rotateToDirection;
 
     private void Awake()
     {
@@ -31,12 +32,21 @@ public class Wanderer : MonoBehaviour
         currentStep = 0;
     }
 
+    public void EnableRotation(bool rotation)
+    {
+        rotateToDirection = rotation;
+    }
+
     public void MovePath()
     {
         currentStep++;
         if(currentStep >= maxSteps)
         {
             currentStep = 1;
+        }
+        if (rotateToDirection)
+        {
+            wandererTransform.DOLookAt(currentPath.wayPoints[currentStep].position, 0.3f);
         }
 
         wandererTransform.DOMove(currentPath.wayPoints[currentStep].position, currentPath.movingTime)

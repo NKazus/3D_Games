@@ -1,68 +1,71 @@
 using System;
 
-public class GameGlobalEvents
+namespace MEGame.Interactions
 {
-    public event Action<bool> EvacuationEvent;
-    public event Action<FinishCondition> GameFinishEvent;
-
-    public event Action VibroEvent;
-    public event Action RewardSoundEvent;
-    public event Action StickSoundEvent;
-    public event Action BreakSoundEvent;
-
-    public event Action<bool> VibroSetupEvent;
-    public event Action<bool> VolumeSetupEvent;
-
-    public event Action<PlayerID> FinishEvent;
-    public event Action<PlayerID> CollisionEvent;
-
-    public void SwitchGame(bool activate)
+    public class GameGlobalEvents
     {
-        EvacuationEvent?.Invoke(activate);
-    }
+        public event Action<bool> EvacuationEvent;
+        public event Action<FinishCondition> GameFinishEvent;
 
-    public void PlayVibro()
-    {
-        VibroEvent?.Invoke();
-    }
+        public event Action VibroEvent;
+        public event Action RewardSoundEvent;
+        public event Action StickSoundEvent;
+        public event Action BreakSoundEvent;
 
-    public void PlayReward()
-    {
-        RewardSoundEvent?.Invoke();
-    }
+        public event Action<bool> VibroSetupEvent;
+        public event Action<bool> VolumeSetupEvent;
 
-    public void PlayStick()
-    {
-        StickSoundEvent?.Invoke();
-    }
+        public event Action<PlayerID> FinishEvent;
+        public event Action<PlayerID> CollisionEvent;
 
-    public void PlayBreak()
-    {
-        BreakSoundEvent?.Invoke();
-    }
+        public void SwitchGame(bool activate)
+        {
+            EvacuationEvent?.Invoke(activate);
+        }
 
-    public void SetVibro(bool value)
-    {
-        VibroSetupEvent?.Invoke(value);
-    }
+        public void PlayVibro()
+        {
+            VibroEvent?.Invoke();
+        }
 
-    public void SetVolume(bool value)
-    {
-        VolumeSetupEvent?.Invoke(value);
-    }
+        public void PlayReward()
+        {
+            RewardSoundEvent?.Invoke();
+        }
 
-    public void FinishGame(FinishCondition value)
-    {
-        GameFinishEvent?.Invoke(value);
-    }
+        public void PlayStick()
+        {
+            StickSoundEvent?.Invoke();
+        }
 
-    public void FinishPlayer(PlayerID id)
-    {
-        FinishEvent?.Invoke(id);
-    }
+        public void PlayBreak()
+        {
+            BreakSoundEvent?.Invoke();
+        }
 
-    public void CollidePlayer(PlayerID id)
-    {
-        CollisionEvent?.Invoke(id);
+        public void SetVibro(bool value)
+        {
+            VibroSetupEvent?.Invoke(value);
+        }
+
+        public void SetVolume(bool value)
+        {
+            VolumeSetupEvent?.Invoke(value);
+        }
+
+        public void FinishGame(FinishCondition value)
+        {
+            GameFinishEvent?.Invoke(value);
+        }
+
+        public void FinishPlayer(PlayerID id)
+        {
+            FinishEvent?.Invoke(id);
+        }
+
+        public void CollidePlayer(PlayerID id)
+        {
+            CollisionEvent?.Invoke(id);
+        }
     }
 }

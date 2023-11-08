@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Audio;
 using Zenject;
+using MEGame.Interactions;
 
 public class VolumeController : MonoBehaviour
 {
@@ -80,7 +81,6 @@ public class VolumeController : MonoBehaviour
         breakSound.Play();
     }
 
-    #region SETTINGS
     private void SwitchAppVolume(bool isVolumeOn)
     {
         if (isVolumeOn)
@@ -97,5 +97,4 @@ public class VolumeController : MonoBehaviour
     {
         vibroEnabled = isVibroOn;
     }
-    #endregion
 }

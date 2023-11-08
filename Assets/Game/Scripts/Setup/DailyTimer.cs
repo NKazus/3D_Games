@@ -2,68 +2,71 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class DailyTimer : MonoBehaviour
+namespace MEGame.Setup
 {
-    [SerializeField] private Text timerText;
-
-    private float timeLeft;
-    private IEnumerator timerCoroutine;
-
-    private System.Action TimeOutCallback;
-
-    private IEnumerator DoTimer()
+    public class DailyTimer : MonoBehaviour
     {
-        while (timeLeft > 0)
+        [SerializeField] private Text timerText;
+
+        private float timeLeft;
+        private IEnumerator timerCoroutine;
+
+        private System.Action TimeOutCallback;
+
+        private IEnumerator DoTimer()
         {
-            timeLeft --;
-            UpdateTimer(timeLeft);
-            yield return new WaitForSeconds(1f);
+            while (timeLeft > 0)
+            {
+                timeLeft--;
+                UpdateTimer(timeLeft);
+                yield return new WaitForSeconds(1f);
+            }
+            if (timeLeft <= 0)
+            {
+                ResetTimer();
+                TimeOutCallback();
+                Debug.Log("timer_out");
+            }
         }
-        if(timeLeft <= 0)
+
+        private void UpdateTimer(float timeLeft)
         {
-            ResetTimer();
-            TimeOutCallback();
-            Debug.Log("timer_out");
+            if (timeLeft < 0)
+            {
+                timeLeft = 0;
+            }
+            int hours = Mathf.FloorToInt(timeLeft / 3600);
+            int seconds = Mathf.FloorToInt(timeLeft % 3600);
+            int minutes = Mathf.FloorToInt(seconds / 60);
+            seconds = Mathf.FloorToInt(seconds % 60);
+            timerText.text = string.Format("{0:00}:{1:00}:{2:00}", hours, minutes, seconds);
         }
-    }
 
-    private void UpdateTimer(float timeLeft)
-    {
-        if (timeLeft < 0)
+        public void ResetTimer()
         {
-            timeLeft = 0;
+            UpdateTimer(0);
         }
-        int hours = Mathf.FloorToInt(timeLeft / 3600);
-        int seconds = Mathf.FloorToInt(timeLeft % 3600);
-        int minutes = Mathf.FloorToInt(seconds / 60);
-        seconds = Mathf.FloorToInt(seconds % 60);
-        timerText.text = string.Format("{0:00}:{1:00}:{2:00}", hours, minutes, seconds);
-    }
 
-    public void ResetTimer()
-    {
-        UpdateTimer(0);
-    }
-
-    public void StartTimer(int secondsRemaining)
-    {
-        timeLeft = secondsRemaining;
-        timerCoroutine = DoTimer();
-        StartCoroutine(timerCoroutine);
-        Debug.Log("timer_on");
-    }
-
-    public void StopTimer()
-    {
-        if (timerCoroutine != null)
+        public void StartTimer(int secondsRemaining)
         {
-            StopCoroutine(timerCoroutine);
-            Debug.Log("timer_off");
+            timeLeft = secondsRemaining;
+            timerCoroutine = DoTimer();
+            StartCoroutine(timerCoroutine);
+            Debug.Log("timer_on");
         }
-    }
 
-    public void SetCallback(System.Action callback)
-    {
-        TimeOutCallback = callback;
+        public void StopTimer()
+        {
+            if (timerCoroutine != null)
+            {
+                StopCoroutine(timerCoroutine);
+                Debug.Log("timer_off");
+            }
+        }
+
+        public void SetCallback(System.Action callback)
+        {
+            TimeOutCallback = callback;
+        }
     }
 }

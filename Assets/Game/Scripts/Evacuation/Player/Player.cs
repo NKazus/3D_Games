@@ -1,5 +1,6 @@
 using UnityEngine;
 using Zenject;
+using MEGame.Interactions;
 
 public enum PlayerID
 {
@@ -7,122 +8,125 @@ public enum PlayerID
     Player2
 }
 
-public class Player : MonoBehaviour
+namespace MEGame.Player
 {
-    [SerializeField] private PlayerID playerID;
-    [SerializeField] private string targetTraceTag;
-    [SerializeField] private string targetFinishTag;
-    [SerializeField] private Transform defaultParent;
-
-    private BoxCollider playerCollider;
-    private PlayerMovement movement;
-    private PlayerMesh mesh;
-
-    [Inject] private readonly GameInput input;
-    [Inject] private readonly GameGlobalEvents globalEvents;
-
-    private void Awake()
+    public class Player : MonoBehaviour
     {
-        playerCollider = GetComponent<BoxCollider>();
-        movement = GetComponent<PlayerMovement>();
-        movement.Init();
+        [SerializeField] private PlayerID playerID;
+        [SerializeField] private string targetTraceTag;
+        [SerializeField] private string targetFinishTag;
+        [SerializeField] private Transform defaultParent;
 
-        mesh = transform.GetChild(0).GetComponent<PlayerMesh>();
-    }
+        private BoxCollider playerCollider;
+        private PlayerMovement movement;
+        private PlayerMesh mesh;
 
-    private void OnEnable()
-    {
-        movement.ResetPosition();
-    }
+        [Inject] private readonly GameInput input;
+        [Inject] private readonly GameGlobalEvents globalEvents;
 
-    private void Start()
-    {
-        input.LinkInput(playerID, movement.GetMovementCallback());
-    }
+        private void Awake()
+        {
+            playerCollider = GetComponent<BoxCollider>();
+            movement = GetComponent<PlayerMovement>();
+            movement.Init();
 
-    private void OnDisable()
-    {
-        if(input != null)
-        {
-            input.DeactivateInput(playerID);
+            mesh = transform.GetChild(0).GetComponent<PlayerMesh>();
         }
-        EnableCollisions(false);
-    }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.CompareTag(targetTraceTag))
+        private void OnEnable()
         {
-            Debug.Log("input enter:" + playerID);
-            input.ActivateInput(playerID);
+            movement.ResetPosition();
         }
-        if (other.gameObject.CompareTag("Obstacle"))
-        {
-            Debug.Log("collision:"+playerID);
-            globalEvents.CollidePlayer(playerID);
-        }
-        if (other.gameObject.CompareTag("Wanderer"))
-        {
-            Debug.Log("wander enter:" + playerID);
-            movement.SwitchParent(other.gameObject.transform);
-        }
-        if (other.gameObject.CompareTag(targetFinishTag))
-        {
-            Debug.Log("win:" + playerID);
-            DeactivatePlayer();
-            globalEvents.FinishPlayer(playerID);
-        }
-    }
 
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.gameObject.CompareTag(targetTraceTag))
+        private void Start()
         {
-            Debug.Log("input exit:" + playerID);
-            DeactivatePlayer();
+            input.LinkInput(playerID, movement.GetMovementCallback());
         }
-        if (other.gameObject.CompareTag("Wanderer"))
+
+        private void OnDisable()
         {
-            Debug.Log("wander exit:" + playerID);
+            if (input != null)
+            {
+                input.DeactivateInput(playerID);
+            }
+            EnableCollisions(false);
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.gameObject.CompareTag(targetTraceTag))
+            {
+                Debug.Log("input enter:" + playerID);
+                input.ActivateInput(playerID);
+            }
+            if (other.gameObject.CompareTag("Obstacle"))
+            {
+                Debug.Log("collision:" + playerID);
+                globalEvents.CollidePlayer(playerID);
+            }
+            if (other.gameObject.CompareTag("Wanderer"))
+            {
+                Debug.Log("wander enter:" + playerID);
+                movement.SwitchParent(other.gameObject.transform);
+            }
+            if (other.gameObject.CompareTag(targetFinishTag))
+            {
+                Debug.Log("win:" + playerID);
+                DeactivatePlayer();
+                globalEvents.FinishPlayer(playerID);
+            }
+        }
+
+        private void OnTriggerExit(Collider other)
+        {
+            if (other.gameObject.CompareTag(targetTraceTag))
+            {
+                Debug.Log("input exit:" + playerID);
+                DeactivatePlayer();
+            }
+            if (other.gameObject.CompareTag("Wanderer"))
+            {
+                Debug.Log("wander exit:" + playerID);
+                movement.SwitchParent(defaultParent);
+            }
+        }
+
+        public void EnableCollisions(bool enable)
+        {
+            Debug.Log("collisions:" + enable + " target:" + playerID);
+            playerCollider.enabled = enable;
+        }
+
+        public void SwitchMesh(bool isOn, bool restore)
+        {
+            if (isOn)
+            {
+                mesh.Show();
+            }
+            else
+            {
+                mesh.Hide(restore);
+            }
+        }
+
+        public void ResetPlayer()
+        {
             movement.SwitchParent(defaultParent);
-        }
-    }
-
-    public void EnableCollisions(bool enable)
-    {
-        Debug.Log("collisions:"+enable+" target:"+playerID);
-        playerCollider.enabled = enable;
-    }
-
-    public void SwitchMesh(bool isOn, bool restore)
-    {
-        if (isOn)
-        {
+            movement.ResetPosition();
+            EnableCollisions(true);
+            input.ActivateInput(playerID);
             mesh.Show();
         }
-        else
+
+        public void DeactivatePlayer()
         {
-            mesh.Hide(restore);
+            input.DeactivateInput(playerID);
+            movement.SwitchMovement(false);
         }
-    }
 
-    public void ResetPlayer()
-    {
-        movement.SwitchParent(defaultParent);
-        movement.ResetPosition();
-        EnableCollisions(true);
-        input.ActivateInput(playerID);
-        mesh.Show();
-    }
-
-    public void DeactivatePlayer()
-    {
-        input.DeactivateInput(playerID);
-        movement.SwitchMovement(false);
-    }
-
-    public void SetMovementSpeed(float modValue)
-    {
-        movement.SetSpeed(modValue);
+        public void SetMovementSpeed(float modValue)
+        {
+            movement.SetSpeed(modValue);
+        }
     }
 }

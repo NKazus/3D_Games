@@ -1,5 +1,6 @@
 using UnityEngine;
 using Zenject;
+using MEGame.Interactions;
 
 public class ResourceInstaller : MonoInstaller
 {

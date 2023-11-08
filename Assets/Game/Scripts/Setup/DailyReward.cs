@@ -1,71 +1,76 @@
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
+using MEGame.Interactions;
 
-public class DailyReward : MonoBehaviour
+namespace MEGame.Setup
 {
-    [SerializeField] private DailyTimer timer;
-    [SerializeField] private int cooldownSeconds;
-    [SerializeField] private int rewardValue;
-    [SerializeField] private Text incomeText;
-    [SerializeField] private Button getButton;
-
-    [SerializeField] private string enableText;
-    [SerializeField] private string disableText;
-
-    [Inject] private readonly GameResourceHandler resources;
-
-    private void Awake()
+    public class DailyReward : MonoBehaviour
     {
-        timer.SetCallback(EnableReward);
-    }
+        [SerializeField] private DailyTimer timer;
+        [SerializeField] private int cooldownSeconds;
+        [SerializeField] private int rewardValue;
+        [SerializeField] private Text rewardText;
+        [SerializeField] private Button getButton;
 
-    private void OnEnable()
-    {
-        getButton.image.color = Color.gray;
-        //incomeText.text = disableText;
+        [SerializeField] private string enableText;
+        [SerializeField] private string disableText;
 
-        CheckDaily();
-    }
+        [Inject] private readonly GameResourceHandler resources;
 
-    private void OnDisable()
-    {
-        timer.StopTimer();
-        getButton.onClick.AddListener(GetIncome);
-    }
-
-    private void CheckDaily()
-    {
-        System.TimeSpan span = System.DateTime.Now.Subtract(resources.RewardDate);
-        int seconds = (int)span.TotalMinutes;
-        bool rewardEnabled = (seconds >= cooldownSeconds);
-        if (rewardEnabled)
+        private void Awake()
         {
-            timer.ResetTimer();
-            EnableReward();
+            timer.SetCallback(EnableReward);
         }
-        else
+
+        private void OnEnable()
         {
-            timer.StartTimer(cooldownSeconds - seconds);
+            getButton.image.color = Color.gray;
+            rewardText.text = disableText;
+
+            CheckDaily();
         }
-    }
 
-    private void GetIncome()
-    {
-        getButton.onClick.RemoveListener(GetIncome);
-        getButton.image.color = Color.gray;
-        //incomeText.text = disableText;
+        private void OnDisable()
+        {
+            timer.StopTimer();
+            getButton.onClick.AddListener(GetIncome);
+        }
 
-        resources.ChangePointsValue(rewardValue);
-        resources.ChangeRewardDate(System.DateTime.Now);
+        private void CheckDaily()
+        {
+            Debug.Log(resources.RewardDate);
+            System.TimeSpan span = System.DateTime.Now.Subtract(resources.RewardDate);
+            int seconds = (int)span.TotalSeconds;
+            bool rewardEnabled = (seconds >= cooldownSeconds);
+            if (rewardEnabled)
+            {
+                timer.ResetTimer();
+                EnableReward();
+            }
+            else
+            {
+                timer.StartTimer(cooldownSeconds - seconds);
+            }
+        }
 
-        timer.StartTimer(cooldownSeconds);
-    }
+        private void GetIncome()
+        {
+            getButton.onClick.RemoveListener(GetIncome);
+            getButton.image.color = Color.gray;
+            rewardText.text = disableText;
 
-    private void EnableReward()
-    {
-        getButton.image.color = Color.white;
-        getButton.onClick.AddListener(GetIncome);
-       // incomeText.text = enableText;
+            resources.ChangePointsValue(rewardValue);
+            resources.ChangeRewardDate(System.DateTime.Now);
+
+            timer.StartTimer(cooldownSeconds);
+        }
+
+        private void EnableReward()
+        {
+            getButton.image.color = Color.white;
+            getButton.onClick.AddListener(GetIncome);
+            rewardText.text = enableText;
+        }
     }
 }

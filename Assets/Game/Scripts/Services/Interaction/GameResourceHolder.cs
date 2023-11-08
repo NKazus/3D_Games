@@ -2,43 +2,46 @@ using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GameResourceHolder : MonoBehaviour
+namespace MEGame.Interactions
 {
-    [SerializeField] private Text pointsText;
-    [SerializeField] private Text linksText;
-
-    [SerializeField] private Image bondImage;
-    [SerializeField] private Image speedImage;
-    [SerializeField] private Image linksImage;
-
-    private void DoText(Text uiText, string value)
+    public class GameResourceHolder : MonoBehaviour
     {
-        uiText.DOText(value, 0.5f).Play();
-    }
+        [SerializeField] private Text pointsText;
+        [SerializeField] private Text linksText;
 
-    public void UpdateText(ResourceType id, int value)
-    {
-        Text ui;
-        switch (id)
+        [SerializeField] private Image bondImage;
+        [SerializeField] private Image speedImage;
+        [SerializeField] private Image linksImage;
+
+        private void DoText(Text uiText, string value)
         {
-            case ResourceType.Link: ui = linksText; break;
-            case ResourceType.Points: ui = pointsText; break;
-            default:  throw new System.NotSupportedException();
+            uiText.DOText(value, 0.5f).Play();
         }
 
-        DoText(ui, value.ToString());
-    }
-
-    public void UpdateImages(ResourceType id, bool active)
-    {
-        Image target;
-        switch (id)
+        public void UpdateText(ResourceType id, int value)
         {
-            case ResourceType.Bond: target = bondImage; break;
-            case ResourceType.Speed: target = speedImage; break;
-            case ResourceType.Link: target = linksImage; break;
-            default: throw new System.NotSupportedException();
+            Text ui;
+            switch (id)
+            {
+                case ResourceType.Link: ui = linksText; break;
+                case ResourceType.Points: ui = pointsText; break;
+                default: throw new System.NotSupportedException();
+            }
+
+            DoText(ui, value.ToString());
         }
-        target.DOFade(active ? 1f : 0.5f, 0.4f);
+
+        public void UpdateImages(ResourceType id, bool active)
+        {
+            Image target;
+            switch (id)
+            {
+                case ResourceType.Bond: target = bondImage; break;
+                case ResourceType.Speed: target = speedImage; break;
+                case ResourceType.Link: target = linksImage; break;
+                default: throw new System.NotSupportedException();
+            }
+            target.DOFade(active ? 1f : 0.5f, 0.4f);
+        }
     }
 }

@@ -2,40 +2,43 @@ using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
 
-public class GameVolumeSettings : MonoBehaviour
+namespace MEGame.Interactions
 {
-    [SerializeField] private Toggle volumeToggle;
-    [SerializeField] private Toggle vibroToggle;
-
-    [Inject] private readonly GameGlobalEvents eventManager;
-
-    #region MONO
-    private void OnEnable()
+    public class GameVolumeSettings : MonoBehaviour
     {
-        volumeToggle.onValueChanged.AddListener(SwitchVolume);
-        vibroToggle.onValueChanged.AddListener(SwitchVibro);
+        [SerializeField] private Toggle volumeToggle;
+        [SerializeField] private Toggle vibroToggle;
 
-        volumeToggle.isOn = (PlayerPrefs.GetInt("BOOL_VolumeValue") == 1);
-        vibroToggle.isOn = (PlayerPrefs.GetInt("BOOL_VibroValue") == 1);
-    }
+        [Inject] private readonly GameGlobalEvents eventManager;
 
-    private void OnDisable()
-    {
-        PlayerPrefs.SetInt("BOOL_VolumeValue", volumeToggle.isOn ? 1 : 0);
-        PlayerPrefs.SetInt("BOOL_VibroValue", vibroToggle.isOn ? 1 : 0);
+        #region MONO
+        private void OnEnable()
+        {
+            volumeToggle.onValueChanged.AddListener(SwitchVolume);
+            vibroToggle.onValueChanged.AddListener(SwitchVibro);
 
-        volumeToggle.onValueChanged.RemoveListener(SwitchVolume);
-        vibroToggle.onValueChanged.RemoveListener(SwitchVibro);
-    }
-    #endregion
+            volumeToggle.isOn = (PlayerPrefs.GetInt("BOOL_VolumeValue") == 1);
+            vibroToggle.isOn = (PlayerPrefs.GetInt("BOOL_VibroValue") == 1);
+        }
 
-    private void SwitchVolume(bool isVolumeOn)
-    {
-        eventManager.SetVolume(isVolumeOn);
-    }
+        private void OnDisable()
+        {
+            PlayerPrefs.SetInt("BOOL_VolumeValue", volumeToggle.isOn ? 1 : 0);
+            PlayerPrefs.SetInt("BOOL_VibroValue", vibroToggle.isOn ? 1 : 0);
 
-    private void SwitchVibro(bool isVibroOn)
-    {
-        eventManager.SetVibro(isVibroOn);
+            volumeToggle.onValueChanged.RemoveListener(SwitchVolume);
+            vibroToggle.onValueChanged.RemoveListener(SwitchVibro);
+        }
+        #endregion
+
+        private void SwitchVolume(bool isVolumeOn)
+        {
+            eventManager.SetVolume(isVolumeOn);
+        }
+
+        private void SwitchVibro(bool isVibroOn)
+        {
+            eventManager.SetVibro(isVibroOn);
+        }
     }
 }

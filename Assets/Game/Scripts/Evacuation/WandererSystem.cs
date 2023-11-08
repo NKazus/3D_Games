@@ -15,7 +15,9 @@ public class WandererSystem : MonoBehaviour
     [SerializeField] private Wanderer[] obstacleTargets;
     [SerializeField] private CustomPath[] obstaclePaths;
     [SerializeField] private CustomPath[] wanderPaths;
-    //safe zones
+
+    [SerializeField] private bool rotateWanderers;
+    [SerializeField] private bool rotateObstacles;
 
     private List<int> currentPathIndexes = new List<int>();
     private System.Random random = new System.Random();
@@ -55,6 +57,7 @@ public class WandererSystem : MonoBehaviour
             }
             while (currentPathIndexes.Contains(index));
             wanderTargets[i].SetPath(wanderPaths[index]);
+            wanderTargets[i].EnableRotation(rotateWanderers);
             currentPathIndexes.Add(index);
         }
 
@@ -68,6 +71,7 @@ public class WandererSystem : MonoBehaviour
             }
             while (currentPathIndexes.Contains(index));
             obstacleTargets[i].SetPath(obstaclePaths[index]);
+            obstacleTargets[i].EnableRotation(rotateObstacles);
             currentPathIndexes.Add(index);
         }
     }

@@ -1,64 +1,65 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 
-public class PlayerMovement : MonoBehaviour
+namespace MEGame.Player
 {
-    [SerializeField] private Transform startObject;
-    [SerializeField] private float movingSpeed;
-
-    private Transform playerTransform;
-    private float currentSpeed;
-
-    [Inject] private readonly GameUpdateHandler updateHandler;
-
-    private void OnDisable()
+    public class PlayerMovement : MonoBehaviour
     {
-        SwitchMovement(false);
-    }
+        [SerializeField] private Transform startObject;
+        [SerializeField] private float movingSpeed;
 
-    private void LocalUpdate()
-    {
-        playerTransform.position += new Vector3(0, 0, - currentSpeed * Time.deltaTime);
-    }
+        private Transform playerTransform;
+        private float currentSpeed;
 
-    public void Init()
-    {
-        playerTransform = transform;
-        currentSpeed = movingSpeed;
-    }
+        [Inject] private readonly GameUpdateHandler updateHandler;
 
-    public void SwitchMovement(bool activate)
-    {
-        Debug.Log("player:"+activate);
-        if (activate)
+        private void OnDisable()
         {
-            updateHandler.UpdateEvent += LocalUpdate;
+            SwitchMovement(false);
         }
-        else
+
+        private void LocalUpdate()
         {
-            updateHandler.UpdateEvent -= LocalUpdate;
+            playerTransform.position += new Vector3(0, 0, -currentSpeed * Time.deltaTime);
         }
-    }
 
-    public void SwitchParent(Transform targetParent)
-    {
-        playerTransform.parent = targetParent;
-    }
+        public void Init()
+        {
+            playerTransform = transform;
+            currentSpeed = movingSpeed;
+        }
 
-    public System.Action<bool> GetMovementCallback()
-    {
-        return SwitchMovement;
-    }
+        public void SwitchMovement(bool activate)
+        {
+            Debug.Log("player:" + activate);
+            if (activate)
+            {
+                updateHandler.UpdateEvent += LocalUpdate;
+            }
+            else
+            {
+                updateHandler.UpdateEvent -= LocalUpdate;
+            }
+        }
 
-    public void ResetPosition()
-    {
-        playerTransform.position = startObject.position;
-    }
+        public void SwitchParent(Transform targetParent)
+        {
+            playerTransform.parent = targetParent;
+        }
 
-    public void SetSpeed(float value)
-    {
-        currentSpeed = movingSpeed * value;
+        public System.Action<bool> GetMovementCallback()
+        {
+            return SwitchMovement;
+        }
+
+        public void ResetPosition()
+        {
+            playerTransform.position = startObject.position;
+        }
+
+        public void SetSpeed(float value)
+        {
+            currentSpeed = movingSpeed * value;
+        }
     }
 }

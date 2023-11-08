@@ -1,35 +1,41 @@
 using DG.Tweening;
 using UnityEngine;
 
-public class PlayerMesh : MonoBehaviour
+namespace MEGame.Player
 {
-    private Transform meshTransform;
-
-    private void Awake()
+    public class PlayerMesh : MonoBehaviour
     {
-        meshTransform = transform;
-    }
+        private Transform meshTransform;
+        private Vector3 meshInitialScale;
 
-    private void OnEnable()
-    {
-        meshTransform.localScale = new Vector3(1, 1, 1);
-    }
+        private void Awake()
+        {
+            meshTransform = transform;
+            meshInitialScale = meshTransform.localScale;
+        }
 
-    public void Hide(bool restore)
-    {
-        meshTransform.DOScale(0f, 0.4f)
-            .SetId("player")
-            .OnComplete(() => {
-                if (restore)
+        private void OnEnable()
+        {
+            meshTransform.localScale = meshInitialScale;
+        }
+
+        public void Hide(bool restore)
+        {
+            meshTransform.DOScale(0f, 0.4f)
+                .SetId("player")
+                .OnComplete(() =>
                 {
-                    Show();
-                }
-            });
-    }
+                    if (restore)
+                    {
+                        Show();
+                    }
+                });
+        }
 
-    public void Show()
-    {
-        meshTransform.DOScale(1f, 0.4f)
-            .SetId("player");
+        public void Show()
+        {
+            meshTransform.DOScale(meshInitialScale.x, 0.4f)
+                .SetId("player");
+        }
     }
 }

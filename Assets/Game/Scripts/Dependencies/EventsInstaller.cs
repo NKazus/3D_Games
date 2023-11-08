@@ -1,4 +1,5 @@
 using Zenject;
+using MEGame.Interactions;
 
 public class EventsInstaller : Installer<EventsInstaller>
 {
