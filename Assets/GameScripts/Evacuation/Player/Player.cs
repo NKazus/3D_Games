@@ -56,22 +56,22 @@ namespace MEGame.Player
         {
             if (other.gameObject.CompareTag(targetTraceTag))
             {
-                Debug.Log("input enter:" + playerID);
+                //Debug.Log("input enter:" + playerID);
                 input.ActivateInput(playerID);
             }
             if (other.gameObject.CompareTag("Obstacle"))
             {
-                Debug.Log("collision:" + playerID);
+                //Debug.Log("collision:" + playerID);
                 globalEvents.CollidePlayer(playerID);
             }
             if (other.gameObject.CompareTag("Wanderer"))
             {
-                Debug.Log("wander enter:" + playerID);
+                //Debug.Log("wander enter:" + playerID);
                 movement.SwitchParent(other.gameObject.transform);
             }
             if (other.gameObject.CompareTag(targetFinishTag))
             {
-                Debug.Log("win:" + playerID);
+                //Debug.Log("win:" + playerID);
                 DeactivatePlayer();
                 globalEvents.FinishPlayer(playerID);
             }
@@ -81,19 +81,19 @@ namespace MEGame.Player
         {
             if (other.gameObject.CompareTag(targetTraceTag))
             {
-                Debug.Log("input exit:" + playerID);
+                //Debug.Log("input exit:" + playerID);
                 DeactivatePlayer();
             }
             if (other.gameObject.CompareTag("Wanderer"))
             {
-                Debug.Log("wander exit:" + playerID);
+                //Debug.Log("wander exit:" + playerID);
                 movement.SwitchParent(defaultParent);
             }
         }
 
         public void EnableCollisions(bool enable)
         {
-            Debug.Log("collisions:" + enable + " target:" + playerID);
+            //Debug.Log("collisions:" + enable + " target:" + playerID);
             playerCollider.enabled = enable;
         }
 

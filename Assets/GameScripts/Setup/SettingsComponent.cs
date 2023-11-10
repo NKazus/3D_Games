@@ -6,12 +6,24 @@ public class SettingsComponent : MonoBehaviour
 
     private void OnEnable()
     {
-        wanderers.SetWanderersPath();
-        wanderers.MoveWanderers();
+        Invoke("StartWandering", 0.5f);
     }
 
     private void OnDisable()
     {
-        wanderers.StopWanderers();
+        if (IsInvoking())
+        {
+            CancelInvoke("StartWandering");
+        }
+        else
+        {
+            wanderers.StopWanderers();
+        }
+    }
+
+    private void StartWandering()
+    {
+        wanderers.SetWanderersPath();
+        wanderers.MoveWanderers();
     }
 }

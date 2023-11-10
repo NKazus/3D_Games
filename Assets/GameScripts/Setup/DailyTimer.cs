@@ -25,7 +25,7 @@ namespace MEGame.Setup
             {
                 ResetTimer();
                 TimeOutCallback();
-                Debug.Log("timer_out");
+                //Debug.Log("timer_out");
             }
         }
 
@@ -52,7 +52,7 @@ namespace MEGame.Setup
             timeLeft = secondsRemaining;
             timerCoroutine = DoTimer();
             StartCoroutine(timerCoroutine);
-            Debug.Log("timer_on");
+            //Debug.Log("timer_on");
         }
 
         public void StopTimer()
@@ -60,7 +60,7 @@ namespace MEGame.Setup
             if (timerCoroutine != null)
             {
                 StopCoroutine(timerCoroutine);
-                Debug.Log("timer_off");
+                //Debug.Log("timer_off");
             }
         }
 

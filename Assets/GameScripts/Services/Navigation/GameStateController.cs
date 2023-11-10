@@ -26,7 +26,6 @@ namespace MEGame.Navigation
 
         private GameState currentState;
 
-        #region MONO
         private void Awake()
         {
             currentState = GameState.Menu;
@@ -64,8 +63,6 @@ namespace MEGame.Navigation
 
             toPrivacy.onClick.RemoveListener(CheckPrivacy);
         }
-        #endregion
-
 
         private void TriggerChange(GameState state)
         {

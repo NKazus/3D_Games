@@ -12,8 +12,8 @@ PlayerSettings:
   targetDevice: 0
   useOnDemandResources: 0
   accelerometerFrequency: 60
-  companyName: TapBlaze
-  productName: Cosmic Gravity Spin
+  companyName: Magnet
+  productName: Magnet Evacuation
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
@@ -155,7 +155,7 @@ PlayerSettings:
   androidSupportedAspectRatio: 1
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
-    iPhone: com.tapblaze.cosmicspin
+    iPhone: com.magnet.evacuation
   buildNumber:
     Standalone: 0
     iPhone: 1
@@ -273,7 +273,7 @@ PlayerSettings:
   - m_BuildTarget: 
     m_Icons:
     - serializedVersion: 2
-      m_Icon: {fileID: 2800000, guid: 5485e11cbcec54d3f8f8ae006274e61d, type: 3}
+      m_Icon: {fileID: 2800000, guid: 16f2a82f9bf3042a7ad9f36cc7d7490e, type: 3}
       m_Width: 128
       m_Height: 128
       m_Kind: 0
@@ -281,7 +281,7 @@ PlayerSettings:
   - m_BuildTarget: iPhone
     m_Icons:
     - m_Textures:
-      - {fileID: 2800000, guid: 5485e11cbcec54d3f8f8ae006274e61d, type: 3}
+      - {fileID: 2800000, guid: 16f2a82f9bf3042a7ad9f36cc7d7490e, type: 3}
       m_Width: 180
       m_Height: 180
       m_Kind: 0
@@ -307,7 +307,7 @@ PlayerSettings:
       m_Kind: 0
       m_SubKind: iPad
     - m_Textures:
-      - {fileID: 2800000, guid: 5485e11cbcec54d3f8f8ae006274e61d, type: 3}
+      - {fileID: 2800000, guid: 16f2a82f9bf3042a7ad9f36cc7d7490e, type: 3}
       m_Width: 120
       m_Height: 120
       m_Kind: 3
@@ -328,7 +328,7 @@ PlayerSettings:
       m_Kind: 3
       m_SubKind: iPad
     - m_Textures:
-      - {fileID: 2800000, guid: 5485e11cbcec54d3f8f8ae006274e61d, type: 3}
+      - {fileID: 2800000, guid: 16f2a82f9bf3042a7ad9f36cc7d7490e, type: 3}
       m_Width: 87
       m_Height: 87
       m_Kind: 1
@@ -354,7 +354,7 @@ PlayerSettings:
       m_Kind: 1
       m_SubKind: iPad
     - m_Textures:
-      - {fileID: 2800000, guid: 5485e11cbcec54d3f8f8ae006274e61d, type: 3}
+      - {fileID: 2800000, guid: 16f2a82f9bf3042a7ad9f36cc7d7490e, type: 3}
       m_Width: 60
       m_Height: 60
       m_Kind: 2
@@ -375,7 +375,7 @@ PlayerSettings:
       m_Kind: 2
       m_SubKind: iPad
     - m_Textures:
-      - {fileID: 2800000, guid: 5485e11cbcec54d3f8f8ae006274e61d, type: 3}
+      - {fileID: 2800000, guid: 16f2a82f9bf3042a7ad9f36cc7d7490e, type: 3}
       m_Width: 1024
       m_Height: 1024
       m_Kind: 4
@@ -797,7 +797,7 @@ PlayerSettings:
   ps4IncludedModules: []
   ps4attribVROutputEnabled: 0
   monoEnv: 
-  splashScreenBackgroundSourceLandscape: {fileID: 21300000, guid: 6f001df529d324d798be3d091c22f67f, type: 3}
+  splashScreenBackgroundSourceLandscape: {fileID: 21300000, guid: 5db4cd28b5f5342f79210b501212abb0, type: 3}
   splashScreenBackgroundSourcePortrait: {fileID: 0}
   blurSplashScreenBackground: 0
   spritePackerPolicy: 

@@ -71,7 +71,7 @@ namespace MEGame.Player
 
             if (currentMagnitude > currentTargetLength)
             {
-                Debug.Log("oops");
+                //Debug.Log("oops");
                 globalEvents.FinishGame(FinishCondition.Bond);
                 globalEvents.SwitchGame(false);
             }
@@ -80,7 +80,7 @@ namespace MEGame.Player
         public void UpdateBondLength(float value)
         {
             currentTargetLength = maxLength + value;
-            Debug.Log("length:" + currentTargetLength);
+            //Debug.Log("length:" + currentTargetLength);
         }
     }
 }

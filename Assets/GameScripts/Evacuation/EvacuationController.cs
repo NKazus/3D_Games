@@ -44,13 +44,13 @@ public class EvacuationController : MonoBehaviour
             player1.ResetPlayer();
             player2.ResetPlayer();
 
-            float currentGrabSpeed = resources.GrabSpeed ? 1.5f : 1f;
-            Debug.Log("speed:"+currentGrabSpeed);
+            float currentGrabSpeed = resources.GrabSpeed ? grabSpeedBoosted : 1f;
+            //Debug.Log("speed:"+currentGrabSpeed);
             player1.SetMovementSpeed(currentGrabSpeed);
             player2.SetMovementSpeed(currentGrabSpeed);
-            bond.UpdateBondLength(resources.BondLength ? 0.1f : 0f);
+            bond.UpdateBondLength(resources.BondLength ? bondLenghtBoosted : 0f);
             bondCharges = resources.LinkCharges;
-            Debug.Log("links:" + bondCharges);
+            //Debug.Log("links:" + bondCharges);
 
             wanderers.SetWanderersPath();
             wanderers.MoveWanderers();
@@ -87,7 +87,7 @@ public class EvacuationController : MonoBehaviour
         finished++;
         if (finished >= 2)
         {
-            Debug.Log("WIN");
+            //Debug.Log("WIN");
             resources.RefreshBonuses(true);
             globalEvents.FinishGame(FinishCondition.Finish);
             globalEvents.SwitchGame(false);
@@ -96,7 +96,7 @@ public class EvacuationController : MonoBehaviour
 
     private void Collide(PlayerID id)
     {
-        Debug.Log("collide");
+        //Debug.Log("collide");
         bondCharges--;
         resources.ChangeBonusValue(ResourceType.Link, false, -1);
 
@@ -114,7 +114,7 @@ public class EvacuationController : MonoBehaviour
 
         if (!restore)
         {
-            Debug.Log("collision_death");
+            //Debug.Log("collision_death");
             globalEvents.FinishGame(FinishCondition.Collision);
             globalEvents.SwitchGame(false);
         }        

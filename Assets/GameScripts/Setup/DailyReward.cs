@@ -42,7 +42,7 @@ namespace MEGame.Setup
 
         private void CheckDaily()
         {
-            Debug.Log(resources.RewardDate);
+            //Debug.Log(resources.RewardDate);
             System.TimeSpan span = System.DateTime.Now.Subtract(resources.RewardDate);
             int seconds = (int)span.TotalSeconds;
             bool rewardEnabled = (seconds >= cooldownSeconds);

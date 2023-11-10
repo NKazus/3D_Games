@@ -11,7 +11,6 @@ namespace MEGame.Interactions
 
         [Inject] private readonly GameGlobalEvents eventManager;
 
-        #region MONO
         private void OnEnable()
         {
             volumeToggle.onValueChanged.AddListener(SwitchVolume);
@@ -29,7 +28,6 @@ namespace MEGame.Interactions
             volumeToggle.onValueChanged.RemoveListener(SwitchVolume);
             vibroToggle.onValueChanged.RemoveListener(SwitchVibro);
         }
-        #endregion
 
         private void SwitchVolume(bool isVolumeOn)
         {

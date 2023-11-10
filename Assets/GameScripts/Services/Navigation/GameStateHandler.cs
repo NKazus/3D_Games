@@ -16,7 +16,6 @@ namespace MEGame.Navigation
 
         [SerializeField] private GameStateController uiManager;
 
-        #region MONO
         private void OnEnable()
         {
             uiManager.ChangeUIStateEvent += SwitchState;
@@ -26,7 +25,6 @@ namespace MEGame.Navigation
         {
             uiManager.ChangeUIStateEvent -= SwitchState;
         }
-        #endregion
 
         private void SwitchState(GameState state)
         {

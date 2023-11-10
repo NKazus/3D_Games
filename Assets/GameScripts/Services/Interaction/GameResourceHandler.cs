@@ -30,15 +30,15 @@ namespace MEGame.Interactions
 
         private void OnEnable()
         {
-            playerPoints = 10;// PlayerPrefs.HasKey("INT_PlayerPoints") ? PlayerPrefs.GetInt("INT_PlayerPoints") : playerPoints;
-            linkCharges = 5;// PlayerPrefs.HasKey("INT_LinkCharges") ? PlayerPrefs.GetInt("INT_LinkCharges") : linkCharges;
+            playerPoints = PlayerPrefs.HasKey("INT_PlayerPoints") ? PlayerPrefs.GetInt("INT_PlayerPoints") : playerPoints;
+            linkCharges = PlayerPrefs.HasKey("INT_LinkCharges") ? PlayerPrefs.GetInt("INT_LinkCharges") : linkCharges;
 
-            bondLength = false;// true; //PlayerPrefs.HasKey("BOOL_BondLength") ? (PlayerPrefs.GetInt("BOOL_BondLength") == 1) : false;
-            grabSpeed = false; // true;// PlayerPrefs.HasKey("BOOL_GrabSpeed") ? (PlayerPrefs.GetInt("BOOL_GrabSpeed") == 1) : false;
+            bondLength = PlayerPrefs.HasKey("BOOL_BondLength") ? (PlayerPrefs.GetInt("BOOL_BondLength") == 1) : false;
+            grabSpeed = PlayerPrefs.HasKey("BOOL_GrabSpeed") ? (PlayerPrefs.GetInt("BOOL_GrabSpeed") == 1) : false;
 
-            rewardDate = /*PlayerPrefs.HasKey("INT_RewardDate") ? new System.DateTime(
+            rewardDate = PlayerPrefs.HasKey("INT_RewardDate") ? new System.DateTime(
                System.Convert.ToInt64(PlayerPrefs.GetString("INT_RewardDate")))
-               .ToLocalTime() : */System.DateTime.Now.AddDays(-2);
+               .ToLocalTime() : System.DateTime.Now.AddDays(-2);
         }
 
         private void OnDisable()

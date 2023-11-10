@@ -31,7 +31,7 @@ namespace MEGame.Player
 
         public void SwitchMovement(bool activate)
         {
-            Debug.Log("player:" + activate);
+            //Debug.Log("player:" + activate);
             if (activate)
             {
                 updateHandler.UpdateEvent += LocalUpdate;
