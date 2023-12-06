@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
@@ -6,32 +5,156 @@ using FitTheSize.GameServices;
 
 public class PlatformHandler : MonoBehaviour
 {
-    [SerializeField] private GameObject[] platforms;
-    [SerializeField] private TriggerTag[] tags;
+    [SerializeField] private GameObject[] spawnedPlatforms;
+
+    [SerializeField] private Transform poolParent;
+    [SerializeField] private Transform routeParent;
+
+    [SerializeField] private Transform spawnPosition;
+    [SerializeField] private Transform despawnPosition;
+    [SerializeField] private Transform[] initialRoute;
+
+    private float routeSpeed;
+
+    private int platformSpawnIndex;
+
+    private List<RunnerPlatform> activePlatforms = new List<RunnerPlatform>();
+    private bool isMoving;
+
+    private Transform currentSpawnPosition;
 
     [Inject] private readonly GamePool gamePool;
+    [Inject] private readonly GameUpdateHandler updateHandler;
 
-    public void MoveRoute()
+    private void OnEnable()
     {
-        //invoke move event
+        isMoving = false;
     }
 
-    public void StopRoute()
+    private void OnDisable()
     {
+        if (isMoving)
+        {
+            StopRoute();
+        }
 
+        while(activePlatforms.Count > 0)
+        {
+            Despawn(activePlatforms[0].gameObject);
+        }
+
+        activePlatforms.Clear();
     }
 
-    //+init triggers with callbacks
-    private void DoTrigger(System.Action<TriggerTag> target)
+    private void ChangeSpawnIndex()
     {
-        //triggers
+        platformSpawnIndex++;
+
+        if(platformSpawnIndex >= spawnedPlatforms.Length)
+        {
+            platformSpawnIndex = 0;
+        }
     }
 
     private void SpawnNext()//when spawn trigger
     {
-        //cycle indices and spawn platforms in order from pool
-        //when spawned set pos and call init through RunnerPlatform script
+        //Debug.Log("spawn");
+        bool spawnStatusNew;
+        Debug.Log("SPAWN_INDEX:" + platformSpawnIndex);
+        GameObject target = gamePool.GetGameObjectFromPool(spawnedPlatforms[platformSpawnIndex], out spawnStatusNew);
+        target.transform.parent = routeParent;
+
+        RunnerPlatform targetComponent = target.GetComponent<RunnerPlatform>();
+        targetComponent.SetPosition(currentSpawnPosition.position);
+        targetComponent.SetSpeed(routeSpeed);
+        activePlatforms.Add(targetComponent);
+        //Debug.Log("active platforms:"+activePlatforms.Count);
+        targetComponent.SetupPlatform();
+        targetComponent.SwitchColliders(true);
+
+        if (spawnStatusNew)
+        {
+            targetComponent.SetupMovement(updateHandler, despawnPosition.position.z, TriggerSpawn);
+        }
+
+        if (isMoving)
+        {
+            targetComponent.SwitchMovement(true);
+        }
+
+        ChangeSpawnIndex();
     }
 
-    //set to pool when despawn trigger
+    private void Despawn(GameObject target)
+    {
+        //Debug.Log("despawn");
+        RunnerPlatform targetComponent = target.GetComponent<RunnerPlatform>();
+        targetComponent.SwitchColliders(false);
+
+        activePlatforms.Remove(targetComponent);
+        //Debug.Log("active platforms:" + activePlatforms.Count);
+        target.transform.parent = poolParent;
+        gamePool.PutGameObjectToPool(target);
+    }
+
+    private void TriggerSpawn(GameObject target)
+    {
+        Despawn(target);
+        SpawnNext();
+    }
+
+    private void SpawnFirst()
+    {
+        platformSpawnIndex = 0;
+
+        for(int i = 0; i < initialRoute.Length; i++)
+        {
+            currentSpawnPosition = initialRoute[i];
+            SpawnNext();
+        }
+
+        currentSpawnPosition = spawnPosition;
+    }
+
+    public void SetRouteSpeed(float targetSpeed)
+    {
+        routeSpeed = targetSpeed;
+    }
+
+    public void MoveRoute()
+    {
+        Debug.Log("MOVE");
+        isMoving = true;
+
+        for (int i = 0; i < activePlatforms.Count; i++)
+        {
+            activePlatforms[i].SwitchMovement(true);
+        }
+    }
+
+    public void StopRoute()
+    {
+        Debug.Log("STOP");
+        isMoving = false;
+
+        for (int i = 0; i < activePlatforms.Count; i++)
+        {
+            activePlatforms[i].SwitchMovement(false);
+        }
+    }
+
+    public void ResetRoute()
+    {
+        if (isMoving)
+        {
+            StopRoute();
+        }
+
+        while (activePlatforms.Count > 0)
+        {
+            Despawn(activePlatforms[0].gameObject);
+        }
+
+        SpawnFirst();
+    }
 }

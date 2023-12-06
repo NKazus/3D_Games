@@ -10,7 +10,7 @@ namespace FitTheSize.GameServices
 
         [Inject] private readonly DiContainer diContainer;
 
-        public GameObject GetGameObjectFromPool(GameObject prefab, int cellId, Vector3 spawnPosition)
+        public GameObject GetGameObjectFromPool(GameObject prefab, out bool isInstantiated)
         {
             if (!poolDictionary.ContainsKey(prefab.name))
             {
@@ -22,11 +22,13 @@ namespace FitTheSize.GameServices
                 result = poolDictionary[prefab.name].First.Value;
                 poolDictionary[prefab.name].RemoveFirst();
                 result.SetActive(true);
+                isInstantiated = false;
                 return result;
             }
 
             result = diContainer.InstantiatePrefab(prefab);
             result.name = prefab.name;
+            isInstantiated = true;
             return result;
         }
 

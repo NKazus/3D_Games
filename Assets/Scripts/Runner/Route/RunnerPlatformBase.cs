@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class RunnerPlatformBase : RunnerPlatform
 {
-    public override void DoPlatform()
+    public override void SetupPlatform()
     {
-        throw new System.NotImplementedException();
+        //Debug.Log("base");
+        return;
     }
 }

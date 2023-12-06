@@ -4,8 +4,23 @@ public class Randomizer
 {
     private Random random = new Random();
 
-    public int GenerateInt(int minValue, int maxValue)
+    public float GenerateFloat(float minValue, float maxValue)
     {
-        return random.Next(minValue, maxValue);
+        return minValue + (maxValue - minValue) * (float)random.NextDouble();
     }
+
+    public void RandomizeArray<T>(T[] array)
+    {
+        int n = array.Length;
+        int k;
+        T temp;
+        while (n > 1)
+        {
+            k = random.Next(n--);
+            temp = array[n];
+            array[n] = array[k];
+            array[k] = temp;
+        }
+    }
+
 }

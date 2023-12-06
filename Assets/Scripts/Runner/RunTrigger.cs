@@ -24,22 +24,17 @@ public class RunTrigger : MonoBehaviour
         events.GameStateEvent += ChangeGameState;
         events.ResultEvent += ShowResult;
 
-        Invoke("Restart", 0.5f);
+        restart.onClick.AddListener(Restart);
+        ChangeGameState(true);
     }
 
     private void OnDisable()
     {
-        if (IsInvoking())
-        {
-            CancelInvoke("Restart");
-        }
-        events.SwitchGameState(false);
-
         events.ResultEvent -= ShowResult;
         events.GameStateEvent -= ChangeGameState;
 
-        restartBg.SetActive(false);
         restart.onClick.RemoveListener(Restart);
+        ChangeGameState(false);
     }
 
     private void Restart()
@@ -49,16 +44,7 @@ public class RunTrigger : MonoBehaviour
 
     private void ChangeGameState(bool isActive)
     {
-        if (!isActive)
-        {
-            restartBg.SetActive(true);
-            restart.onClick.AddListener(Restart);
-        }
-        else
-        {
-            restartBg.SetActive(false);
-            restart.onClick.RemoveListener(Restart);
-        }
+        restartBg.SetActive(!isActive);
     }
 
     private void ShowResult(int rep, int money)

@@ -6,14 +6,18 @@ using FitTheSize.GameServices;
 
 public abstract class RunnerPlatform : MonoBehaviour
 {
-    [Inject] private readonly GameEventHandler eventHandler;
-    [Inject] private readonly GameUpdateHandler updateHandler;
+    [SerializeField] private BoxCollider[] platformColliders;
 
-    //has rigidbody
+    private Transform platformTransform;
+    private GameUpdateHandler updateHandler;
+    private float platformSpeed;
+    private float despawnPosition;
 
-    protected void Start()
+    private System.Action<GameObject> DespawnCallback;
+
+    protected virtual void Awake()
     {
-        //subscribe to platform movement event (spawn from container) GameEventHandler
+        platformTransform = transform;
     }
 
     protected void OnDisable()
@@ -21,13 +25,28 @@ public abstract class RunnerPlatform : MonoBehaviour
         SwitchMovement(false);
     }
 
-    //(platform only have colliders and tags)
+    protected void Move()
+    {
+        platformTransform.position = platformTransform.position + new Vector3(0, 0, Time.deltaTime * platformSpeed);
 
-    //options: 1. set pos
-    //2. init
-    public abstract void DoPlatform();
+        if(platformTransform.position.z < despawnPosition && DespawnCallback != null)
+        {
+            DespawnCallback(this.gameObject);
+            SwitchMovement(false);
+        }
+    }
 
-    protected void SwitchMovement(bool doMove)
+    public abstract void SetupPlatform();
+
+    public void SwitchColliders(bool isOn)
+    {
+        for (int i = 0; i < platformColliders.Length; i++)
+        {
+            platformColliders[i].enabled = isOn;
+        }
+    }
+
+    public void SwitchMovement(bool doMove)
     {
         if (doMove)
         {
@@ -39,8 +58,20 @@ public abstract class RunnerPlatform : MonoBehaviour
         }
     }
 
-    protected void Move()
+    public void SetPosition(Vector3 targetPosition)
     {
-        //update
+        platformTransform.position = targetPosition;
+    }
+
+    public void SetSpeed(float movementSpeed)
+    {
+        platformSpeed = movementSpeed;
+    }
+
+    public void SetupMovement(GameUpdateHandler update, float despawnZ, System.Action<GameObject> callback)
+    {
+        updateHandler = update;
+        despawnPosition = despawnZ;
+        DespawnCallback = callback;
     }
 }
