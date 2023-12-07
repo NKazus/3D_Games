@@ -1,7 +1,10 @@
-public enum PlayerEvent
+namespace FitTheSize.Main
 {
-    Wall,
-    Reduce,
-    Increase,
-    Boost
+    public enum PlayerEvent
+    {
+        Wall,
+        Reduce,
+        Increase,
+        Boost
+    }
 }

@@ -11,7 +11,6 @@ namespace FitTheSize.GameServices
         public event Action<bool> SoundSettingsEvent;
         public event Action<int, int> ResultEvent;
 
-        public event Action TimeOutEvent;
 
         public void SwitchGameState(bool activate)
         {
@@ -36,11 +35,6 @@ namespace FitTheSize.GameServices
         public void DoResult(int rep, int money)
         {
             ResultEvent?.Invoke(rep, money);
-        }
-
-        public void TriggerTimeout()
-        {
-            TimeOutEvent?.Invoke();
         }
 
         public void PlaySound(AudioEffect id)

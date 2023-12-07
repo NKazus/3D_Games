@@ -1,12 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class RunnerPlatformBase : RunnerPlatform
+namespace FitTheSize.Route
 {
-    public override void SetupPlatform()
+    public class RunnerPlatformBase : RunnerPlatform
     {
-        //Debug.Log("base");
-        return;
+        public override void SetupPlatform()
+        {
+            //Debug.Log("base");
+            return;
+        }
     }
 }

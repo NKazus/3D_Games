@@ -3,53 +3,56 @@ using UnityEngine.UI;
 using Zenject;
 using FitTheSize.GameServices;
 
-public class RunTrigger : MonoBehaviour
+namespace FitTheSize.Main
 {
-    [SerializeField] private Button restart;
-    [SerializeField] private GameObject restartBg;
-
-    private Text repText;
-    private Text incomeText;
-
-    [Inject] private readonly GameEventHandler events;
-
-    private void Awake()
+    public class RunTrigger : MonoBehaviour
     {
-        repText = restartBg.transform.GetChild(1).GetComponent<Text>();
-        incomeText = restartBg.transform.GetChild(2).GetComponent<Text>();
-    }
+        [SerializeField] private Button restart;
+        [SerializeField] private GameObject restartBg;
 
-    private void OnEnable()
-    {
-        events.GameStateEvent += ChangeGameState;
-        events.ResultEvent += ShowResult;
+        private Text repText;
+        private Text incomeText;
 
-        restart.onClick.AddListener(Restart);
-        ChangeGameState(true);
-    }
+        [Inject] private readonly GameEventHandler events;
 
-    private void OnDisable()
-    {
-        events.ResultEvent -= ShowResult;
-        events.GameStateEvent -= ChangeGameState;
+        private void Awake()
+        {
+            repText = restartBg.transform.GetChild(1).GetComponent<Text>();
+            incomeText = restartBg.transform.GetChild(2).GetComponent<Text>();
+        }
 
-        restart.onClick.RemoveListener(Restart);
-        ChangeGameState(false);
-    }
+        private void OnEnable()
+        {
+            events.GameStateEvent += ChangeGameState;
+            events.ResultEvent += ShowResult;
 
-    private void Restart()
-    {
-        events.SwitchGameState(true);
-    }
+            restart.onClick.AddListener(Restart);
+            ChangeGameState(true);
+        }
 
-    private void ChangeGameState(bool isActive)
-    {
-        restartBg.SetActive(!isActive);
-    }
+        private void OnDisable()
+        {
+            events.ResultEvent -= ShowResult;
+            events.GameStateEvent -= ChangeGameState;
 
-    private void ShowResult(int rep, int money)
-    {
-        repText.text = rep.ToString();
-        incomeText.text = money.ToString();
+            restart.onClick.RemoveListener(Restart);
+            ChangeGameState(false);
+        }
+
+        private void Restart()
+        {
+            events.SwitchGameState(true);
+        }
+
+        private void ChangeGameState(bool isActive)
+        {
+            restartBg.SetActive(!isActive);
+        }
+
+        private void ShowResult(int rep, int money)
+        {
+            repText.text = rep.ToString();
+            incomeText.text = money.ToString();
+        }
     }
 }

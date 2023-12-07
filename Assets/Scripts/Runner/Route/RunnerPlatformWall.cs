@@ -1,40 +1,40 @@
 using UnityEngine;
 using Zenject;
 
-public class RunnerPlatformWall : RunnerPlatform
+namespace FitTheSize.Route
 {
-    [SerializeField] private Transform[] walls;
-    [SerializeField] private Transform leftBorder;
-    [SerializeField] private Transform rightBorder;
-
-    private float platformRange;
-    private float inBetweenDistance;
-
-    [Inject] private readonly Randomizer randomizer;
-
-    protected override void Awake()
+    public class RunnerPlatformWall : RunnerPlatform
     {
-        platformRange = rightBorder.localPosition.x - leftBorder.localPosition.x;
-        inBetweenDistance = platformRange / (walls.Length + 1);
-        //Debug.Log("range:" + platformRange);
-        //Debug.Log("step:" + inBetweenDistance);
-        base.Awake();        
-    }
+        [SerializeField] private Transform[] walls;
+        [SerializeField] private Transform leftBorder;
+        [SerializeField] private Transform rightBorder;
 
-    public override void SetupPlatform()
-    {
-        //Debug.Log("wall");
+        private float platformRange;
+        private float inBetweenDistance;
 
-        for(int i = 0; i < walls.Length; i++)
+        [Inject] private readonly Randomizer randomizer;
+
+        protected override void Awake()
         {
-            //Debug.Log("start:"+ leftBorder.localPosition.x);
-            float delta = 0;// randomizer.GenerateFloat((-inBetweenDistance) / 2f, inBetweenDistance / 2f);
-            //Debug.Log("delta:" + delta);
-            float newX = leftBorder.localPosition.x + (inBetweenDistance * (i + 1))
-                + delta;
-            //Debug.Log("newX:"+newX);
-            walls[i].localPosition = new Vector3(newX,
-                walls[i].localPosition.y, walls[i].localPosition.z);
+            platformRange = rightBorder.localPosition.x - leftBorder.localPosition.x;
+            inBetweenDistance = platformRange / (walls.Length + 1);
+            base.Awake();
+        }
+
+        public override void SetupPlatform()
+        {
+            //Debug.Log("wall");
+
+            for (int i = 0; i < walls.Length; i++)
+            {
+                float delta = randomizer.GenerateFloat((-inBetweenDistance) / 2f, inBetweenDistance / 2f);
+                                //Debug.Log("delta:" + delta);
+                float newX = leftBorder.localPosition.x + (inBetweenDistance * (i + 1))
+                    + delta;
+                //Debug.Log("newX:"+newX);
+                walls[i].localPosition = new Vector3(newX,
+                    walls[i].localPosition.y, walls[i].localPosition.z);
+            }
         }
     }
 }

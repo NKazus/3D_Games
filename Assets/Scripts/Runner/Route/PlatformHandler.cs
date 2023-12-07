@@ -3,158 +3,173 @@ using UnityEngine;
 using Zenject;
 using FitTheSize.GameServices;
 
-public class PlatformHandler : MonoBehaviour
+namespace FitTheSize.Route
 {
-    [SerializeField] private GameObject[] spawnedPlatforms;
-
-    [SerializeField] private Transform poolParent;
-    [SerializeField] private Transform routeParent;
-
-    [SerializeField] private Transform spawnPosition;
-    [SerializeField] private Transform despawnPosition;
-    [SerializeField] private Transform[] initialRoute;
-
-    private float routeSpeed;
-
-    private int platformSpawnIndex;
-
-    private List<RunnerPlatform> activePlatforms = new List<RunnerPlatform>();
-    private bool isMoving;
-
-    private Transform currentSpawnPosition;
-
-    [Inject] private readonly GamePool gamePool;
-    [Inject] private readonly GameUpdateHandler updateHandler;
-
-    private void OnEnable()
+    public class PlatformHandler : MonoBehaviour
     {
-        isMoving = false;
-    }
+        [SerializeField] private GameObject[] spawnedPlatforms;
 
-    private void OnDisable()
-    {
-        if (isMoving)
+        [SerializeField] private Transform poolParent;
+        [SerializeField] private Transform routeParent;
+
+        [SerializeField] private Transform spawnPosition;
+        [SerializeField] private Transform despawnPosition;
+        [SerializeField] private Transform[] initialRoute;
+
+        private float routeSpeed;
+
+        private int platformSpawnIndex;
+
+        private List<RunnerPlatform> activePlatforms = new List<RunnerPlatform>();
+        private bool isMoving;
+
+        private Transform currentSpawnPosition;
+
+        private System.Action DespawnCallback;
+
+        [Inject] private readonly GamePool gamePool;
+        [Inject] private readonly GameUpdateHandler updateHandler;
+
+        private void OnEnable()
         {
-            StopRoute();
+            isMoving = false;
         }
 
-        while(activePlatforms.Count > 0)
+        private void OnDisable()
         {
-            Despawn(activePlatforms[0].gameObject);
+            if (isMoving)
+            {
+                StopRoute();
+            }
+
+            while (activePlatforms.Count > 0)
+            {
+                Despawn(activePlatforms[0].gameObject);
+            }
+
+            activePlatforms.Clear();
         }
 
-        activePlatforms.Clear();
-    }
+        private void ChangeSpawnIndex()
+        {
+            platformSpawnIndex++;
 
-    private void ChangeSpawnIndex()
-    {
-        platformSpawnIndex++;
+            if (platformSpawnIndex >= spawnedPlatforms.Length)
+            {
+                platformSpawnIndex = 0;
+            }
+        }
 
-        if(platformSpawnIndex >= spawnedPlatforms.Length)
+        private void SpawnNext()//when spawn trigger
+        {
+            //Debug.Log("spawn");
+            bool spawnStatusNew;
+            //Debug.Log("SPAWN_INDEX:" + platformSpawnIndex);
+            GameObject target = gamePool.GetGameObjectFromPool(spawnedPlatforms[platformSpawnIndex], out spawnStatusNew);
+            target.transform.parent = routeParent;
+
+            RunnerPlatform targetComponent = target.GetComponent<RunnerPlatform>();
+            targetComponent.SetPosition(currentSpawnPosition.position);
+            targetComponent.SetSpeed(routeSpeed);
+            activePlatforms.Add(targetComponent);
+            //Debug.Log("active platforms:"+activePlatforms.Count);
+            targetComponent.SetupPlatform();
+            targetComponent.SwitchColliders(true);
+
+            if (spawnStatusNew)
+            {
+                targetComponent.SetupMovement(updateHandler, despawnPosition.position.z, TriggerSpawn);
+            }
+
+            if (isMoving)
+            {
+                targetComponent.SwitchMovement(true);
+            }
+
+            ChangeSpawnIndex();
+        }
+
+        private void Despawn(GameObject target)
+        {
+            //Debug.Log("despawn");
+            RunnerPlatform targetComponent = target.GetComponent<RunnerPlatform>();
+            targetComponent.SwitchColliders(false);
+
+            activePlatforms.Remove(targetComponent);
+            //Debug.Log("active platforms:" + activePlatforms.Count);
+            target.transform.parent = poolParent;
+            gamePool.PutGameObjectToPool(target);
+        }
+
+        private void TriggerSpawn(GameObject target)
+        {
+            Despawn(target);
+            SpawnNext();
+
+            if (DespawnCallback != null)
+            {
+                DespawnCallback();
+            }
+        }
+
+        private void SpawnFirst()
         {
             platformSpawnIndex = 0;
+
+            for (int i = 0; i < initialRoute.Length; i++)
+            {
+                currentSpawnPosition = initialRoute[i];
+                SpawnNext();
+            }
+
+            currentSpawnPosition = spawnPosition;
         }
-    }
 
-    private void SpawnNext()//when spawn trigger
-    {
-        //Debug.Log("spawn");
-        bool spawnStatusNew;
-        Debug.Log("SPAWN_INDEX:" + platformSpawnIndex);
-        GameObject target = gamePool.GetGameObjectFromPool(spawnedPlatforms[platformSpawnIndex], out spawnStatusNew);
-        target.transform.parent = routeParent;
-
-        RunnerPlatform targetComponent = target.GetComponent<RunnerPlatform>();
-        targetComponent.SetPosition(currentSpawnPosition.position);
-        targetComponent.SetSpeed(routeSpeed);
-        activePlatforms.Add(targetComponent);
-        //Debug.Log("active platforms:"+activePlatforms.Count);
-        targetComponent.SetupPlatform();
-        targetComponent.SwitchColliders(true);
-
-        if (spawnStatusNew)
+        public void SetRouteSpeed(float targetSpeed)
         {
-            targetComponent.SetupMovement(updateHandler, despawnPosition.position.z, TriggerSpawn);
+            routeSpeed = targetSpeed;
         }
 
-        if (isMoving)
+        public void SetDespawnCallback(System.Action callback)
         {
-            targetComponent.SwitchMovement(true);
+            DespawnCallback = callback;
         }
 
-        ChangeSpawnIndex();
-    }
-
-    private void Despawn(GameObject target)
-    {
-        //Debug.Log("despawn");
-        RunnerPlatform targetComponent = target.GetComponent<RunnerPlatform>();
-        targetComponent.SwitchColliders(false);
-
-        activePlatforms.Remove(targetComponent);
-        //Debug.Log("active platforms:" + activePlatforms.Count);
-        target.transform.parent = poolParent;
-        gamePool.PutGameObjectToPool(target);
-    }
-
-    private void TriggerSpawn(GameObject target)
-    {
-        Despawn(target);
-        SpawnNext();
-    }
-
-    private void SpawnFirst()
-    {
-        platformSpawnIndex = 0;
-
-        for(int i = 0; i < initialRoute.Length; i++)
+        public void MoveRoute()
         {
-            currentSpawnPosition = initialRoute[i];
-            SpawnNext();
+            //Debug.Log("MOVE");
+            isMoving = true;
+
+            for (int i = 0; i < activePlatforms.Count; i++)
+            {
+                activePlatforms[i].SwitchMovement(true);
+            }
         }
 
-        currentSpawnPosition = spawnPosition;
-    }
-
-    public void SetRouteSpeed(float targetSpeed)
-    {
-        routeSpeed = targetSpeed;
-    }
-
-    public void MoveRoute()
-    {
-        Debug.Log("MOVE");
-        isMoving = true;
-
-        for (int i = 0; i < activePlatforms.Count; i++)
+        public void StopRoute()
         {
-            activePlatforms[i].SwitchMovement(true);
+            //Debug.Log("STOP");
+            isMoving = false;
+
+            for (int i = 0; i < activePlatforms.Count; i++)
+            {
+                activePlatforms[i].SwitchMovement(false);
+            }
         }
-    }
 
-    public void StopRoute()
-    {
-        Debug.Log("STOP");
-        isMoving = false;
-
-        for (int i = 0; i < activePlatforms.Count; i++)
+        public void ResetRoute()
         {
-            activePlatforms[i].SwitchMovement(false);
-        }
-    }
+            if (isMoving)
+            {
+                StopRoute();
+            }
 
-    public void ResetRoute()
-    {
-        if (isMoving)
-        {
-            StopRoute();
-        }
+            while (activePlatforms.Count > 0)
+            {
+                Despawn(activePlatforms[0].gameObject);
+            }
 
-        while (activePlatforms.Count > 0)
-        {
-            Despawn(activePlatforms[0].gameObject);
+            SpawnFirst();
         }
-
-        SpawnFirst();
     }
 }

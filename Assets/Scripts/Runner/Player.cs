@@ -1,119 +1,171 @@
 using UnityEngine;
 using FitTheSize.GameServices;
+using DG.Tweening;
 
-public class Player : MonoBehaviour
+namespace FitTheSize.Main
 {
-    [SerializeField] private string wallTag;
-    [SerializeField] private string reduceTag;
-    [SerializeField] private string increaseTag;
-    [SerializeField] private string boostTag;
-
-    private Transform playerTransform;
-    private Vector3 initialScale;
-    private float scaleSpeed;
-
-    private BoxCollider playerCollider;
-    private GameUpdateHandler updateHandler;
-    private System.Action<PlayerEvent, bool> CollisionCallback;
-
-    private void Awake()
+    public class Player : MonoBehaviour
     {
-        playerTransform = transform;
-        initialScale = playerTransform.localScale;
-        playerCollider = GetComponent<BoxCollider>();
-    }
+        [Header("Collision tags:")]
+        [SerializeField] private string wallTag;
+        [SerializeField] private string reduceTag;
+        [SerializeField] private string increaseTag;
+        [SerializeField] private string boostTag;
 
-    private void OnDisable()
-    {
-        ActivateScaling(false);
-        ActivateCollisions(false);
-    }
+        [Header("Swipes:")]
+        [Tooltip("Left ---> Right")]
+        [SerializeField] private Transform[] swipePositions;
 
-    private void Scale()
-    {
-        Vector3 newScale = new Vector3(playerTransform.localScale.x + scaleSpeed * Time.fixedDeltaTime,
-            playerTransform.localScale.y,
-            playerTransform.localScale.z + scaleSpeed * Time.fixedDeltaTime);
-        playerTransform.localScale = newScale;
-    }
+        private Transform playerTransform;
+        private Vector3 initialScale;
+        private float scaleSpeed;
 
-    #region COLLISIONS
-    private void OnTriggerEnter(Collider other)
-    {
-        if(CollisionCallback == null)
+        private int currentSwipePosition;
+
+        private BoxCollider playerCollider;
+        private GameUpdateHandler updateHandler;
+        private System.Action<PlayerEvent, bool> CollisionCallback;
+
+        private const string DOTWEEN_KILLABLE = "PLAYER_SCALE_UP_OR_SWIPE";
+        private const string DOTWEEN_UNKILLABLE = "PLAYER_SCALE_DOWN";
+
+        private void Awake()
         {
-            return;
+            playerTransform = transform;
+            initialScale = playerTransform.localScale;
+            playerCollider = GetComponent<BoxCollider>();
         }
 
-        if (other.gameObject.CompareTag(wallTag))
+        private void OnDisable()
         {
-            CollisionCallback(PlayerEvent.Wall, true);
-        }
-        if (other.gameObject.CompareTag(reduceTag))
-        {
-            CollisionCallback(PlayerEvent.Reduce, true);
-        }
-        if (other.gameObject.CompareTag(increaseTag))
-        {
-            CollisionCallback(PlayerEvent.Increase, true);
-        }
-        if (other.gameObject.CompareTag(boostTag))
-        {
-            CollisionCallback(PlayerEvent.Boost, true);
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (CollisionCallback == null)
-        {
-            return;
+            ActivateScaling(false);
+            ActivateCollisions(false);
         }
 
-        if (other.gameObject.CompareTag(reduceTag))
+        private void Scale()
         {
-            CollisionCallback(PlayerEvent.Reduce, false);
+            Vector3 newScale = new Vector3(playerTransform.localScale.x + scaleSpeed * Time.fixedDeltaTime,
+                playerTransform.localScale.y,
+                playerTransform.localScale.z + scaleSpeed * Time.fixedDeltaTime);
+            playerTransform.localScale = newScale;
         }
-        if (other.gameObject.CompareTag(increaseTag))
+
+        #region COLLISIONS
+        private void OnTriggerEnter(Collider other)
         {
-            CollisionCallback(PlayerEvent.Increase, false);
+            if (CollisionCallback == null)
+            {
+                return;
+            }
+
+            if (other.gameObject.CompareTag(wallTag))
+            {
+                CollisionCallback(PlayerEvent.Wall, true);
+            }
+            if (other.gameObject.CompareTag(reduceTag))
+            {
+                CollisionCallback(PlayerEvent.Reduce, true);
+            }
+            if (other.gameObject.CompareTag(increaseTag))
+            {
+                CollisionCallback(PlayerEvent.Increase, true);
+            }
+            if (other.gameObject.CompareTag(boostTag))
+            {
+                CollisionCallback(PlayerEvent.Boost, true);
+            }
         }
-        if (other.gameObject.CompareTag(boostTag))
+
+        private void OnTriggerExit(Collider other)
         {
-            CollisionCallback(PlayerEvent.Boost, false);
+            if (CollisionCallback == null)
+            {
+                return;
+            }
+
+            if (other.gameObject.CompareTag(reduceTag))
+            {
+                CollisionCallback(PlayerEvent.Reduce, false);
+            }
+            if (other.gameObject.CompareTag(increaseTag))
+            {
+                CollisionCallback(PlayerEvent.Increase, false);
+            }
+            if (other.gameObject.CompareTag(boostTag))
+            {
+                CollisionCallback(PlayerEvent.Boost, false);
+            }
         }
-    }
-    #endregion
+        #endregion
 
-    public void SetupPlayer(System.Action<PlayerEvent, bool> callback, GameUpdateHandler update)
-    {
-        Debug.Log("setup player");
-        CollisionCallback = callback;
-        updateHandler = update;
-    }
-
-    public void ActivateScaling(bool activate, float scaleValue = 0f)
-    {
-        if (activate)
+        public void SetupPlayer(System.Action<PlayerEvent, bool> callback, GameUpdateHandler update)
         {
-            scaleSpeed = scaleValue;
-            updateHandler.GlobalFixedUpdateEvent += Scale;
+            Debug.Log("setup player");
+            CollisionCallback = callback;
+            updateHandler = update;
         }
-        else
+
+        public void ActivateScaling(bool activate, float scaleValue = 0f)
         {
-            updateHandler.GlobalFixedUpdateEvent -= Scale;
+            if (activate)
+            {
+                scaleSpeed = scaleValue;
+                updateHandler.GlobalFixedUpdateEvent += Scale;
+            }
+            else
+            {
+                updateHandler.GlobalFixedUpdateEvent -= Scale;
+            }
         }
-    }
 
-    public void ResetPlayer()
-    {
-        playerTransform.localScale = initialScale;
+        public void ForceScaling(bool scaleUp)
+        {
+            float scaleSign = scaleUp ? 1f : -1f;
+            Vector3 newScale = new Vector3(playerTransform.localScale.x + scaleSign * initialScale.x * 0.25f,
+                playerTransform.localScale.y,
+                playerTransform.localScale.z + scaleSign * initialScale.z * 0.25f);
 
-        //visual movement
-    }
+            if (newScale.x < 0)
+            {
+                newScale = Vector3.zero;
+            }
+            playerTransform.DOScale(newScale, 0.5f).SetId(scaleUp ? DOTWEEN_KILLABLE : DOTWEEN_UNKILLABLE);
+        }
 
-    public void ActivateCollisions(bool activate)
-    {
-        playerCollider.enabled = activate;
+        public void SwipePlayer(SwipeDirection direction)
+        {
+            if ((direction == SwipeDirection.Left && currentSwipePosition <= 0) ||
+                (direction == SwipeDirection.Right && currentSwipePosition >= swipePositions.Length - 1))
+            {
+                return;
+            }
+
+            switch (direction)
+            {
+                case SwipeDirection.Left: currentSwipePosition--; break;
+                case SwipeDirection.Right: currentSwipePosition++; break;
+                default: throw new System.NotSupportedException();
+            }
+
+            playerTransform.DOMove(swipePositions[currentSwipePosition].position, 0.5f).SetId(DOTWEEN_KILLABLE);
+        }
+
+        public void ResetPlayer()
+        {
+            playerTransform.localScale = initialScale;
+            currentSwipePosition = swipePositions.Length / 2;
+            playerTransform.position = swipePositions[currentSwipePosition].position;
+            //visual movement
+        }
+
+        public void StopPlayer()
+        {
+            DOTween.Kill(DOTWEEN_KILLABLE);
+        }
+
+        public void ActivateCollisions(bool activate)
+        {
+            playerCollider.enabled = activate;
+        }
     }
 }

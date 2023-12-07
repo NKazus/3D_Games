@@ -1,105 +1,113 @@
-using System;
 using UnityEngine;
 
 namespace FitTheSize.GameServices
 {
     public enum GameResources
     {
-        Food,
-        Fuel,
-        Tools,
-        Meds
+        HighScore,
+        ForceScale,
+        RouteSpeed,
+        ScaleSpeed,
+        BoostMult
     }
 
     public class GameData : MonoBehaviour
     {
         [SerializeField] private GameDataViewer score;
 
-        [SerializeField] private int money = 50;
-        [SerializeField] private int reputation = 0;
-        [SerializeField] private int food = 20;
-        [SerializeField] private int fuel = 20;
-        [SerializeField] private int tools = 20;
-        [SerializeField] private int meds = 20;
+        [SerializeField] private float defaultRouteSpeed = -0.1f;
+        [SerializeField] private float defaultScaleSpeed = 0.05f;
+        [SerializeField] private float defaultBoostMultiplyer = 1.5f;
+        [SerializeField] private int defaultForceScaleUses = 3;
 
-        public int Money => money;
-        public int Reputation => reputation;
-        public int Food => food;
-        public int Fuel => fuel;
-        public int Tools => tools;
-        public int Meds => meds;
+        private int highScore;
+        private float routeSpeed;
+        private float scaleSpeed;
+        private float boostMultiplyer;
+        private int extraForceScaleUses;
 
-        public DateTime IncomeDate => incomeDate;
-        private DateTime incomeDate;
+        public int HighScore => highScore;
+        public float RouteSpeed => routeSpeed;
+        public float ScaleSpeed => scaleSpeed;
+        public float BoostMultiplyer => boostMultiplyer;
+        public int ForceScaleUses => extraForceScaleUses + defaultForceScaleUses;
 
-        private void OnEnable() //"DATA_RESNAME"
+        private void OnEnable()
         {
-            money = (PlayerPrefs.HasKey("_Money")) ? PlayerPrefs.GetInt("_Money") : money;
-            reputation = (PlayerPrefs.HasKey("_Reputation")) ? PlayerPrefs.GetInt("_Reputation") : reputation;
+            highScore = 10;// (PlayerPrefs.HasKey("DATA_HighScore")) ? PlayerPrefs.GetInt("DATA_HighScore") : 0;
+            extraForceScaleUses = 2;// (PlayerPrefs.HasKey("DATA_ForceScale")) ? PlayerPrefs.GetInt("DATA_ForceScale") : 0;
 
-            food = (PlayerPrefs.HasKey("_Food")) ? PlayerPrefs.GetInt("_Food") : food;
-            fuel = (PlayerPrefs.HasKey("_Fuel")) ? PlayerPrefs.GetInt("_Fuel") : fuel;
-            tools = (PlayerPrefs.HasKey("_Tools")) ? PlayerPrefs.GetInt("_Tools") : tools;
-            meds = (PlayerPrefs.HasKey("_Meds")) ? PlayerPrefs.GetInt("_Meds") : meds;
-
-            incomeDate = PlayerPrefs.HasKey("_DailyIncome") ? new DateTime(
-               Convert.ToInt64(PlayerPrefs.GetString("_DailyIncome")))
-               .ToLocalTime() : DateTime.Now.AddDays(-1);
+            routeSpeed = (PlayerPrefs.HasKey("DATA_RouteSpeed")) ? PlayerPrefs.GetFloat("DATA_RouteSpeed") : defaultRouteSpeed;
+            scaleSpeed = (PlayerPrefs.HasKey("DATA_ScaleSpeed")) ? PlayerPrefs.GetFloat("DATA_ScaleSpeed") : defaultScaleSpeed;
+            boostMultiplyer = (PlayerPrefs.HasKey("DATA_BoostMult")) ? PlayerPrefs.GetFloat("DATA_BoostMult") : defaultBoostMultiplyer;
         }
 
         private void OnDisable()
         {
-            PlayerPrefs.SetInt("_Money", money);
-            PlayerPrefs.SetInt("_Reputation", reputation);
+            PlayerPrefs.SetInt("DATA_HighScore", highScore);
+            PlayerPrefs.SetInt("DATA_ForceScale", extraForceScaleUses);
 
-            PlayerPrefs.SetInt("_Food", food);
-            PlayerPrefs.SetInt("_Fuel", fuel);
-            PlayerPrefs.SetInt("_Tools", tools);
-            PlayerPrefs.SetInt("_Meds", meds);
-
-            PlayerPrefs.SetString("_DailyIncome", "" + incomeDate.ToUniversalTime().Ticks);
+            PlayerPrefs.SetFloat("DATA_RouteSpeed", routeSpeed);
+            PlayerPrefs.SetFloat("DATA_ScaleSpeed", scaleSpeed);
+            PlayerPrefs.SetFloat("DATA_BoostMult", boostMultiplyer);
         }
 
-        public void UpdateMoney(int value)
+        public bool UpdateHighScore(int value)
         {
-            money += value;
-            if (money < 0)
+            Debug.Log("high score update:"+ value);
+            if(value <= highScore)
             {
-                money = 0;
+                return false;
             }
-            score.UpdateGlobal(false, money);
+
+            highScore = value;
+            score.UpdateHighScore(highScore);
+            return true;
         }
 
-        public void UpdateRep(int value)
+        public void RefreshHighScore()
         {
-            reputation += value;
-            reputation = Mathf.Clamp(reputation, -100, 100);
-            score.UpdateGlobal(true, reputation);
+            Debug.Log("hs refresh:"+highScore);
+            score.UpdateHighScore(highScore);
         }
 
-        public void UpdateRes(GameResources id, int value, bool gameplay)
+        public void ResetRouteSpeed()
         {
+            routeSpeed = defaultRouteSpeed;
+            Debug.Log("reset speed");
+        }
+
+        public void ResetTempResources()
+        {
+            boostMultiplyer = defaultBoostMultiplyer;
+            scaleSpeed = defaultScaleSpeed;
+            extraForceScaleUses = 0;
+            Debug.Log("reset temp");
+        }
+
+        public void UpdateRes(GameResources id, float value)
+        {
+            Debug.Log("update");
             switch (id)
             {
-                case GameResources.Food: food += value; score.UpdateResources(id, food, gameplay); break;
-                case GameResources.Fuel: fuel += value; score.UpdateResources(id, fuel, gameplay); break;
-                case GameResources.Tools: tools += value; score.UpdateResources(id, tools, gameplay); break;
-                case GameResources.Meds: meds += value; score.UpdateResources(id, meds, gameplay); break;
-                default: throw new NotSupportedException();
+                case GameResources.BoostMult: boostMultiplyer += value; break;//setup
+                case GameResources.ForceScale:
+                    if (extraForceScaleUses <= 0 && value < 0)
+                    {
+                        break;                        
+                    }
+                    extraForceScaleUses += (int)value;
+                    Debug.Log("fc value:"+extraForceScaleUses);
+                    break;//setup && runner
+                case GameResources.RouteSpeed: routeSpeed += value; Debug.Log("route speed:"+routeSpeed); break;//runner
+                case GameResources.ScaleSpeed: scaleSpeed += value; break;//setup
+                default: throw new System.NotSupportedException();
             }
         }
 
         public void UpdateAllRes(bool gameplay)
         {
-            UpdateRes(GameResources.Food, 0, gameplay);
-            UpdateRes(GameResources.Fuel, 0, gameplay);
-            UpdateRes(GameResources.Tools, 0, gameplay);
-            UpdateRes(GameResources.Meds, 0, gameplay);
-        }
 
-        public void RefreshDaily(DateTime newDate)
-        {
-            incomeDate = newDate;
         }
     }
 }
