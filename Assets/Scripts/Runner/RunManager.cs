@@ -61,7 +61,7 @@ namespace FitTheSize.Main
         {
             if (activate)
             {
-                route.SetRouteSpeed(gameData.RouteSpeed);
+                route.SetRouteSpeed(gameData.GetResourceValue(GameResources.RouteSpeed));
                 route.ResetRoute();
                 player.ResetPlayer();
                 player.ActivateCollisions(true);
@@ -69,11 +69,11 @@ namespace FitTheSize.Main
                 route.MoveRoute();
 
                 forceScaleComponent.gameObject.SetActive(true);
-                forceScaleComponent.ResetForceScale(gameData.ForceScaleUses);
+                forceScaleComponent.ResetForceScale((int)gameData.GetResourceValue(GameResources.ForceScale));
 
-                scaleSpeed = gameData.ScaleSpeed;
-                boost = gameData.BoostMultiplyer;
-                Debug.Log("scale speed:" + scaleSpeed + " boost mult:" + boost + " route speed:" + gameData.RouteSpeed);
+                scaleSpeed = gameData.GetResourceValue(GameResources.ScaleSpeed);
+                boost = gameData.GetResourceValue(GameResources.BoostMult);
+                Debug.Log("scale speed:" + scaleSpeed + " boost mult:" + boost + " route speed:" + gameData.GetResourceValue(GameResources.RouteSpeed));
 
                 swipeComponent.ResetSwipe();
                 swipeComponent.ActivateSwiping(true);

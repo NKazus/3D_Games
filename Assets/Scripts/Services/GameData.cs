@@ -26,15 +26,9 @@ namespace FitTheSize.GameServices
         private float boostMultiplyer;
         private int extraForceScaleUses;
 
-        public int HighScore => highScore;
-        public float RouteSpeed => routeSpeed;
-        public float ScaleSpeed => scaleSpeed;
-        public float BoostMultiplyer => boostMultiplyer;
-        public int ForceScaleUses => extraForceScaleUses + defaultForceScaleUses;
-
         private void OnEnable()
         {
-            highScore = 10;// (PlayerPrefs.HasKey("DATA_HighScore")) ? PlayerPrefs.GetInt("DATA_HighScore") : 0;
+            highScore = 5;// (PlayerPrefs.HasKey("DATA_HighScore")) ? PlayerPrefs.GetInt("DATA_HighScore") : 0;
             extraForceScaleUses = 2;// (PlayerPrefs.HasKey("DATA_ForceScale")) ? PlayerPrefs.GetInt("DATA_ForceScale") : 0;
 
             routeSpeed = (PlayerPrefs.HasKey("DATA_RouteSpeed")) ? PlayerPrefs.GetFloat("DATA_RouteSpeed") : defaultRouteSpeed;
@@ -52,10 +46,10 @@ namespace FitTheSize.GameServices
             PlayerPrefs.SetFloat("DATA_BoostMult", boostMultiplyer);
         }
 
-        public bool UpdateHighScore(int value)
+        public bool UpdateHighScore(int value, bool forceRefresh = false)
         {
-            Debug.Log("high score update:"+ value);
-            if(value <= highScore)
+            //Debug.Log("high score update:"+ value);
+            if(!forceRefresh && value <= highScore)
             {
                 return false;
             }
@@ -67,14 +61,14 @@ namespace FitTheSize.GameServices
 
         public void RefreshHighScore()
         {
-            Debug.Log("hs refresh:"+highScore);
+            //Debug.Log("hs refresh:"+highScore);
             score.UpdateHighScore(highScore);
         }
 
         public void ResetRouteSpeed()
         {
             routeSpeed = defaultRouteSpeed;
-            Debug.Log("reset speed");
+            //Debug.Log("reset speed");
         }
 
         public void ResetTempResources()
@@ -82,12 +76,12 @@ namespace FitTheSize.GameServices
             boostMultiplyer = defaultBoostMultiplyer;
             scaleSpeed = defaultScaleSpeed;
             extraForceScaleUses = 0;
-            Debug.Log("reset temp");
+            //Debug.Log("reset temp");
         }
 
         public void UpdateRes(GameResources id, float value)
         {
-            Debug.Log("update");
+            //Debug.Log("update");
             switch (id)
             {
                 case GameResources.BoostMult: boostMultiplyer += value; break;//setup
@@ -97,17 +91,37 @@ namespace FitTheSize.GameServices
                         break;                        
                     }
                     extraForceScaleUses += (int)value;
-                    Debug.Log("fc value:"+extraForceScaleUses);
+                    //Debug.Log("fc value:"+extraForceScaleUses);
                     break;//setup && runner
                 case GameResources.RouteSpeed: routeSpeed += value; Debug.Log("route speed:"+routeSpeed); break;//runner
-                case GameResources.ScaleSpeed: scaleSpeed += value; break;//setup
+                case GameResources.ScaleSpeed: scaleSpeed *= value; break;//setup
                 default: throw new System.NotSupportedException();
             }
         }
 
-        public void UpdateAllRes(bool gameplay)
+        public bool GetResourceStatus(GameResources id)
         {
+            switch (id)
+            {
+                case GameResources.BoostMult: return boostMultiplyer == defaultBoostMultiplyer;
+                case GameResources.RouteSpeed: return routeSpeed != defaultRouteSpeed;
+                case GameResources.ScaleSpeed: return scaleSpeed == defaultScaleSpeed;
+                case GameResources.ForceScale: return true;
+                default: throw new System.NotSupportedException();
+            }
+        }
 
+        public float GetResourceValue(GameResources id)
+        {
+            switch (id)
+            {
+                case GameResources.BoostMult: return boostMultiplyer;
+                case GameResources.RouteSpeed: return routeSpeed;
+                case GameResources.ScaleSpeed: return scaleSpeed;
+                case GameResources.ForceScale: return defaultForceScaleUses + extraForceScaleUses;
+                case GameResources.HighScore: return highScore;
+                default: throw new System.NotSupportedException();
+            }
         }
     }
 }

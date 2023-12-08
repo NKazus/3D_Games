@@ -32,10 +32,10 @@ namespace FitTheSize.Main
 
         private void HandleSwipe()
         {
-            if (Input.touchCount == 1) // user is touching the screen with a single touch
+            if (Input.touchCount == 1)
             {
-                Touch touch = Input.GetTouch(0); // get the touch
-                if (touch.phase == TouchPhase.Began) //check for the first touch
+                Touch touch = Input.GetTouch(0);
+                if (touch.phase == TouchPhase.Began)
                 {
                     //Debug.Log("began");
                     isActive = true;
