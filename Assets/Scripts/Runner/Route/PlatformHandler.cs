@@ -16,6 +16,8 @@ namespace FitTheSize.Route
         [SerializeField] private Transform despawnPosition;
         [SerializeField] private Transform[] initialRoute;
 
+        private bool initSpawn;// do not respawn if initial route hasn't been moved
+
         private float routeSpeed;
 
         private int platformSpawnIndex;
@@ -135,9 +137,15 @@ namespace FitTheSize.Route
             DespawnCallback = callback;
         }
 
+        public void ResetInitialSpawnFlag()
+        {
+            initSpawn = false;
+        }
+
         public void MoveRoute()
         {
-            //Debug.Log("MOVE");
+            Debug.Log("MOVE");
+            initSpawn = false;
             isMoving = true;
 
             for (int i = 0; i < activePlatforms.Count; i++)
@@ -159,6 +167,11 @@ namespace FitTheSize.Route
 
         public void ResetRoute()
         {
+            if (initSpawn)
+            {
+                return;
+            }
+
             if (isMoving)
             {
                 StopRoute();
@@ -170,6 +183,9 @@ namespace FitTheSize.Route
             }
 
             SpawnFirst();
+            initSpawn = true;
+
+            Debug.Log("reset:"+activePlatforms.Count);
         }
     }
 }

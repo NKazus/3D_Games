@@ -80,9 +80,14 @@ namespace FitTheSize.Main
             scaleScoreValueUI.text = ((int)scaleScoreValue).ToString();
         }
 
-        public int GetFinalScore()
+        public int GetPathScore()
         {
-            return (int)scaleScoreValue * pathScoreValue;
+            return pathScoreValue;
+        }
+
+        public int GetScaleScore()
+        {
+            return (int)scaleScoreValue;
         }
     }
 }

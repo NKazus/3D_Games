@@ -11,6 +11,7 @@ namespace FitTheSize.Main
         [SerializeField] private PlatformHandler route;
         [SerializeField] private Player player;
         [SerializeField] private PlayerSwipe swipeComponent;
+        [SerializeField] private PlayerAnimation animationComponent;
         [SerializeField] private RunnerScore score;
         [SerializeField] private Button startButton;
         [SerializeField] private ForceScale forceScaleComponent;
@@ -29,6 +30,7 @@ namespace FitTheSize.Main
         {
             startButton.onClick.AddListener(Initialize);
             player.SetupPlayer(HandleCollision, updateHandler);
+            animationComponent.SetupPlayerAnimation(updateHandler);
             swipeComponent.SetupSwipe(HandleSwipe, updateHandler);
             score.SetupScore(HandleZeroScale, updateHandler);
             route.SetDespawnCallback(UpdateScore);
@@ -37,6 +39,8 @@ namespace FitTheSize.Main
 
         private void OnEnable()
         {
+            route.ResetInitialSpawnFlag();
+            route.SetRouteSpeed(gameData.GetResourceValue(GameResources.RouteSpeed));
             route.ResetRoute();
             player.ResetPlayer();
             startButton.gameObject.SetActive(true);
@@ -65,6 +69,7 @@ namespace FitTheSize.Main
                 route.ResetRoute();
                 player.ResetPlayer();
                 player.ActivateCollisions(true);
+                animationComponent.SwitchRotation(true);
                 score.ResetRunnerScore();
                 route.MoveRoute();
 
@@ -87,6 +92,7 @@ namespace FitTheSize.Main
                 player.ActivateCollisions(false);
                 player.ActivateScaling(false);
                 player.StopPlayer();
+                animationComponent.SwitchRotation(false);
                 score.ActivateScaling(false);
             }
         }
@@ -100,8 +106,11 @@ namespace FitTheSize.Main
 
         private void CalculateScore()
         {
-            int currentScore = score.GetFinalScore();
+            int path = score.GetPathScore();
+            int scale = score.GetScaleScore();
+            int currentScore = path * scale;
             Debug.Log("current score:" + currentScore);
+
             bool isNewHighScore = gameData.UpdateHighScore(currentScore);
             if (isNewHighScore)
             {
@@ -111,6 +120,8 @@ namespace FitTheSize.Main
             {
                 gameData.ResetTempResources();
             }
+
+            eventHandler.DoResult(path, scale, currentScore);
         }
 
         #region PLAYER

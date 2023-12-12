@@ -9,7 +9,7 @@ namespace FitTheSize.GameServices
         public event Action<AudioEffect> SoundEvent;
         public event Action<bool> VibroSettingsEvent;
         public event Action<bool> SoundSettingsEvent;
-        public event Action<int, int> ResultEvent;
+        public event Action<int, int, int> ResultEvent;
 
 
         public void SwitchGameState(bool activate)
@@ -32,9 +32,9 @@ namespace FitTheSize.GameServices
             SoundSettingsEvent?.Invoke(value);
         }
 
-        public void DoResult(int rep, int money)
+        public void DoResult(int path, int scale, int total)
         {
-            ResultEvent?.Invoke(rep, money);
+            ResultEvent?.Invoke(path, scale, total);
         }
 
         public void PlaySound(AudioEffect id)

@@ -5,7 +5,7 @@ using DG.Tweening;
 namespace FitTheSize.Main
 {
     public class Player : MonoBehaviour
-    {
+    {      
         [Header("Collision tags:")]
         [SerializeField] private string wallTag;
         [SerializeField] private string reduceTag;
@@ -45,7 +45,7 @@ namespace FitTheSize.Main
         private void Scale()
         {
             Vector3 newScale = new Vector3(playerTransform.localScale.x + scaleSpeed * Time.fixedDeltaTime,
-                playerTransform.localScale.y,
+                playerTransform.localScale.y + scaleSpeed * Time.fixedDeltaTime,
                 playerTransform.localScale.z + scaleSpeed * Time.fixedDeltaTime);
             playerTransform.localScale = newScale;
         }
@@ -122,7 +122,7 @@ namespace FitTheSize.Main
         {
             float scaleSign = scaleUp ? 1f : -1f;
             Vector3 newScale = new Vector3(playerTransform.localScale.x + scaleSign * initialScale.x * 0.25f,
-                playerTransform.localScale.y,
+                playerTransform.localScale.y + scaleSign * initialScale.y * 0.25f,
                 playerTransform.localScale.z + scaleSign * initialScale.z * 0.25f);
 
             if (newScale.x < 0)

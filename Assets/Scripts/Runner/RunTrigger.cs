@@ -10,15 +10,17 @@ namespace FitTheSize.Main
         [SerializeField] private Button restart;
         [SerializeField] private GameObject restartBg;
 
-        private Text repText;
-        private Text incomeText;
+        private Text pathText;
+        private Text scaleText;
+        private Text totalText;
 
         [Inject] private readonly GameEventHandler events;
 
         private void Awake()
         {
-            repText = restartBg.transform.GetChild(1).GetComponent<Text>();
-            incomeText = restartBg.transform.GetChild(2).GetComponent<Text>();
+            pathText = restartBg.transform.GetChild(1).GetComponent<Text>();
+            scaleText = restartBg.transform.GetChild(2).GetComponent<Text>();
+            totalText = restartBg.transform.GetChild(3).GetComponent<Text>();
         }
 
         private void OnEnable()
@@ -49,10 +51,11 @@ namespace FitTheSize.Main
             restartBg.SetActive(!isActive);
         }
 
-        private void ShowResult(int rep, int money)
+        private void ShowResult(int path, int scale, int total)
         {
-            repText.text = rep.ToString();
-            incomeText.text = money.ToString();
+            pathText.text = path.ToString();
+            scaleText.text = scale.ToString();
+            totalText.text = total.ToString();
         }
     }
 }

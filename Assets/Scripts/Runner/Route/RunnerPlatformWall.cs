@@ -27,7 +27,7 @@ namespace FitTheSize.Route
 
             for (int i = 0; i < walls.Length; i++)
             {
-                float delta = randomizer.GenerateFloat((-inBetweenDistance) / 2f, inBetweenDistance / 2f);
+                float delta = randomizer.GenerateFloat((-inBetweenDistance) / 4f, inBetweenDistance / 4f);
                                 //Debug.Log("delta:" + delta);
                 float newX = leftBorder.localPosition.x + (inBetweenDistance * (i + 1))
                     + delta;
