@@ -10,9 +10,7 @@ public class LightwayManager : MonoBehaviour
 
     [SerializeField] private Button startButton;
 
-    [SerializeField] private Button pick1Button;
-    [SerializeField] private Button pick2Button;
-    [SerializeField] private Button pick3Button;
+    [SerializeField] private Button[] pickButtons;
 
     [SerializeField] private GameObject pickPanel;
     [SerializeField] private GameObject scanPanel;
@@ -23,9 +21,7 @@ public class LightwayManager : MonoBehaviour
     private int currentScore;
     private int winGems;
 
-    private List<Gem> route1Gems;
-    private List<Gem> route2Gems;
-    private List<Gem> route3Gems;
+    private List<List<Gem>> routeGems;
 
     [Inject] private readonly GlobalEventManager events;
     [Inject] private readonly DataHandler dataHandler;
@@ -35,9 +31,12 @@ public class LightwayManager : MonoBehaviour
     {
         gemNumber = gems.Length;
 
-        route1Gems = new List<Gem>();
-        route2Gems = new List<Gem>();
-        route3Gems = new List<Gem>();
+        routeGems = new List<List<Gem>>();
+
+        for (int i = 0; i < routes.Length; i++)
+        {
+            routeGems.Add(new List<Gem>());
+        }
 
         for (int i = 0; i < gemNumber; i++)
         {
@@ -58,9 +57,12 @@ public class LightwayManager : MonoBehaviour
 
         startButton.onClick.AddListener(Play);
 
-        pick1Button.onClick.AddListener(() => PickRoute(0));
-        pick2Button.onClick.AddListener(() => PickRoute(1));
-        pick3Button.onClick.AddListener(() => PickRoute(2));
+
+        for (int i = 0; i < pickButtons.Length; i++)
+        {
+            int id = i;
+            pickButtons[i].onClick.AddListener(() => PickRoute(id));
+        }
     }
 
     private void OnDisable()
@@ -72,9 +74,10 @@ public class LightwayManager : MonoBehaviour
             CancelInvoke("Calculate");
             Calculate();
         }
-        pick1Button.onClick.RemoveAllListeners();
-        pick2Button.onClick.RemoveAllListeners();
-        pick3Button.onClick.RemoveAllListeners();
+        for (int i = 0; i < routes.Length; i++)
+        {
+            pickButtons[i].onClick.RemoveAllListeners();
+        }
         pickPanel.gameObject.SetActive(false);
         scanPanel.gameObject.SetActive(false);
 
@@ -167,6 +170,7 @@ public class LightwayManager : MonoBehaviour
             gemNumbers[2] = gemNumber - gemNumbers[0] - gemNumbers[1];
         }
         while (gemNumbers[1] == gemNumbers[0] || gemNumbers[1] == gemNumbers[2] || gemNumbers[2] == gemNumbers[0]);
+        gemNumbers[3] = 0;
 
         random.RandomizeArray(gemNumbers);
 
@@ -184,30 +188,33 @@ public class LightwayManager : MonoBehaviour
 
         winGems = gemNumbers[winRoute];
 
-        route1Gems.Clear();
-        route2Gems.Clear();
-        route3Gems.Clear();
+        for (int i = 0; i < routes.Length; i++)
+        {
+            routeGems[i].Clear();
+        }
 
         int counter = 0;
-        while (counter < gemNumbers[0])
+        int gemStage = 0;
+        int gemSum = gemNumbers[gemStage];
+        int currentRoute = 0;
+
+        while(counter < gemNumber)
         {
-            route1Gems.Add(gems[counter]);
-            counter++;
-        }
-        while (counter < gemNumbers[0] + gemNumbers[1])
-        {
-            route2Gems.Add(gems[counter]);
-            counter++;
-        }
-        while (counter < gemNumber)
-        {
-            route3Gems.Add(gems[counter]);
+            while(counter >= gemSum)
+            {
+                currentRoute++;
+  
+                gemStage++;
+                gemSum += gemNumbers[gemStage];
+            }
+            routeGems[currentRoute].Add(gems[counter]);
             counter++;
         }
 
-        routes[0].SetGems(route1Gems);
-        routes[1].SetGems(route2Gems);
-        routes[2].SetGems(route3Gems);
+        for (int i = 0; i < routes.Length; i++)
+        {
+            routes[i].SetGems(routeGems[i]);
+        }
     }
 
     private void CheckHighlights()

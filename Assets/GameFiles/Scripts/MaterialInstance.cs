@@ -2,6 +2,10 @@ using UnityEngine;
 
 public class MaterialInstance : MonoBehaviour
 {
+    //CACF91
+
+    //D4B53D
+    //C8C098
     [SerializeField] private Color initialColor;
     [SerializeField] private Color alternativeColor;
 

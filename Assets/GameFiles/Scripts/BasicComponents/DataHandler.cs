@@ -13,7 +13,7 @@ public class DataHandler : MonoBehaviour
     {
         gameScore = PlayerPrefs.HasKey("_GameScore") ? PlayerPrefs.GetInt("_GameScore") : gameScore;
 
-        highlights = PlayerPrefs.HasKey("_Highlights") ? PlayerPrefs.GetInt("_Highlights") : highlights;
+        highlights = 10;// PlayerPrefs.HasKey("_Highlights") ? PlayerPrefs.GetInt("_Highlights") : highlights;
     }
 
     private void OnDisable()

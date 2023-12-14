@@ -26,7 +26,8 @@ public class MenuPlayer : MonoBehaviour
         }
         playerTransform.DOMove(wayPos[nextIteration], time)
             .SetId("menu")
-            .OnComplete(() => {
+            .OnComplete(() =>
+            {
                 cells[iteration].DoHighlight(false, false);
                 cells[nextIteration].DoHighlight(true, false);
                 iteration++;
@@ -52,6 +53,7 @@ public class MenuPlayer : MonoBehaviour
 
     public void MoveWay()
     {
+        cells[iteration].DoHighlight(false, false);
         iteration = 0;
         nextIteration = iteration + 1;
         cells[0].DoHighlight(true, false);
