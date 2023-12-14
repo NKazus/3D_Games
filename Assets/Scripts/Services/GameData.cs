@@ -28,8 +28,8 @@ namespace FitTheSize.GameServices
 
         private void OnEnable()
         {
-            highScore = 5;// (PlayerPrefs.HasKey("DATA_HighScore")) ? PlayerPrefs.GetInt("DATA_HighScore") : 0;
-            extraForceScaleUses = 2;// (PlayerPrefs.HasKey("DATA_ForceScale")) ? PlayerPrefs.GetInt("DATA_ForceScale") : 0;
+            highScore = (PlayerPrefs.HasKey("DATA_HighScore")) ? PlayerPrefs.GetInt("DATA_HighScore") : 0;
+            extraForceScaleUses = (PlayerPrefs.HasKey("DATA_ForceScale")) ? PlayerPrefs.GetInt("DATA_ForceScale") : 0;
 
             routeSpeed = (PlayerPrefs.HasKey("DATA_RouteSpeed")) ? PlayerPrefs.GetFloat("DATA_RouteSpeed") : defaultRouteSpeed;
             scaleSpeed = (PlayerPrefs.HasKey("DATA_ScaleSpeed")) ? PlayerPrefs.GetFloat("DATA_ScaleSpeed") : defaultScaleSpeed;
@@ -75,7 +75,7 @@ namespace FitTheSize.GameServices
         {
             boostMultiplyer = defaultBoostMultiplyer;
             scaleSpeed = defaultScaleSpeed;
-            extraForceScaleUses = 0;
+            //extraForceScaleUses = 0;
             //Debug.Log("reset temp");
         }
 
@@ -93,7 +93,7 @@ namespace FitTheSize.GameServices
                     extraForceScaleUses += (int)value;
                     //Debug.Log("fc value:"+extraForceScaleUses);
                     break;//setup && runner
-                case GameResources.RouteSpeed: routeSpeed += value; Debug.Log("route speed:"+routeSpeed); break;//runner
+                case GameResources.RouteSpeed: routeSpeed += value; /*Debug.Log("route speed:"+routeSpeed);*/ break;//runner
                 case GameResources.ScaleSpeed: scaleSpeed *= value; break;//setup
                 default: throw new System.NotSupportedException();
             }

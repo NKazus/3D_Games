@@ -14,6 +14,8 @@ namespace FitTheSize.Setup
             gameData.UpdateHighScore(currentScore, true);
             gameData.ResetRouteSpeed();
             CheckResource();
+
+            base.DoResource();
         }
     }
 }

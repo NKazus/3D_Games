@@ -4,7 +4,7 @@ using FitTheSize.GameServices;
 
 namespace FitTheSize.Setup
 {
-    public abstract class SetupComponent : MonoBehaviour
+    public class SetupComponent : MonoBehaviour
     {
         [Header("General:")]
         [SerializeField] protected GameResources resType;
@@ -17,13 +17,17 @@ namespace FitTheSize.Setup
         [SerializeField] private string enabledText;
         [SerializeField] private string disabledText;
 
+        [SerializeField] private Color disabledColor;
+
         protected bool statusValue;
         protected int minCashValue;
         protected GameData gameData;
+        protected GameEventHandler eventHandler;
 
-        public void InitComponent(GameData data, int cashLimit)
+        public void InitComponent(GameData data, GameEventHandler events, int cashLimit)
         {
             gameData = data;
+            eventHandler = events;
             minCashValue = cashLimit;
 
             priceText.text = priceValue.ToString() + "%";
@@ -42,10 +46,13 @@ namespace FitTheSize.Setup
             if (doText)
             {
                 description.text = statusValue ? enabledText : disabledText;
-                description.color = statusValue ? Color.white : Color.gray;
+                description.color = statusValue ? Color.white : disabledColor;
             }
         }
 
-        protected abstract void DoResource();
+        protected virtual void DoResource()
+        {
+            eventHandler.PlaySound(AudioEffect.Setup);
+        }
     }
 }

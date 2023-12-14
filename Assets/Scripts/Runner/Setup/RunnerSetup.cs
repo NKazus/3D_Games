@@ -14,13 +14,14 @@ namespace FitTheSize.Setup
         [SerializeField] private int minScore = 20;
 
         [Inject] private readonly GameData gameData;
+        [Inject] private readonly GameEventHandler eventHandler;
 
         private void Awake()
         {
-            routeSpeed.InitComponent(gameData, minScore);
-            scaleSpeed.InitComponent(gameData, minScore);
-            boost.InitComponent(gameData, minScore);
-            forceScale.InitComponent(gameData, minScore);
+            routeSpeed.InitComponent(gameData, eventHandler, minScore);
+            scaleSpeed.InitComponent(gameData, eventHandler, minScore);
+            boost.InitComponent(gameData, eventHandler, minScore);
+            forceScale.InitComponent(gameData, eventHandler, minScore);
         }
 
         private void OnEnable()

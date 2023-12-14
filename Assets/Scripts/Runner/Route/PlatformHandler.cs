@@ -144,7 +144,7 @@ namespace FitTheSize.Route
 
         public void MoveRoute()
         {
-            Debug.Log("MOVE");
+            //Debug.Log("MOVE");
             initSpawn = false;
             isMoving = true;
 
@@ -185,7 +185,7 @@ namespace FitTheSize.Route
             SpawnFirst();
             initSpawn = true;
 
-            Debug.Log("reset:"+activePlatforms.Count);
+            //Debug.Log("reset:"+activePlatforms.Count);
         }
     }
 }

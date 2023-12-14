@@ -7,29 +7,23 @@ namespace FitTheSize.GameServices
 {
     public enum AudioEffect
     {
-        Reward,
-        Resource,
-        Engine,
-        Timer
+        Finish,
+        HighScore,
+        Setup,
+        ForceScale
     }
     public class GameVolume : MonoBehaviour
     {
         [SerializeField] private AudioMixerGroup mixerMasterGroup;
 
-        [SerializeField] private AudioSource ambientMusic;
-        [SerializeField] private AudioSource winSound;
-        [SerializeField] private AudioSource resSound;
-        [SerializeField] private AudioSource shipSound;
-        [SerializeField] private AudioSource timerSound;
+        [SerializeField] private AudioSource finishSound;
+        [SerializeField] private AudioSource highScoreSound;
+        [SerializeField] private AudioSource buttonSound;
+        [SerializeField] private AudioSource scaleSound;
 
         private bool vibroEnabled = true;
 
         [Inject] private readonly GameEventHandler events;
-
-        private void Awake()
-        {
-            ambientMusic.loop = true;
-        }
 
         private void OnEnable()
         {
@@ -71,10 +65,10 @@ namespace FitTheSize.GameServices
             AudioSource source;
             source = id switch
             {
-                AudioEffect.Reward => winSound,
-                AudioEffect.Resource => resSound,
-                AudioEffect.Engine => shipSound,
-                AudioEffect.Timer => timerSound,
+                AudioEffect.Finish => finishSound,
+                AudioEffect.HighScore => highScoreSound,
+                AudioEffect.Setup => buttonSound,
+                AudioEffect.ForceScale => scaleSound,
                 _ => throw new NotSupportedException()
             };
 

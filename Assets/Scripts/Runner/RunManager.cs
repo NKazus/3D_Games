@@ -78,7 +78,7 @@ namespace FitTheSize.Main
 
                 scaleSpeed = gameData.GetResourceValue(GameResources.ScaleSpeed);
                 boost = gameData.GetResourceValue(GameResources.BoostMult);
-                Debug.Log("scale speed:" + scaleSpeed + " boost mult:" + boost + " route speed:" + gameData.GetResourceValue(GameResources.RouteSpeed));
+                //Debug.Log("scale speed:" + scaleSpeed + " boost mult:" + boost + " route speed:" + gameData.GetResourceValue(GameResources.RouteSpeed));
 
                 swipeComponent.ResetSwipe();
                 swipeComponent.ActivateSwiping(true);
@@ -101,6 +101,7 @@ namespace FitTheSize.Main
         {
             player.ForceScaling(upScale);
             score.ForceScaling(upScale);
+            eventHandler.PlaySound(AudioEffect.ForceScale);
             gameData.UpdateRes(GameResources.ForceScale, -1);
         }
 
@@ -109,15 +110,17 @@ namespace FitTheSize.Main
             int path = score.GetPathScore();
             int scale = score.GetScaleScore();
             int currentScore = path * scale;
-            Debug.Log("current score:" + currentScore);
+            //Debug.Log("current score:" + currentScore);
 
             bool isNewHighScore = gameData.UpdateHighScore(currentScore);
             if (isNewHighScore)
             {
+                eventHandler.PlaySound(AudioEffect.HighScore);
                 gameData.UpdateRes(GameResources.RouteSpeed, routeSpeedDelta);//when high score beaten speed up route
             }
             else
             {
+                eventHandler.PlaySound(AudioEffect.Finish);
                 gameData.ResetTempResources();
             }
 
@@ -173,7 +176,7 @@ namespace FitTheSize.Main
         #region SCORE
         private void HandleZeroScale()
         {
-            Debug.Log("zero scale");
+            //Debug.Log("zero scale");
             CalculateScore();
             eventHandler.SwitchGameState(false);
         }

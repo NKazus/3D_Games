@@ -18,6 +18,8 @@ namespace FitTheSize.Setup
             gameData.UpdateHighScore(currentScore, true);
             gameData.UpdateRes(resType, upgradeValue);
             CheckResource();
+
+            base.DoResource();
         }
     }
 }

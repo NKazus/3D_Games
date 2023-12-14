@@ -100,7 +100,7 @@ namespace FitTheSize.Main
 
         public void SetupPlayer(System.Action<PlayerEvent, bool> callback, GameUpdateHandler update)
         {
-            Debug.Log("setup player");
+            //Debug.Log("setup player");
             CollisionCallback = callback;
             updateHandler = update;
         }

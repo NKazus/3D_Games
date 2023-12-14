@@ -6,23 +6,32 @@ using Zenject;
 namespace FitTheSize {
     public class MenuTrigger : MonoBehaviour
     {
-        [SerializeField] private PlayerAnimation player;
+        [SerializeField] private PlayerAnimation[] player;
 
         [Inject] private readonly GameUpdateHandler updateHandler;
 
         private void Awake()
         {
-            player.SetupPlayerAnimation(updateHandler);
+            for(int i = 0; i < player.Length; i++)
+            {
+                player[i].SetupPlayerAnimation(updateHandler);
+            }
         }
 
         private void OnEnable()
         {
-            player.SwitchRotation(true);
+            for (int i = 0; i < player.Length; i++)
+            {
+                player[i].SwitchRotation(true);
+            }
         }
 
         private void OnDisable()
         {
-            player.SwitchRotation(false);
+            for (int i = 0; i < player.Length; i++)
+            {
+                player[i].SwitchRotation(false);
+            }
         }
     }
 }
