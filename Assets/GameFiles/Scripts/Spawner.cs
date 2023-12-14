@@ -1,14 +1,18 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
+
+[System.Serializable]
+public struct MovementPoints
+{
+    public Vector3 startPos;
+    public Vector3 stopPos;
+}
 
 public class Spawner : MonoBehaviour
 {
     [SerializeField] private Timer timer;
-    [SerializeField] private Vector3[] startPos;
-    [SerializeField] private Vector3[] stopPos;
+    [SerializeField] private MovementPoints[] movePoints;
 
     [SerializeField] private GameObject prefab;
     [SerializeField] private float interval;
@@ -31,7 +35,8 @@ public class Spawner : MonoBehaviour
             yield return new WaitForSeconds(interval);
             
             target = pool.GetGameObjectFromPool(prefab);
-            target.GetComponent<Meteor>().PushMeteor(startPos[random.GenerateInt(0, startPos.Length)], stopPos[random.GenerateInt(0, startPos.Length)], timeScale);
+            int movePointsId = random.GenerateInt(0, movePoints.Length);
+            target.GetComponent<Meteor>().PushMeteor(movePoints[movePointsId].startPos, movePoints[movePointsId].stopPos, timeScale);
             i++;
         }
     }
