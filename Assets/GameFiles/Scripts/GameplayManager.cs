@@ -15,9 +15,9 @@ public class GameplayManager : MonoBehaviour
 
     [SerializeField] private int[] minPercentValues;
     [SerializeField] private int[] maxPercentValues;
-    [SerializeField] private int minAdds = 2;
+    [SerializeField] private int minAdds = 4;
 
-    private const int CARDS_NUMBER = 6; 
+    private const int CARDS_NUMBER = 10; 
     private int[] cardValues;
     private int cardsSum;
     private int currentCard;
@@ -74,10 +74,6 @@ public class GameplayManager : MonoBehaviour
             GenerateRange();
             card.Activate(cardValues[currentCard], CardCallback);
         }
-        else
-        {
-
-        }
     }
 
     private void GenerateCards()
@@ -106,7 +102,7 @@ public class GameplayManager : MonoBehaviour
         if (currentCard % 2 == 1)
         {
             addButton.gameObject.SetActive(true);
-            if (adds < minAdds && currentCard == CARDS_NUMBER - 1)
+            if (adds < minAdds && currentCard >= CARDS_NUMBER - 1)
             {
                 noSkipText.SetActive(true);
                 return;                
