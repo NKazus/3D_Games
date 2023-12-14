@@ -31,6 +31,9 @@ public class RunManager : MonoBehaviour
     private MaterialInstance slowMat;
     private MaterialInstance damageMat;
 
+    private int routeId;
+    private bool activelPick;
+
     private bool finished;
     private int rounds;
 
@@ -61,6 +64,9 @@ public class RunManager : MonoBehaviour
         dataHandler.UpdateGlobalScore(0);
 
         startButton.onClick.AddListener(Play);
+
+        activelPick = true;
+        PickRoute();
     }
 
     private void OnDisable()
@@ -79,15 +85,16 @@ public class RunManager : MonoBehaviour
             timer.Refresh();
 
             finished = false;
-            routes[0].ResetRoute();
 
-            Vector3 pos = routes[0].GetCurrent();
+            PickRoute();
+
+            Vector3 pos = routes[routeId].GetCurrent();
             player.position = new Vector3(pos.x, player.position.y, pos.z);
 
             slowMat.ResetColor();
             damageMat.ResetColor();
-            slowPlatform.position = routes[0].GetById(routes[0].GenerateId());
-            damagePlatform.position = routes[0].GetById(routes[0].GenerateId());
+            slowPlatform.position = routes[routeId].GetById(routes[routeId].GenerateId());
+            damagePlatform.position = routes[routeId].GetById(routes[routeId].GenerateId());
 
             boostCoefficient = dataHandler.Boost ? activeBoostCoefficient : 1f;
             slowCoefficient = dataHandler.Slow ? activeSlowCoefficient : 1f;
@@ -123,13 +130,29 @@ public class RunManager : MonoBehaviour
         startButton.gameObject.SetActive(false);
         Jump();
         timer.Activate();
-        spawner.Initialize(routes[0]);
+        spawner.Initialize(routes[routeId]);
         spawner.StartSpawning();
+    }
+
+    private void PickRoute()
+    {
+        if (activelPick)
+        {
+            routes[routeId].gameObject.SetActive(false);
+            routeId = random.GenerateInt(0, routes.Length);
+            routes[routeId].gameObject.SetActive(true);
+            routes[routeId].ResetRoute();
+            activelPick = false;
+        }
+        else
+        {
+            activelPick = true;
+        }
     }
 
     private void Jump()
     {
-        Vector3 cellPosition = routes[0].GetNext();
+        Vector3 cellPosition = routes[routeId].GetNext();
         DOTween.Sequence()
             .SetId("jump")
             .Append(player.DOJump(new Vector3(cellPosition.x, player.position.y, cellPosition.z), 0.2f, 1, jumpTime))
@@ -143,7 +166,7 @@ public class RunManager : MonoBehaviour
         {
             return;
         }
-        if (routes[0].IsFinishing())
+        if (routes[routeId].IsFinishing())
         {
             rounds++;
             dataHandler.UpdateRounds(rounds);
@@ -189,6 +212,6 @@ public class RunManager : MonoBehaviour
 
     private void UpdateRoute(int cellId)
     {
-        routes[0].RemoveId(cellId);
+        routes[routeId].RemoveId(cellId);
     }
 }
