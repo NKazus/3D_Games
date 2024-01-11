@@ -10,6 +10,8 @@ public class Timer : MonoBehaviour
 
     private IEnumerator timerCoroutine;
 
+    private System.Action TimeoutCallback;
+
     private float timeLeft;
 
     [Inject] private readonly EventHandler events;
@@ -24,7 +26,7 @@ public class Timer : MonoBehaviour
         }
         if (timeLeft <= 0)
         {
-            
+            TimeoutCallback();
         }
     }
 
@@ -39,9 +41,9 @@ public class Timer : MonoBehaviour
         timerUI.text = string.Format("{0:00}:{1:00}", minutes, seconds);
     }
 
-    public void Activate()
+    public void Activate(float delay = 0f)
     {
-        timeLeft = initialTime;
+        timeLeft = initialTime + delay;
         timerCoroutine = StartTimer();
         StartCoroutine(timerCoroutine);
     }
@@ -60,4 +62,13 @@ public class Timer : MonoBehaviour
         UpdateTimer(timeLeft);
     }
 
+    public void SwitchVisibility(bool visible)
+    {
+        timerUI.enabled = visible;
+    }
+
+    public void SetCallback(System.Action callback)
+    {
+        TimeoutCallback = callback;
+    }
 }

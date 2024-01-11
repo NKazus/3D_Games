@@ -21,7 +21,7 @@ public class IngredientSystem : MonoBehaviour //manages queue and provides new c
         int tempId;
         Ingredient tempIngr;
 
-        for(int i = 0; i < number; i++)
+        for (int i = 0; i < number; i++)
         {
             do
             {

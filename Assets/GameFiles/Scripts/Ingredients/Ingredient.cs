@@ -13,7 +13,6 @@ public class Ingredient : MonoBehaviour //setup for scale 1, mesh on the child o
     {
         localTransform = transform;
         initialPos = localTransform.position;
-        initialScale = localTransform.localScale;
     }
 
     private void OnDisable()

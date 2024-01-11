@@ -11,6 +11,14 @@ public class HolderSystem : MonoBehaviour //places models into positions and pro
 
     [Inject] private readonly ValueProvider randProvider;
 
+    private void OnEnable()
+    {
+        for (int i = 0; i < holders.Length; i++)
+        {
+            holders[i].UpdateHolder(emptyIcon);
+        }
+    }
+
     public void InitHolders(System.Action<ActionType, int, int> callback)
     {
         for (int i = 0; i < holders.Length; i++)

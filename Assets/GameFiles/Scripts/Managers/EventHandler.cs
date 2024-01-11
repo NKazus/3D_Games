@@ -10,7 +10,7 @@ public class EventHandler
     public event Action<bool> SoundSettingsEvent;
 
     public event Action DiceActivationEvent;
-    public event Action WinEvent;
+    public event Action<EndGameState, int> EndGameEvent;
 
 
     public void SwitchGameMode(bool activate)
@@ -43,9 +43,9 @@ public class EventHandler
         SoundSettingsEvent?.Invoke(value);
     }
 
-    public void DoWin()
+    public void PlayEndGame(EndGameState state, int points)
     {
-        WinEvent?.Invoke();
+        EndGameEvent?.Invoke(state, points);
     }
 
     public void ActivateDices()

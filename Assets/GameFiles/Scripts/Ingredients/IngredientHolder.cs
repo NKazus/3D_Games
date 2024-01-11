@@ -78,7 +78,7 @@ public class IngredientHolder : MonoBehaviour
 
     private void FinishSetup()
     {
-        SwitchHolder(false);
+        SwitchHolder(true);
     }
 
     public void InitHolder(int id)
@@ -96,7 +96,7 @@ public class IngredientHolder : MonoBehaviour
         trigger.enabled = active;
     }
 
-    public void SwitchHolderLock(bool locked) //locking in the round
+    public void SwitchHolderLock(bool locked)
     {
         isLocked = locked;
     }

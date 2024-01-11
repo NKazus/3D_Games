@@ -2,17 +2,32 @@ using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
 
+public enum EndGameState
+{
+    NormalWin1,
+    NormalWin2,
+    AdvancedWin,
+    CommonLose
+}
+
+[System.Serializable]
+public struct EndGameSetup
+{
+    public EndGameState type;
+    public Sprite icon;
+    public string info;
+}
+
 public class ModeSwitcher : MonoBehaviour//reward from magnet evac diff types
 {
     [SerializeField] private Button restart;
     [SerializeField] private GameObject restartBg;
-    [SerializeField] private Sprite win;
-    [SerializeField] private string winText;
-    [SerializeField] private Sprite lose;
-    [SerializeField] private string loseText;
+
+    [SerializeField] private EndGameSetup[] presets;
 
     private Image restartIcon;
     private Text restartText;
+    private Text pointsText;
 
     [Inject] private readonly EventHandler events;
 
@@ -20,12 +35,13 @@ public class ModeSwitcher : MonoBehaviour//reward from magnet evac diff types
     {
         restartIcon = restartBg.transform.GetChild(1).GetComponent<Image>();
         restartText = restartBg.transform.GetChild(2).GetComponent<Text>();
+        pointsText = restartBg.transform.GetChild(3).GetComponent<Text>();
     }
 
     private void OnEnable()
     {
         events.GameModeEvent += ChangeGameState;
-        events.WinEvent += ChangeTextToWin;
+        events.EndGameEvent += HandleEndGame;
 
         Invoke("Restart", 1f);
         restart.onClick.AddListener(Restart);
@@ -35,7 +51,7 @@ public class ModeSwitcher : MonoBehaviour//reward from magnet evac diff types
     {
         events.SwitchGameMode(false);
 
-        events.WinEvent -= ChangeTextToWin;
+        events.EndGameEvent -= HandleEndGame;
         events.GameModeEvent -= ChangeGameState;
 
         restartBg.SetActive(false);
@@ -55,17 +71,31 @@ public class ModeSwitcher : MonoBehaviour//reward from magnet evac diff types
         }
         else
         {
-            restartIcon.sprite = lose;
-            restartIcon.SetNativeSize();
-            restartText.text = loseText;
             restartBg.SetActive(false);
         }
     }
 
-    private void ChangeTextToWin()
+    private void HandleEndGame(EndGameState state, int points)
     {
-        restartIcon.sprite = win;
+        EndGameSetup currentSetup = presets[0];
+        bool presetFound = false;
+        for (int i = 0; i < presets.Length; i++)
+        {
+            if (presets[i].type == state)
+            {
+                currentSetup = presets[i];
+                presetFound = true;
+            }
+        }
+
+        if (!presetFound)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        restartIcon.sprite = currentSetup.icon;
         restartIcon.SetNativeSize();
-        restartText.text = winText;
+        restartText.text = currentSetup.info;
+        pointsText.text = points.ToString();
     }
 }
