@@ -15,14 +15,14 @@ public class AudioSettings : MonoBehaviour
         musicToggle.onValueChanged.AddListener(TurnMisic);
         vibroToggle.onValueChanged.AddListener(TurnVibro);
 
-        musicToggle.isOn = (PlayerPrefs.GetInt("_DWL_SoundEnabled") == 1);
-        vibroToggle.isOn = (PlayerPrefs.GetInt("_DWL_VibroEnabled") == 1);
+        musicToggle.isOn = (PlayerPrefs.GetInt("SETTINGS_INT_SoundEnabled") == 1);
+        vibroToggle.isOn = (PlayerPrefs.GetInt("SETTINGS_INT_VibroEnabled") == 1);
     }
 
     private void OnDisable()
     {
-        PlayerPrefs.SetInt("_DWL_SoundEnabled", musicToggle.isOn ? 1 : 0);
-        PlayerPrefs.SetInt("_DWL_VibroEnabled", vibroToggle.isOn ? 1 : 0);
+        PlayerPrefs.SetInt("SETTINGS_INT_SoundEnabled", musicToggle.isOn ? 1 : 0);
+        PlayerPrefs.SetInt("SETTINGS_INT_VibroEnabled", vibroToggle.isOn ? 1 : 0);
 
         musicToggle.onValueChanged.RemoveListener(TurnMisic);
         vibroToggle.onValueChanged.RemoveListener(TurnVibro);

@@ -23,7 +23,6 @@ public class RewardTimer : MonoBehaviour
         {
             ResetTimer();
             TimeOutCallback();
-            //Debug.Log("timer_out");
         }
     }
 

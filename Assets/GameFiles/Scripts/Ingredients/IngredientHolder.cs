@@ -53,8 +53,15 @@ public class IngredientHolder : MonoBehaviour
             return;
         }
 
-        isPicked = !isPicked;
-        HolderCallback(isPicked ? ActionType.Pick : ActionType.Unpick, holderId, currentTarget.GetId());
+        if (!isPicked)
+        {
+            HolderCallback(ActionType.Pick, holderId, currentTarget.GetId());
+        }
+        else
+        {
+            isPicked = !isPicked;
+            HolderCallback(ActionType.Unpick, holderId, currentTarget.GetId());
+        }
     }
 
     private void AddTrigger()
@@ -99,6 +106,11 @@ public class IngredientHolder : MonoBehaviour
     public void SwitchHolderLock(bool locked)
     {
         isLocked = locked;
+    }
+
+    public void SwitchHolderPick()
+    {
+        isPicked = true;
     }
 
     public void SetHolder(Ingredient target)

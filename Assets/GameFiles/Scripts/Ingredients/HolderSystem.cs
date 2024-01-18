@@ -66,6 +66,7 @@ public class HolderSystem : MonoBehaviour //places models into positions and pro
                 holders[holderId].UpdateHolder(emptyIcon);
                 break;
             case ActionType.Pick:
+                holders[holderId].SwitchHolderPick();
                 holders[holderId].UpdateHolder(pickedIcon);
                 break;
             case ActionType.Unpick:

@@ -4,12 +4,10 @@ public class EventHandler
 {
     public event Action<bool> GameModeEvent;
     public event Action VibroEvent;
-    public event Action RewardSoundEvent;
-    public event Action MultSoundEvent;
+    public event Action<GameSound> SoundEvent;
     public event Action<bool> VibroSettingsEvent;
     public event Action<bool> SoundSettingsEvent;
 
-    public event Action DiceActivationEvent;
     public event Action<EndGameState, int> EndGameEvent;
 
 
@@ -23,14 +21,9 @@ public class EventHandler
         VibroEvent?.Invoke();
     }
 
-    public void PlayReward()
+    public void PlaySound(GameSound type)
     {
-        RewardSoundEvent?.Invoke();
-    }
-
-    public void PlayMult()
-    {
-        MultSoundEvent?.Invoke();
+        SoundEvent?.Invoke(type);
     }
 
     public void SetVibro(bool value)
@@ -46,10 +39,5 @@ public class EventHandler
     public void PlayEndGame(EndGameState state, int points)
     {
         EndGameEvent?.Invoke(state, points);
-    }
-
-    public void ActivateDices()
-    {
-        DiceActivationEvent?.Invoke();
     }
 }

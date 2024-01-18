@@ -14,7 +14,7 @@ public class NormalGameMode : MonoBehaviour
     [SerializeField] private Button recipePick;
 
     [SerializeField] private Text picksT;
-    [SerializeField] private Text roundsT;
+    //[SerializeField] private Text roundsT;
 
     [SerializeField] private IngredientSystem ingredientSystem;
     [SerializeField] private HolderSystem holderSystem;
@@ -101,7 +101,7 @@ public class NormalGameMode : MonoBehaviour
 
             roundNumber = 1;
             pickNumber = 0;
-            roundsT.text = roundNumber + "/" + rounds;
+            //roundsT.text = roundNumber + "/" + rounds;
             picksT.text = pickNumber + "/" + picks;
 
             if (advanced)
@@ -116,6 +116,7 @@ public class NormalGameMode : MonoBehaviour
                 else
                 {
                     messages.ShowInfo(MessageType.AdvanceEnabled);
+                    gameData.UpdateResData(ResData.Points, -advancedFee);
                 }
                 timer.Activate(2f);
             }
@@ -139,6 +140,7 @@ public class NormalGameMode : MonoBehaviour
             spice.interactable = false;
 
             messages.ShowInfo(MessageType.ForceUnique);
+            events.PlaySound(GameSound.Spice);
         }        
     }
 
@@ -149,12 +151,13 @@ public class NormalGameMode : MonoBehaviour
             bool result = recipeSystem.CheckRecipe(false);
             messages.ShowInfo(result ? MessageType.CheckUnique : MessageType.CheckEqual);
             gameData.UpdateResData(ResData.Checks, -1);
+            events.PlaySound(GameSound.Check);
         }        
     }
 
     private void PickCallback(ActionType type, int holderId, int ingrId)
     {
-        Debug.Log("Pick:"+type + " ingr:"+ingrId);
+        //Debug.Log("Pick:"+type + " ingr:"+ingrId);
         switch (type)
         {
             case ActionType.Unlock:
@@ -162,9 +165,14 @@ public class NormalGameMode : MonoBehaviour
                 {
                     holderSystem.UpdateHolders(holderId, type);
                     gameData.UpdateResData(ResData.Locks, -1);
+                    events.PlaySound(GameSound.Unlock);
                 }
                 break;
             case ActionType.Pick:
+                if (pickNumber >= picks)
+                {
+                    return;
+                }
                 pickNumber++;
                 picksT.text = pickNumber + "/" + picks;
                 recipeSystem.Pick(ingrId);
@@ -196,18 +204,17 @@ public class NormalGameMode : MonoBehaviour
         bool uniqueRecipe = recipeSystem.CheckRecipe(false);
         if (uniqueRecipe)
         {
-            Debug.Log("unique");
             recipeSystem.AddRecipe();
+            events.PlaySound(GameSound.Check);
         }
         else
         {
-            Debug.Log("equal");
             FinishGame(false);
             return;
         }
 
         roundNumber++;
-        roundsT.text = roundNumber + "/" + rounds;
+        //roundsT.text = roundNumber + "/" + rounds;
         if(roundNumber >= rounds)
         {
             FinishGame(true);
@@ -236,7 +243,6 @@ public class NormalGameMode : MonoBehaviour
 
     public void HandleTimeout()
     {
-        Debug.Log("timeout");
         FinishGame(false);
     }
 
@@ -279,7 +285,7 @@ public class NormalGameMode : MonoBehaviour
             gameData.UpdateResData(ResData.Points, reward);
             events.PlayEndGame(EndGameState.CommonLose, reward);
         }
-        Debug.Log("win:"+win);
+        events.PlaySound(win ? GameSound.Win : GameSound.Lose);
         events.SwitchGameMode(false);
     }
 }

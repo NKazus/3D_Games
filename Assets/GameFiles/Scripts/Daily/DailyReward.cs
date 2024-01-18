@@ -39,7 +39,7 @@ public class DailyReward : MonoBehaviour
 
     private void OnEnable()
     {
-        getButton.image.color = Color.gray;
+        getButton.interactable = false;
         rewardText.text = disableText;
 
         rewardImage.sprite = defaultIcon;
@@ -47,7 +47,7 @@ public class DailyReward : MonoBehaviour
 
         rewardValueText.enabled = false;
 
-       CheckDaily();
+        CheckDaily();
     }
 
     private void OnDisable()
@@ -75,7 +75,7 @@ public class DailyReward : MonoBehaviour
     private void GetRes()
     {
         getButton.onClick.RemoveListener(GetRes);
-        getButton.image.color = Color.gray;
+        getButton.interactable = false;
         rewardText.text = disableText;
 
         int presetId = rand.GenerateInt(0, presets.Length);
@@ -95,7 +95,7 @@ public class DailyReward : MonoBehaviour
 
     private void EnableReward()
     {
-        getButton.image.color = Color.white;
+        getButton.interactable = true;
         getButton.onClick.AddListener(GetRes);
         rewardText.text = enableText;
     }

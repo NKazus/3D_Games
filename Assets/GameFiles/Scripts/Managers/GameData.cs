@@ -29,9 +29,9 @@ public class GameData : MonoBehaviour
     private void OnEnable()
     {
         gameScore = PlayerPrefs.HasKey("DATA_INT_Score") ? PlayerPrefs.GetInt("DATA_INT_Score") : gameScore;
-        locks = PlayerPrefs.HasKey("DATA_INT_Locks") ? PlayerPrefs.GetInt("DATA_INT_Locks") : locks;
-        spices = PlayerPrefs.HasKey("DATA_INT_Spices") ? PlayerPrefs.GetInt("DATA_INT_Spices") : spices;
-        checks = PlayerPrefs.HasKey("DATA_INT_Checks") ? PlayerPrefs.GetInt("DATA_INT_Checks") : checks;
+        locks = 10;// PlayerPrefs.HasKey("DATA_INT_Locks") ? PlayerPrefs.GetInt("DATA_INT_Locks") : locks;
+        spices = 4;// PlayerPrefs.HasKey("DATA_INT_Spices") ? PlayerPrefs.GetInt("DATA_INT_Spices") : spices;
+        checks = 5;// PlayerPrefs.HasKey("DATA_INT_Checks") ? PlayerPrefs.GetInt("DATA_INT_Checks") : checks;
 
         rewardDate = PlayerPrefs.HasKey("DATA_INT_Reward") ? new System.DateTime(
                System.Convert.ToInt64(PlayerPrefs.GetString("DATA_INT_Reward")))
@@ -53,10 +53,10 @@ public class GameData : MonoBehaviour
         int updateValue;
         switch (type)
         {
-            case ResData.Points: updateValue = gameScore += changeValue; Debug.Log("points"); break;
-            case ResData.Locks: updateValue = locks += changeValue; Debug.Log("locks"); break;
-            case ResData.Spices: updateValue = spices += changeValue; Debug.Log("spices"); break;
-            case ResData.Checks: updateValue = checks += changeValue; Debug.Log("checks"); break;
+            case ResData.Points: updateValue = gameScore += changeValue; break;
+            case ResData.Locks: updateValue = locks += changeValue; break;
+            case ResData.Spices: updateValue = spices += changeValue; break;
+            case ResData.Checks: updateValue = checks += changeValue; break;
             default: throw new System.NotSupportedException();
         }
 

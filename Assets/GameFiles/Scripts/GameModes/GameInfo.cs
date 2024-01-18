@@ -16,12 +16,14 @@ public struct MessagePreset
 {
     public MessageType type;
     public string message;
+    public Sprite icon;
 }
 
 public class GameInfo : MonoBehaviour
 {
     [SerializeField] private RectTransform targetPanel;
     [SerializeField] private Text targetText;
+    [SerializeField] private Image targetImage;
     [SerializeField] private MessagePreset[] presets;
 
     private GameObject target;
@@ -56,6 +58,7 @@ public class GameInfo : MonoBehaviour
         }
 
         targetText.text = currentSetup.message;
+        targetImage.sprite = currentSetup.icon;
 
         PlayInfo();
     }
