@@ -29,9 +29,9 @@ public class GameData : MonoBehaviour
     private void OnEnable()
     {
         gameScore = PlayerPrefs.HasKey("DATA_INT_Score") ? PlayerPrefs.GetInt("DATA_INT_Score") : gameScore;
-        locks = 10;// PlayerPrefs.HasKey("DATA_INT_Locks") ? PlayerPrefs.GetInt("DATA_INT_Locks") : locks;
-        spices = 4;// PlayerPrefs.HasKey("DATA_INT_Spices") ? PlayerPrefs.GetInt("DATA_INT_Spices") : spices;
-        checks = 5;// PlayerPrefs.HasKey("DATA_INT_Checks") ? PlayerPrefs.GetInt("DATA_INT_Checks") : checks;
+        locks = PlayerPrefs.HasKey("DATA_INT_Locks") ? PlayerPrefs.GetInt("DATA_INT_Locks") : locks;
+        spices = PlayerPrefs.HasKey("DATA_INT_Spices") ? PlayerPrefs.GetInt("DATA_INT_Spices") : spices;
+        checks = PlayerPrefs.HasKey("DATA_INT_Checks") ? PlayerPrefs.GetInt("DATA_INT_Checks") : checks;
 
         rewardDate = PlayerPrefs.HasKey("DATA_INT_Reward") ? new System.DateTime(
                System.Convert.ToInt64(PlayerPrefs.GetString("DATA_INT_Reward")))
@@ -60,7 +60,6 @@ public class GameData : MonoBehaviour
             default: throw new System.NotSupportedException();
         }
 
-        Debug.Log(updateValue);
         score.UpdateResUI(type, updateValue);
     }
 
