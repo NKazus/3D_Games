@@ -29,7 +29,7 @@ public class GameController : MonoBehaviour
         eventManager.GameEvent += ChangeGameState;
         eventManager.WinEvent += ChangeTextToWin;
 
-        Restart();
+        Invoke("Restart", 0.5f);
     }
 
     private void OnDisable()

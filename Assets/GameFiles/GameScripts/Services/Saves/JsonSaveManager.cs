@@ -35,7 +35,7 @@ public class JsonSaveManager : ISaveManager
         using StreamReader reader = new StreamReader(cryptoStream);
 
         string result = reader.ReadToEnd();
-        Debug.Log($"Decryption: {result}");
+        //Debug.Log($"Decryption: {result}");
         return JsonConvert.DeserializeObject<T>(result);
     }
 
@@ -47,12 +47,12 @@ public class JsonSaveManager : ISaveManager
         {
             if (File.Exists(path))
             {
-                Debug.Log("File exists! Recreating.");
+                //Debug.Log("File exists! Recreating.");
                 File.Delete(path);
             }
             else
             {
-                Debug.Log("Creating file for the first time!");
+                //Debug.Log("Creating file for the first time!");
             }
                 
             using FileStream stream = File.Create(path);

@@ -43,12 +43,12 @@ public class AppResourceManager : MonoBehaviour
         try
         {
             playerRes = saveManager.LoadData<PlayerResources>($"/{saveFileName}.json", enableEncryption);
-            Debug.Log($"Ore: {playerRes.oreCount} Shovels: {playerRes.shovels} Insight: {playerRes.insight}");
+            //Debug.Log($"Ore: {playerRes.oreCount} Shovels: {playerRes.shovels} Insight: {playerRes.insight}");
         }
         catch(Exception e)
         {
             Debug.LogError($"Loading exception: {e.Message} {e.StackTrace}");
-            Debug.Log("Initialize start values!");
+            //Debug.Log("Initialize start values!");
             playerRes.oreCount = oreCount;
             playerRes.shovels = shovels;
             playerRes.insight = insight;
