@@ -1,18 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class EventGenerator : MonoBehaviour
+public class EventGenerator
 {
-    // Start is called before the first frame update
-    void Start()
+    public UnitType GenerateAction(Slot target)
     {
-        
-    }
+        if (!target.IsEmpty())
+        {
+            return UnitType.None;
+        }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        return UnitType.Park;
     }
 }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
 public class SlotSystem : MonoBehaviour
 {
@@ -8,7 +9,22 @@ public class SlotSystem : MonoBehaviour
 
     private Slot activeSlot;
 
-    private bool CheckComplete()
+    [Inject] private readonly ValueGenerator valueGenerator;
+
+    private void RecalculateCondition()
+    {
+        //Debug.Log("recalculate");
+        List<SlotCondition> currentConditions = new List<SlotCondition>();
+
+        for (int i = 0; i < slots.Length; i++)
+        {
+            currentConditions.Add(slots[i].CalculateCondition());
+        }
+
+        rateSystem.CalculateRate(currentConditions);
+    }
+
+    public bool CheckComplete()
     {
         for (int i = 0; i < slots.Length; i++)
         {
@@ -17,6 +33,7 @@ public class SlotSystem : MonoBehaviour
                 return false;
             }
         }
+        rateSystem.CompleteRate();
         return true;
     }
 
@@ -38,30 +55,34 @@ public class SlotSystem : MonoBehaviour
         return true;
     }
 
+    public void DeactivateCurrent()
+    {
+        SetActiveSlot(activeSlot);
+    }
+
     public void BindUnit(Unit targetUnit)
     {
         activeSlot.SetUnit(targetUnit);
-        if (CheckComplete())
-        {
-            //endgame event
-        }
+        RecalculateCondition();
     }
 
-    public void InitSlots(System.Action<Slot> callback)
+    public void InitSlots(System.Action<Slot> pickCallback, System.Action<Unit, bool, Vector3> bindCallback)
     {
         for (int i = 0; i < slots.Length; i++)
         {
-            slots[i].SetSlotCallback(callback);
+            slots[i].Init();
+            slots[i].SetPickCallback(pickCallback);
+            slots[i].SetBindCallback(bindCallback);
         }
 
-        //rateSystem.CalculateMaxRate(slots.Length);
+       rateSystem.CalculateMaxRate(slots.Length);
     }
 
     public void ResetSlots()
     {
         activeSlot = null;
 
-        //rateSystem.ResetRate();
+        rateSystem.ResetRate();
         for (int i = 0; i < slots.Length; i++)
         {
             slots[i].ResetSlot();
@@ -92,16 +113,14 @@ public class SlotSystem : MonoBehaviour
         }
     }
 
-    public void RecalculateCondition()
+    public RateType GetSlotsRate()
     {
-        List<SlotCondition> currentConditions = new List<SlotCondition>();
+        return rateSystem.GetRate();
+    }
 
-        for (int i = 0; i < slots.Length; i++)
-        {
-            currentConditions.Add(slots[i].CalculateCondition());
-        }
-
-        rateSystem.CalculateRate(currentConditions);
+    public Slot GetRandomSlot()
+    {
+        return slots[valueGenerator.GenerateInt(0, slots.Length)];
     }
 }   
 

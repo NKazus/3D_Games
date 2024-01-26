@@ -1,7 +1,8 @@
 [System.Serializable]
 public class PlayerResources
 {
-    public int oreCount;
-    public int shovels;
-    public int insight;
+    public int freeActions;
+    public int poorMedals;
+    public int ordinaryMedals;
+    public int luxMedals;
 }

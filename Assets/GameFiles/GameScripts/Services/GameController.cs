@@ -2,32 +2,37 @@ using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
 
+[System.Serializable]
+public class FinishPreset
+{
+    public PlayerRes targetRes;
+    public RateType rate;
+    public string finishText;
+    public Sprite icon;
+}
+
 public class GameController : MonoBehaviour
 {
+    [SerializeField] private FinishPreset[] presets;
     [SerializeField] private Button restart;
     [SerializeField] private GameObject restartBg;
-    [SerializeField] private Sprite win;
-    [SerializeField] private string winText;
-    [SerializeField] private Sprite lose;
-    [SerializeField] private string loseText;
 
     private Image restartIcon;
     private Text restartText;
-    private Text restartExtra;
 
     [Inject] private readonly AppEvents eventManager;
+    [Inject] private readonly AppResourceManager resourceManager;
 
     private void Awake()
     {
         restartIcon = restartBg.transform.GetChild(1).GetComponent<Image>();
         restartText = restartBg.transform.GetChild(2).GetComponent<Text>();
-        restartExtra = restartBg.transform.GetChild(3).GetComponent<Text>();
     }
 
     private void OnEnable()
     {
         eventManager.GameEvent += ChangeGameState;
-        eventManager.WinEvent += ChangeTextToWin;
+        eventManager.FinishEvent += PlayFinish;
 
         Invoke("Restart", 0.5f);
     }
@@ -36,7 +41,7 @@ public class GameController : MonoBehaviour
     {
         eventManager.DoGame(false);
     
-        eventManager.WinEvent -= ChangeTextToWin;
+        eventManager.FinishEvent -= PlayFinish;
         eventManager.GameEvent -= ChangeGameState;
   
         restart.gameObject.SetActive(false);
@@ -53,28 +58,38 @@ public class GameController : MonoBehaviour
     {
         if (!isActive)
         {
-            restart.gameObject.SetActive(true);
             restartBg.SetActive(true);
             restart.onClick.AddListener(Restart);
         }
         else
         {
-            restart.gameObject.SetActive(false);
-            restartIcon.sprite = lose;
-            restartIcon.SetNativeSize();
-            restartText.text = loseText;
-            restartExtra.enabled = false;
             restartBg.SetActive(false);
             restart.onClick.RemoveListener(Restart);
         }
     }
 
-    private void ChangeTextToWin(int points)
+    private void PlayFinish(RateType targetType)
     {
-        restartIcon.sprite = win;
+        FinishPreset currentPreset = null;
+
+        for (int j = 0; j < presets.Length; j++)
+        {
+            if (targetType == presets[j].rate)
+            {
+                currentPreset = presets[j];
+                break;
+            }
+        }
+
+        if(currentPreset == null)
+        {
+            throw new System.NotSupportedException();
+        }
+
+        restartIcon.sprite = currentPreset.icon;
         restartIcon.SetNativeSize();
-        restartText.text = winText;
-        restartExtra.text = "You've mined "+points.ToString()+" ore samples!";
-        restartExtra.enabled = true;
+        restartText.text = currentPreset.finishText;
+
+        resourceManager.UpdateRes(currentPreset.targetRes, 1);
     }
 }

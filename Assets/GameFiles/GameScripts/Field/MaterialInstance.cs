@@ -4,7 +4,7 @@ public class MaterialInstance : MonoBehaviour
 {
     private MeshRenderer meshRenderer;
 
-    private void Awake()
+    public void Init()
     {
         meshRenderer = GetComponent<MeshRenderer>();
         Material target = Instantiate(meshRenderer.material);

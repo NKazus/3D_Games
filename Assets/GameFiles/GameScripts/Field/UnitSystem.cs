@@ -1,14 +1,13 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public enum UnitType
 {
-    House,
-    Shop,
-    Park,
-    Recreation,
-    None
+    House = 0,
+    Shop = 1,
+    Park = 2,
+    Recreation = 3,
+    None = 4
 }
 
 [System.Serializable]
@@ -27,6 +26,11 @@ public class UnitSystem : MonoBehaviour
 
     private List<Unit> activeUnits = new List<Unit>();
 
+    private void PutToPool(Unit target)
+    {
+        pool.PutGameObjectToPool(target);
+    }
+
     public Unit GenerateUnit(UnitType targetType)
     {
         for(int i = 0; i < unitPrefabs.Length; i++)
@@ -41,17 +45,23 @@ public class UnitSystem : MonoBehaviour
         return null;
     }
 
-    public void HideUnit(Unit target)
+    public void ShowUnit(Unit target, Vector3 targetPosition, System.Action callback)
+    {
+        target.Show(targetPosition, callback);
+    }
+
+    public void HideUnit(Unit target, System.Action callback)
     {
         activeUnits.Remove(target);
-        pool.PutGameObjectToPool(target);
+        
+        target.Hide(callback, PutToPool);
     }
 
     public void HideAllActive()
     {
         while(activeUnits.Count > 0)
         {
-            pool.PutGameObjectToPool(activeUnits[0]);
+            PutToPool(activeUnits[0]);
             activeUnits.RemoveAt(0);
         }
     }

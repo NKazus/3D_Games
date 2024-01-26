@@ -1,12 +1,26 @@
 using System;
 using UnityEngine;
 
+public enum PlayerRes
+{
+    FreeAction,
+    PoorMedal,
+    OrdinaryMedal,
+    LuxMedal
+}
+
 public class AppResourceManager : MonoBehaviour
 {
     [SerializeField] private int oreCount = 5;
     [SerializeField] private int shovels = 10;
     [SerializeField] private int insight = 10;
     [SerializeField] private int initialScoops = 15; //only constants
+
+    [SerializeField] private int freeActions = 5;
+    [SerializeField] private int poorMedals = 0;
+    [SerializeField] private int ordinaryMedals = 0;
+    [SerializeField] private int luxMedals = 0;
+
     [SerializeField] private UserScoreManager scoreManager;
     [SerializeField] private string saveFileName;
     [SerializeField] private bool enableEncryption;
@@ -42,16 +56,44 @@ public class AppResourceManager : MonoBehaviour
     {
         try
         {
-            playerRes = saveManager.LoadData<PlayerResources>($"/{saveFileName}.json", enableEncryption);
-            //Debug.Log($"Ore: {playerRes.oreCount} Shovels: {playerRes.shovels} Insight: {playerRes.insight}");
+            playerRes.freeActions = freeActions;
+            playerRes.poorMedals = poorMedals;
+            playerRes.ordinaryMedals = ordinaryMedals;
+            playerRes.luxMedals = luxMedals;
+            //playerRes = saveManager.LoadData<PlayerResources>($"/{saveFileName}.json", enableEncryption);
         }
         catch(Exception e)
         {
             Debug.LogError($"Loading exception: {e.Message} {e.StackTrace}");
             //Debug.Log("Initialize start values!");
-            playerRes.oreCount = oreCount;
-            playerRes.shovels = shovels;
-            playerRes.insight = insight;
+            playerRes.freeActions = freeActions;
+            playerRes.poorMedals = poorMedals;
+            playerRes.ordinaryMedals = ordinaryMedals;
+            playerRes.luxMedals = luxMedals;
+        }
+    }
+
+    public int GetResValue(PlayerRes type)
+    {
+        return type switch
+        {
+            PlayerRes.FreeAction => playerRes.freeActions,
+            PlayerRes.PoorMedal => playerRes.poorMedals,
+            PlayerRes.OrdinaryMedal => playerRes.ordinaryMedals,
+            PlayerRes.LuxMedal => playerRes.luxMedals,
+            _ => throw new NotSupportedException()
+        };
+    }
+
+    public void UpdateRes(PlayerRes type, int value)
+    {
+        switch (type)
+        {
+            case PlayerRes.FreeAction: playerRes.freeActions += value; break;
+            case PlayerRes.PoorMedal: playerRes.poorMedals += value; break;
+            case PlayerRes.OrdinaryMedal: playerRes.ordinaryMedals += value; break;
+            case PlayerRes.LuxMedal: playerRes.luxMedals += value; break;
+            default: throw new NotSupportedException();
         }
     }
 
@@ -73,16 +115,7 @@ public class AppResourceManager : MonoBehaviour
 
     public void RemoveBonus(bool isShovel)
     {
-        if (isShovel)
-        {
-            playerRes.shovels--;
-            scoreManager.UpdateValues(2, playerRes.shovels);
-        }
-        else
-        {
-            insight--;
-            scoreManager.UpdateValues(3, playerRes.insight);
-        }
+        
     }
 
     public void SetActiveTool(Tool value)
@@ -108,11 +141,6 @@ public class AppResourceManager : MonoBehaviour
 
     public void Refresh()
     {
-        scoreManager.UpdateValues(0, oreCount);
-        scoreManager.UpdateValues(1, scoops);
-        scoreManager.UpdateValues(2, playerRes.shovels);
-        scoreManager.UpdateValues(4, shovels);
-        scoreManager.UpdateValues(3, playerRes.insight);
-        scoreManager.UpdateValues(5, insight);
+        
     }
 }

@@ -10,7 +10,7 @@ public class AppEvents
     public event Action<bool> VibroSettingsEvent;
     public event Action<bool> SoundSettingsEvent;
 
-    public event Action<int> WinEvent;
+    public event Action<RateType> FinishEvent;
     public event Action ToolRefreshEvent;
 
     public void DoGame(bool activate)
@@ -48,9 +48,9 @@ public class AppEvents
         SoundSettingsEvent?.Invoke(value);
     }
 
-    public void DoWin(int value)
+    public void DoFinish(RateType type)
     {
-        WinEvent?.Invoke(value);
+        FinishEvent?.Invoke(type);
     }
 
     public void RefreshTools()

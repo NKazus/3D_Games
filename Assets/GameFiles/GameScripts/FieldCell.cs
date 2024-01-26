@@ -134,7 +134,7 @@ public class FieldCell : MonoBehaviour
         if (currentLayer <=0 && isTreasure)
         {
             int reward = randomGenerator.GenerateInt(5, 10);
-            eventManager.DoWin(reward);
+            
             dataHandler.UpdateGlobalScore(reward);
             eventManager.PlayReward();
             Invoke("TriggerVictory", 2f);

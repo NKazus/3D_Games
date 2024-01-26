@@ -19,43 +19,44 @@ public class Slot : MonoBehaviour
     private EventTrigger trigger;
 
     private Unit currentTarget;
-    private SlotCondition currentCondition;
 
     private bool isEmpty;
 
-    private System.Action<Slot> SlotCallback;
-    private System.Action<Unit, bool, Vector3> UnitCallback;
+    private System.Action<Slot> PickCallback;
+    private System.Action<Unit, bool, Vector3> BindCallback;
 
-    private void Awake()
+    private void ClickSlot(PointerEventData data)
+    {
+        PickCallback(this);
+    }
+
+    public void Init()
     {
         slotTransform = transform;
         statusMat = slotTransform.GetChild(0).GetComponent<MaterialInstance>();
         conditionMat = slotTransform.GetChild(1).GetComponent<MaterialInstance>();
+        statusMat.Init();
+        conditionMat.Init();
         trigger = GetComponent<EventTrigger>();
-    }
-
-    private void ClickSlot(PointerEventData data)
-    {
-        SlotCallback(this);
     }
 
     public void SetUnit(Unit targetUnit = null)
     {
-        if(targetUnit == null)
+        if (targetUnit == null)
         {
             isEmpty = true;
-            UnitCallback(currentTarget, false, Vector3.zero);
+            BindCallback(currentTarget, false, Vector3.zero);
             currentTarget = null;
             return;
         }
+        isEmpty = false;
         currentTarget = targetUnit;
-        UnitCallback(currentTarget, true, slotTransform.position);
+        BindCallback(currentTarget, true, slotTransform.position);
     }
 
     public void ResetSlot()
     {
         currentTarget = null;
-        currentCondition = SlotCondition.Bad;
         conditionMat.SetColor(Color.red);
         isEmpty = true;
         statusMat.SetColor(Color.gray);
@@ -93,6 +94,7 @@ public class Slot : MonoBehaviour
 
     public UnitType GetTargetUnitType()
     {
+        //Debug.Log($"Name: {this.gameObject.name} is empty: {isEmpty}");
         if (isEmpty)
         {
             return UnitType.None;
@@ -100,9 +102,14 @@ public class Slot : MonoBehaviour
         return currentTarget.GetUnitType();
     }
 
-    public void SetSlotCallback(System.Action<Slot> callback)
+    public void SetPickCallback(System.Action<Slot> callback)
     {
-        SlotCallback = callback;
+        PickCallback = callback;
+    }
+
+    public void SetBindCallback(System.Action<Unit, bool, Vector3> callback)
+    {
+        BindCallback = callback;
     }
 
     public bool IsEmpty()
@@ -112,6 +119,11 @@ public class Slot : MonoBehaviour
 
     public SlotCondition CalculateCondition()
     {
+        if (isEmpty)
+        {
+            conditionMat.SetColor(Color.red);
+            return SlotCondition.Bad;
+        }
         int empty = 0;
         int repeats = 0;
         int unique = 0;
@@ -123,34 +135,33 @@ public class Slot : MonoBehaviour
                 empty++;
                 continue;
             }
-            if(currentTarget.GetUnitType() == neighbours[i].GetTargetUnitType())
+            if (GetTargetUnitType() == neighbours[i].GetTargetUnitType())
             {
-                unique++;
+                repeats++;
             }
             else
             {
-                repeats++;
+                unique++;
             }
         }
 
         float defaultMult = 1f / neighbours.Length;
 
-        float result = defaultMult * (empty * 0.2f + repeats * 0.4f + unique);
-        if(result > 0.65f)
-        {
-            currentCondition = SlotCondition.Good;
+        float result = defaultMult * (empty * 0.1f + repeats * 0.3f + unique);
+        if(result > 0.85f)
+        {            
             conditionMat.SetColor(Color.green);
+            return SlotCondition.Good;
         }
-        if(result > 0.35f)
+        if(result > 0.45f)
         {
-            currentCondition = SlotCondition.Normal;
             conditionMat.SetColor(Color.yellow);
+            return SlotCondition.Normal;
         }
         else
         {
-            currentCondition = SlotCondition.Bad;
             conditionMat.SetColor(Color.red);
+            return SlotCondition.Bad;        
         }
-        return currentCondition;
     }
 }

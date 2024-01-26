@@ -1,8 +1,14 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum RateType
+{
+    Lux,
+    Ordinary,
+    Poor
+}
 
+[System.Serializable]
 public struct RateValue
 {
     public SlotCondition condition;
@@ -13,6 +19,7 @@ public class RateSystem : MonoBehaviour
 {
     [SerializeField] private RateValue[] values;
     [SerializeField] private ScaleUI progress;
+    [SerializeField] private float completeFieldMultiplyer;
 
     private float maxRate;
     private float currentRate;
@@ -29,6 +36,7 @@ public class RateSystem : MonoBehaviour
             }
         }
         maxRate = slotsNumber * bestRate;
+        //Debug.Log("Max rate: "+ maxRate);
     }
 
     public void CalculateRate(List<SlotCondition> targetConditions)
@@ -45,11 +53,34 @@ public class RateSystem : MonoBehaviour
             }
         }
         progress.UpdateValue(currentRate / maxRate);
+        //Debug.Log("Current rate:" + currentRate);
     }
 
     public void ResetRate()
     {
         currentRate = 0f;
         progress.UpdateValue(0f);
+    }
+
+    public RateType GetRate()
+    {
+        float rate = currentRate / maxRate;
+        if (rate > 0.8f)
+        {
+            return RateType.Lux;
+        }
+        if(rate > 0.4f)
+        {
+            return RateType.Ordinary;
+        }
+        else
+        {
+            return RateType.Poor;
+        }
+    }
+
+    public void CompleteRate()
+    {
+        currentRate *= completeFieldMultiplyer;
     }
 }

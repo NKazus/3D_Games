@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 
@@ -8,17 +6,20 @@ public class DistrictController : MonoBehaviour
     [SerializeField] private UnitSystem unitSystem;
     [SerializeField] private SlotSystem slotSystem;
     [SerializeField] private FinanceSystem financeSystem;
-    [SerializeField] private float startFinances;
-    [SerializeField] private float completeFieldMultiplyer;
     [SerializeField] private Tools tools;
 
-    [Inject] private readonly AppResourceManager resources;
+    [SerializeField] private FreeAction freeActionHandler; 
+
+    private EventGenerator eventGenerator = new EventGenerator();
+
+    private bool eventPlayed;
+
     [Inject] private readonly AppEvents events;
-    [Inject] private readonly ValueGenerator randomGenerator;
+    [Inject] private readonly ValueGenerator valueGenerator;
 
     private void Awake()
     {
-        slotSystem.InitSlots(HandleSlot);
+        slotSystem.InitSlots(HandleSlot, HandleUnit);
         tools.SetCallback(HandleToolAction);
     }
 
@@ -27,23 +28,30 @@ public class DistrictController : MonoBehaviour
         events.GameEvent += ChangeFieldState;
 
         tools.ResetTools();
+        financeSystem.ResetMoney();
+        slotSystem.ResetSlots();
     }
 
     private void OnDisable()
     {
         events.GameEvent -= ChangeFieldState;
+        unitSystem.HideAllActive();
     }
 
     private void ChangeFieldState(bool activate)
     {
         if (activate)
         {
+            financeSystem.ResetMoney();
             unitSystem.HideAllActive();
             slotSystem.ResetSlots();
             slotSystem.ActivateSlots();
             slotSystem.SwitchSlots(true);
 
             tools.ResetTools();
+
+            eventPlayed = false;
+            freeActionHandler.ResetUses();
         }
         else
         {
@@ -67,31 +75,71 @@ public class DistrictController : MonoBehaviour
         }
     }
 
-    private void HandleToolAction(UnitType target)
+    private void HandleToolAction(UnitType targetType)
     {
         slotSystem.SwitchSlots(false);
         //do action to current active slot
-        if(target == UnitType.None)
+
+        slotSystem.BindUnit(unitSystem.GenerateUnit(targetType));
+
+        if (!eventPlayed && !freeActionHandler.UseFreeAction())
         {
-            slotSystem.BindUnit(null);
+            financeSystem.CalculateMoney(targetType);
         }
 
-        //get unit from system
-
-        
+        slotSystem.DeactivateCurrent();
+        tools.RefreshTools(false);
     }
 
     private void HandleUnit(Unit target, bool show, Vector3 targetPosition)
     {
-        //do smth with unit from slot
-
-        //unitSystem
+        if (show)
+        {
+            unitSystem.ShowUnit(target, targetPosition, FinishUnit);
+        }
+        else
+        {
+            unitSystem.HideUnit(target, FinishUnit);
+        }
     }
 
     private void FinishUnit()
     {
-        //generate event or not
+        if (slotSystem.CheckComplete() || !financeSystem.CheckMoney())
+        {
+            events.DoFinish(slotSystem.GetSlotsRate());
+            //Debug.Log("finish");
+            events.DoGame(false);
+            return;
+        }
+
+        if (!eventPlayed && GenerateEvent())
+        {
+            //Debug.Log("Event time");
+            return;
+        }
+
+        //Debug.Log("Finish time");
+        eventPlayed = false;
         slotSystem.SwitchSlots(true);
+    }
+
+    private bool GenerateEvent()
+    {
+        if(valueGenerator.GenerateInt(0, 10) > 4)
+        {
+            //Debug.Log("play event");
+            eventPlayed = true;
+            Slot eventTarget = slotSystem.GetRandomSlot();
+            slotSystem.SetActiveSlot(eventTarget);
+            HandleToolAction(eventGenerator.GenerateAction(eventTarget));
+            return true;
+        }
+        else
+        {
+            //Debug.Log("skip event");
+            return false;
+        }        
     }
 
 }

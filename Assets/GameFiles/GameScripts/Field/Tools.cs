@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -37,7 +35,7 @@ public class Tools : MonoBehaviour
 
     private void ShowTools(SubmenuType type)
     {
-        Debug.Log("tool show");
+        //Debug.Log("tool show");
         for (int i = 0; i < submenus.Length; i++)
         {
             if (submenus[i].GetSubmenuType() == type)
@@ -65,26 +63,31 @@ public class Tools : MonoBehaviour
 
     public void RefreshTools(bool showNew, SubmenuType type = SubmenuType.Create)
     {
+        //Debug.Log(type);
+        
         if (currentActive != null)
         {
             if (!showNew)
             {
-                Debug.Log("tools hide");
+                //Debug.Log("tools hide");
                 currentActive.Hide();
                 currentActive = null;
                 return;
             }
             if (currentActive.GetSubmenuType() == type)
             {
-                Debug.Log("remains");
+                //Debug.Log("remains");
                 return;
             }
-            Debug.Log("refresh tools anew");
+            //Debug.Log("refresh tools anew");
             currentActive.Hide(ShowTools, type);
         }
         else
         {
-            ShowTools(type);
+            if (showNew)
+            {
+                ShowTools(type);
+            }            
         }
     }
 }

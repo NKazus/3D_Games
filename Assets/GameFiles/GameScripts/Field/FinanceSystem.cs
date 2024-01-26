@@ -15,7 +15,7 @@ public class FinanceSystem : MonoBehaviour
 
     private float currentMoney;
 
-    public void CalculateRate(UnitType targetType)
+    public void CalculateMoney(UnitType targetType)
     {
         for (int j = 0; j < costs.Length; j++)
         {
@@ -29,15 +29,19 @@ public class FinanceSystem : MonoBehaviour
         if(currentMoney <= 0)
         {
             currentMoney = 0;
-            //event;
         }
 
         progress.UpdateValue(currentMoney / maxMoney);
     }
 
-    public void ResetRate()
+    public void ResetMoney()
     {
         currentMoney = maxMoney;
         progress.UpdateValue(1f);
+    }
+
+    public bool CheckMoney()
+    {
+        return currentMoney > 0;
     }
 }
