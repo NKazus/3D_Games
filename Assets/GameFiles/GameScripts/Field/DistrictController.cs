@@ -34,6 +34,10 @@ public class DistrictController : MonoBehaviour
 
     private void OnDisable()
     {
+        if (IsInvoking())
+        {
+            CancelInvoke("PlayEvent");
+        }
         events.GameEvent -= ChangeFieldState;
         unitSystem.HideAllActive();
     }
@@ -61,7 +65,7 @@ public class DistrictController : MonoBehaviour
 
     private void HandleSlot(Slot target)
     {
-        bool isToolsActive = slotSystem.SetActiveSlot(target);
+        bool isToolsActive = slotSystem.SetActiveSlot(target, true);
 
         if (isToolsActive)
         {
@@ -126,13 +130,10 @@ public class DistrictController : MonoBehaviour
 
     private bool GenerateEvent()
     {
-        if(valueGenerator.GenerateInt(0, 10) > 4)
+        if(valueGenerator.GenerateInt(0, 10) > 3)
         {
             //Debug.Log("play event");
-            eventPlayed = true;
-            Slot eventTarget = slotSystem.GetRandomSlot();
-            slotSystem.SetActiveSlot(eventTarget);
-            HandleToolAction(eventGenerator.GenerateAction(eventTarget));
+            Invoke("PlayEvent", 1f);
             return true;
         }
         else
@@ -142,4 +143,11 @@ public class DistrictController : MonoBehaviour
         }        
     }
 
+    private void PlayEvent()
+    {
+        eventPlayed = true;
+        Slot eventTarget = slotSystem.GetRandomSlot();
+        slotSystem.SetActiveSlot(eventTarget);
+        HandleToolAction(eventGenerator.GenerateAction(eventTarget));
+    }
 }

@@ -37,7 +37,7 @@ public class SlotSystem : MonoBehaviour
         return true;
     }
 
-    public bool SetActiveSlot(Slot target)
+    public bool SetActiveSlot(Slot target, bool animate = false)
     {
         if(activeSlot != null)
         {
@@ -51,7 +51,10 @@ public class SlotSystem : MonoBehaviour
         }
 
         activeSlot = target;
-        activeSlot.PickSlot(true);
+        if (animate)
+        {
+            activeSlot.PickSlot(true);
+        }        
         return true;
     }
 

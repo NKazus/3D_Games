@@ -4,25 +4,19 @@ using UnityEngine.UI;
 
 public class UserScoreManager : MonoBehaviour
 {
-    [SerializeField] private Text globalScoreUI;
-    [SerializeField] private Text scoopsUI;
-    [SerializeField] private Text shovelsUI;
-    [SerializeField] private Text insightUI;
+    [SerializeField] private Text luxMedalsUI;
+    [SerializeField] private Text ordinaryMedalsUI;
+    [SerializeField] private Text poorMedalsUI;
 
-    [SerializeField] private Text tradedShovelsUI;
-    [SerializeField] private Text tradedInsightUI;
-
-    public void UpdateValues(int id, int value)
+    public void UpdateValues(PlayerRes type, int value)
     {
         Text ui;
-        switch (id)
+        switch (type)
         {
-            case 1: ui = scoopsUI; break;
-            case 2: ui = shovelsUI; break;
-            case 3: ui = insightUI; break;
-            case 4: ui = tradedShovelsUI; break;
-            case 5: ui = tradedInsightUI; break;
-            default: ui = globalScoreUI; break;
+            case PlayerRes.OrdinaryMedal: ui = ordinaryMedalsUI; break;
+            case PlayerRes.PoorMedal: ui = poorMedalsUI; break;
+            case PlayerRes.LuxMedal: ui = luxMedalsUI; break;
+            default: throw new System.NotSupportedException();
         }
 
         UpdateText(ui, value.ToString());

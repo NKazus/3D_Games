@@ -6,7 +6,7 @@ public enum AppUIState
 {
     Menu = 0,
     Gameplay = 1,
-    MagicDice = 2,
+    Exchange = 2,
     Settings = 3,
     Rules = 4
 }
@@ -16,15 +16,17 @@ public class AppUISwitcher : MonoBehaviour
 
     [SerializeField] private Button[] toMenu;
     [SerializeField] private Button toSettings;
-    [SerializeField] private Button toMagicDice;
+    [SerializeField] private Button toExchange;
     [SerializeField] private Button toGameplay;
     [SerializeField] private Button toRules;
     [SerializeField] private Button toPrivacy;
+    [SerializeField] private Button toSupport;
+
     [SerializeField] private string privacyURL;
+    [SerializeField] private string supportURL;
 
     private AppUIState currentState;
 
-    #region MONO
     private void Awake()
     {
        currentState = AppUIState.Menu;
@@ -37,11 +39,12 @@ public class AppUISwitcher : MonoBehaviour
             toMenu[i].onClick.AddListener(() => { TriggerChange(AppUIState.Menu); });
         }
         toSettings.onClick.AddListener(() => { TriggerChange(AppUIState.Settings); });
-        toMagicDice.onClick.AddListener(() => { TriggerChange(AppUIState.MagicDice); });
+        toExchange.onClick.AddListener(() => { TriggerChange(AppUIState.Exchange); });
         toGameplay.onClick.AddListener(() => { TriggerChange(AppUIState.Gameplay); });
         toRules.onClick.AddListener(() => { TriggerChange(AppUIState.Rules); });
 
-        toPrivacy.onClick.AddListener(CheckPrivacy);
+        toPrivacy.onClick.AddListener(() => OpenPage(privacyURL));
+        toSupport.onClick.AddListener(() => OpenPage(supportURL));
     }
 
     private void Start()
@@ -56,14 +59,13 @@ public class AppUISwitcher : MonoBehaviour
             toMenu[i].onClick.RemoveAllListeners();
         }
         toSettings.onClick.RemoveAllListeners();
-        toMagicDice.onClick.RemoveAllListeners();
+        toExchange.onClick.RemoveAllListeners();
         toGameplay.onClick.RemoveAllListeners();
         toRules.onClick.RemoveAllListeners();
 
-        toPrivacy.onClick.RemoveListener(CheckPrivacy);
+        toPrivacy.onClick.RemoveAllListeners();
+        toSupport.onClick.RemoveAllListeners();
     }
-    #endregion
-
 
     private void TriggerChange(AppUIState state)
     {
@@ -71,9 +73,9 @@ public class AppUISwitcher : MonoBehaviour
         ChangeStateEvent?.Invoke(state);
     }
 
-    private void CheckPrivacy()
+    private void OpenPage(string url)
     {
-        Application.OpenURL(privacyURL);
+        Application.OpenURL(url);
     }
 
 }

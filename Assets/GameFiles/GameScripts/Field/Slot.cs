@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -13,8 +11,7 @@ public class Slot : MonoBehaviour
 {
     [SerializeField] private Slot[] neighbours;
 
-    private MaterialInstance statusMat;
-    private MaterialInstance conditionMat;
+    private SlotStatus status;
     private Transform slotTransform;
     private EventTrigger trigger;
 
@@ -33,10 +30,8 @@ public class Slot : MonoBehaviour
     public void Init()
     {
         slotTransform = transform;
-        statusMat = slotTransform.GetChild(0).GetComponent<MaterialInstance>();
-        conditionMat = slotTransform.GetChild(1).GetComponent<MaterialInstance>();
-        statusMat.Init();
-        conditionMat.Init();
+        status = slotTransform.GetChild(0).GetComponent<SlotStatus>();
+        status.Init();
         trigger = GetComponent<EventTrigger>();
     }
 
@@ -57,9 +52,8 @@ public class Slot : MonoBehaviour
     public void ResetSlot()
     {
         currentTarget = null;
-        conditionMat.SetColor(Color.red);
+        status.ResetStatus();
         isEmpty = true;
-        statusMat.SetColor(Color.gray);
     }
 
     public void Activate()
@@ -82,14 +76,7 @@ public class Slot : MonoBehaviour
 
     public void PickSlot(bool pick)
     {
-        if (pick)
-        {
-            statusMat.SetColor(Color.white);
-        }
-        else
-        {
-            statusMat.SetColor(Color.grey);
-        }
+        status.SetPicked(pick);
     }
 
     public UnitType GetTargetUnitType()
@@ -121,7 +108,7 @@ public class Slot : MonoBehaviour
     {
         if (isEmpty)
         {
-            conditionMat.SetColor(Color.red);
+            status.UpdateStatus(SlotCondition.Bad);
             return SlotCondition.Bad;
         }
         int empty = 0;
@@ -149,18 +136,18 @@ public class Slot : MonoBehaviour
 
         float result = defaultMult * (empty * 0.1f + repeats * 0.3f + unique);
         if(result > 0.85f)
-        {            
-            conditionMat.SetColor(Color.green);
+        {
+            status.UpdateStatus(SlotCondition.Good);
             return SlotCondition.Good;
         }
         if(result > 0.45f)
         {
-            conditionMat.SetColor(Color.yellow);
+            status.UpdateStatus(SlotCondition.Normal);
             return SlotCondition.Normal;
         }
         else
         {
-            conditionMat.SetColor(Color.red);
+            status.UpdateStatus(SlotCondition.Bad);
             return SlotCondition.Bad;        
         }
     }

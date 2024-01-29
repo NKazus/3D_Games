@@ -11,11 +11,6 @@ public enum PlayerRes
 
 public class AppResourceManager : MonoBehaviour
 {
-    [SerializeField] private int oreCount = 5;
-    [SerializeField] private int shovels = 10;
-    [SerializeField] private int insight = 10;
-    [SerializeField] private int initialScoops = 15; //only constants
-
     [SerializeField] private int freeActions = 5;
     [SerializeField] private int poorMedals = 0;
     [SerializeField] private int ordinaryMedals = 0;
@@ -25,14 +20,8 @@ public class AppResourceManager : MonoBehaviour
     [SerializeField] private string saveFileName;
     [SerializeField] private bool enableEncryption;
 
-    private int scoops;
     private Tool activeTool;
     public Tool ActiveTool => activeTool;
-
-    public int Shovels => shovels;
-    public int Scoops => scoops;
-    public int Insight => insight;
-    public int OreCount => oreCount;
 
     private PlayerResources playerRes = new PlayerResources(); //all res changes here
     private ISaveManager saveManager = new JsonSaveManager();
@@ -87,60 +76,22 @@ public class AppResourceManager : MonoBehaviour
 
     public void UpdateRes(PlayerRes type, int value)
     {
+        int currentValue;
         switch (type)
         {
-            case PlayerRes.FreeAction: playerRes.freeActions += value; break;
-            case PlayerRes.PoorMedal: playerRes.poorMedals += value; break;
-            case PlayerRes.OrdinaryMedal: playerRes.ordinaryMedals += value; break;
-            case PlayerRes.LuxMedal: playerRes.luxMedals += value; break;
+            case PlayerRes.FreeAction: playerRes.freeActions += value; return;
+            case PlayerRes.PoorMedal: playerRes.poorMedals += value; currentValue = playerRes.poorMedals; break;
+            case PlayerRes.OrdinaryMedal: playerRes.ordinaryMedals += value; currentValue = playerRes.ordinaryMedals; break;
+            case PlayerRes.LuxMedal: playerRes.luxMedals += value; currentValue = playerRes.luxMedals; break;
             default: throw new NotSupportedException();
         }
-    }
-
-    public void AddBonus(bool isShovel)
-    {
-        if (isShovel)
-        {
-            shovels++;
-            scoreManager.UpdateValues(2, shovels);
-            scoreManager.UpdateValues(4, shovels);
-        }
-        else
-        {
-            insight++;
-            scoreManager.UpdateValues(3, insight);
-            scoreManager.UpdateValues(5, insight);
-        }
-    }
-
-    public void RemoveBonus(bool isShovel)
-    {
-        
-    }
-
-    public void SetActiveTool(Tool value)
-    {
-        activeTool = value;
-    }
-
-    public void SetScoops(bool reset = false)
-    {
-        scoops = reset ? initialScoops : --scoops;
-        scoreManager.UpdateValues(1, scoops);
-    }
-
-    public void UpdateGlobalScore(int value)
-    {
-        oreCount += value;
-        if(oreCount < 0)
-        {
-            oreCount = 0;
-        }
-        scoreManager.UpdateValues(0, oreCount);
+        scoreManager.UpdateValues(type, currentValue);
     }
 
     public void Refresh()
     {
-        
+        scoreManager.UpdateValues(PlayerRes.PoorMedal, playerRes.poorMedals);
+        scoreManager.UpdateValues(PlayerRes.OrdinaryMedal, playerRes.ordinaryMedals);
+        scoreManager.UpdateValues(PlayerRes.LuxMedal, playerRes.luxMedals);
     }
 }

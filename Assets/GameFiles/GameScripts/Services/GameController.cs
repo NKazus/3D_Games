@@ -31,6 +31,7 @@ public class GameController : MonoBehaviour
 
     private void OnEnable()
     {
+        resourceManager.Refresh();
         eventManager.GameEvent += ChangeGameState;
         eventManager.FinishEvent += PlayFinish;
 

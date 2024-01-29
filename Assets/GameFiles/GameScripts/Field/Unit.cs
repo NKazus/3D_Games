@@ -24,7 +24,7 @@ public class Unit : MonoBehaviour
 
     public void Show(Vector3 targetPos, System.Action callback)
     {
-        unitTransform.position = targetPos;
+        unitTransform.position = new Vector3(targetPos.x, unitTransform.position.y, targetPos.z);
         unitTransform.DOScale(new Vector3(1, 1, 1), 0.5f)
             .SetId("unit")
             .OnComplete(() => callback());

@@ -102,8 +102,8 @@ public class TradeManager : MonoBehaviour
     private void Trade()
     {
         int oreCount = shovelTool ? 1 : 3;
-        dataHandler.UpdateGlobalScore(-oreCount);
-        dataHandler.AddBonus(shovelTool);
+        //dataHandler.UpdateGlobalScore(-oreCount);
+        //dataHandler.AddBonus(shovelTool);
 
         if (shovelTool)
         {
@@ -122,7 +122,7 @@ public class TradeManager : MonoBehaviour
         museumButton.onClick.RemoveAllListeners();
         marketButton.onClick.RemoveAllListeners();
 
-        int ore = dataHandler.OreCount;
+        int ore = 5;// dataHandler.OreCount;
 
         if(ore < 1)
         {
