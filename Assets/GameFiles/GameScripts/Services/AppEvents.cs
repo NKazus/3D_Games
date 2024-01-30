@@ -4,9 +4,7 @@ public class AppEvents
 {
     public event Action<bool> GameEvent;
     public event Action VibroEvent;
-    public event Action SoundEvent;
-    public event Action MuseumSoundEvent;
-    public event Action MarketSoundEvent;
+    public event Action<AppSound> SoundEvent;
     public event Action<bool> VibroSettingsEvent;
     public event Action<bool> SoundSettingsEvent;
 
@@ -23,19 +21,9 @@ public class AppEvents
         VibroEvent?.Invoke();
     }
 
-    public void PlayReward()
+    public void PlaySound(AppSound type)
     {
-        SoundEvent?.Invoke();
-    }
-
-    public void PlayMuseum()
-    {
-        MuseumSoundEvent?.Invoke();
-    }
-
-    public void PlayMarket()
-    {
-        MarketSoundEvent?.Invoke();
+        SoundEvent?.Invoke(type);
     }
 
     public void SetVibro(bool value)

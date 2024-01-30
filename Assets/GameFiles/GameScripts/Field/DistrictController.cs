@@ -82,6 +82,7 @@ public class DistrictController : MonoBehaviour
     private void HandleToolAction(UnitType targetType)
     {
         slotSystem.SwitchSlots(false);
+        events.PlaySound((targetType == UnitType.None) ? AppSound.Destroy : AppSound.Build);
         //do action to current active slot
 
         slotSystem.BindUnit(unitSystem.GenerateUnit(targetType));
@@ -112,7 +113,7 @@ public class DistrictController : MonoBehaviour
         if (slotSystem.CheckComplete() || !financeSystem.CheckMoney())
         {
             events.DoFinish(slotSystem.GetSlotsRate());
-            //Debug.Log("finish");
+            events.PlaySound(AppSound.Result);
             events.DoGame(false);
             return;
         }
@@ -130,9 +131,11 @@ public class DistrictController : MonoBehaviour
 
     private bool GenerateEvent()
     {
-        if(valueGenerator.GenerateInt(0, 10) > 3)
+        if(valueGenerator.GenerateInt(0, 10) > 4)
         {
             //Debug.Log("play event");
+            events.PlaySound(AppSound.Event);
+            events.PlayVibro();
             Invoke("PlayEvent", 1f);
             return true;
         }

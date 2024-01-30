@@ -45,7 +45,6 @@ public class GameController : MonoBehaviour
         eventManager.FinishEvent -= PlayFinish;
         eventManager.GameEvent -= ChangeGameState;
   
-        restart.gameObject.SetActive(false);
         restartBg.SetActive(false);
         restart.onClick.RemoveListener(Restart);
     }

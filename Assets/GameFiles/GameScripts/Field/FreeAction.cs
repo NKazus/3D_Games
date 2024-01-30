@@ -43,6 +43,7 @@ public class FreeAction : MonoBehaviour
             switchButton.interactable = false;
             return false;
         }
+        switchButton.interactable = true;
         return true;
     }
 

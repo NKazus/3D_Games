@@ -2,31 +2,33 @@ using UnityEngine;
 using UnityEngine.Audio;
 using Zenject;
 
+public enum AppSound
+{
+    Result,
+    FreeAction,
+    Event,
+    Build,
+    Destroy
+}
+
 public class AppAudioManager : MonoBehaviour
 {
     [SerializeField] private AudioMixerGroup mixerMasterGroup;
 
-    [SerializeField] private AudioSource ambientMusic;
-    [SerializeField] private AudioSource rewardSound;
-    [SerializeField] private AudioSource museumSound;
-    [SerializeField] private AudioSource marketSound;
+    [SerializeField] private AudioSource resultSound;
+    [SerializeField] private AudioSource freeActionSound;
+    [SerializeField] private AudioSource eventSound;
+    [SerializeField] private AudioSource buildSound;
+    [SerializeField] private AudioSource destroySound;
 
     private bool vibroEnabled = true;
 
     [Inject] private readonly AppEvents appEvents;
 
-    #region MONO
-    private void Awake()
-    {
-        ambientMusic.loop = true;
-    }
-
     private void OnEnable()
     {
         appEvents.VibroEvent += PlayVibro;
-        appEvents.SoundEvent += PlayReward;
-        appEvents.MuseumSoundEvent += PlayMuseum;
-        appEvents.MarketSoundEvent += PlayMarket;
+        appEvents.SoundEvent += PlaySound;
 
         appEvents.VibroSettingsEvent += TurnVibration;
         appEvents.SoundSettingsEvent += TurnSound;
@@ -51,15 +53,11 @@ public class AppAudioManager : MonoBehaviour
     private void OnDisable()
     {
         appEvents.VibroEvent -= PlayVibro;
-        appEvents.SoundEvent -= PlayReward;
-        appEvents.MuseumSoundEvent -= PlayMuseum;
-        appEvents.MarketSoundEvent -= PlayMarket;
+        appEvents.SoundEvent -= PlaySound;
 
         appEvents.VibroSettingsEvent -= TurnVibration;
         appEvents.SoundSettingsEvent -= TurnSound;
     }
-    #endregion
-
 
     private void PlayVibro()
     {
@@ -69,19 +67,18 @@ public class AppAudioManager : MonoBehaviour
         }
     }
 
-    private void PlayReward()
+    private void PlaySound(AppSound type)
     {
-        rewardSound.Play();
-    }
-
-    private void PlayMuseum()
-    {
-        museumSound.Play();
-    }
-
-    private void PlayMarket()
-    {
-        marketSound.Play();
+        AudioSource target = type switch
+        {
+            AppSound.Result => resultSound,
+            AppSound.FreeAction => freeActionSound,
+            AppSound.Event => eventSound,
+            AppSound.Build => buildSound,
+            AppSound.Destroy => destroySound,
+            _ => throw new System.NotSupportedException()
+        };
+        target.Play();
     }
 
     #region SETTINGS
