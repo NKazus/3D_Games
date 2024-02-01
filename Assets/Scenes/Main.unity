@@ -12658,8 +12658,8 @@ MonoBehaviour:
   toRules: {fileID: 1514429100}
   toPrivacy: {fileID: 2106902490}
   toSupport: {fileID: 2145816844}
-  privacyURL: 
-  supportURL: 
+  privacyURL: https://cozydistrictte.com/privacy-policy.html
+  supportURL: https://cozydistrictte.com/support.html
 --- !u!114 &1440539142
 MonoBehaviour:
   m_ObjectHideFlags: 0

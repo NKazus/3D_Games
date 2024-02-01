@@ -45,11 +45,7 @@ public class AppResourceManager : MonoBehaviour
     {
         try
         {
-            playerRes.freeActions = freeActions;
-            playerRes.poorMedals = poorMedals;
-            playerRes.ordinaryMedals = ordinaryMedals;
-            playerRes.luxMedals = luxMedals;
-            //playerRes = saveManager.LoadData<PlayerResources>($"/{saveFileName}.json", enableEncryption);
+            playerRes = saveManager.LoadData<PlayerResources>($"/{saveFileName}.json", enableEncryption);
         }
         catch(Exception e)
         {
