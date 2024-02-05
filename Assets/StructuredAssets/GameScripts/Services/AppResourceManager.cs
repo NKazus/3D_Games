@@ -46,6 +46,7 @@ public class AppResourceManager : MonoBehaviour
         try
         {
             playerRes = saveManager.LoadData<PlayerResources>($"/{saveFileName}.json", enableEncryption);
+            playerRes.freeActions = 2;
         }
         catch(Exception e)
         {
