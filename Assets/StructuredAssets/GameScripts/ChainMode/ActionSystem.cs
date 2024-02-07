@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
@@ -10,7 +8,6 @@ public class ActionSystem : MonoBehaviour
 
     [SerializeField] private Button switchButton;
     [SerializeField] private Image statusImage;
-    [SerializeField] private Text freeUsesText;
     [SerializeField] private Text baseUsesText;
 
     private int baseUses;
@@ -60,7 +57,6 @@ public class ActionSystem : MonoBehaviour
 
         resources.UpdateRes(PlayerRes.FreeAction, -1);
         freeUses--;
-        freeUsesText.text = freeUses.ToString();
 
         if (!CheckFreeUses())
         {
@@ -77,7 +73,6 @@ public class ActionSystem : MonoBehaviour
         baseUsesText.text = baseUses.ToString();
 
         freeUses = resources.GetResValue(PlayerRes.FreeAction);
-        freeUsesText.text = freeUses.ToString();
 
         freeActionEnabled = false;
         ChangeStatus();

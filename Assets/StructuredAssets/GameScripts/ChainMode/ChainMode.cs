@@ -50,7 +50,7 @@ public class ChainMode : MonoBehaviour
         }
     }
 
-    private void HandleLamp(Lamp target)
+    private void HandleLamp()
     {
         Debug.Log("Lamp click");
         lampSystem.SwitchLamps(false);
@@ -73,7 +73,7 @@ public class ChainMode : MonoBehaviour
         Debug.Log("random lamp pick");
         if (lampSystem.CheckComplete())
         {
-            //win
+            events.DoFinish(GameResult.Win);
             Debug.Log("win");
             events.DoGame(false);
             return;
@@ -81,7 +81,7 @@ public class ChainMode : MonoBehaviour
 
         if (!actionSystem.CheckActions())
         {
-            //lose
+            events.DoFinish(GameResult.Lose);
             Debug.Log("lose");
             events.DoGame(false);
             return;

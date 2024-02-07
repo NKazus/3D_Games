@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Zenject;
@@ -16,7 +14,7 @@ public class Lamp : MonoBehaviour
 
     private bool isLinked;
 
-    private System.Action<Lamp> LampCallback;
+    private System.Action LampCallback;
 
     [Inject] private readonly ValueGenerator valueGenerator;
 
@@ -31,7 +29,7 @@ public class Lamp : MonoBehaviour
 
         if(LampCallback != null)
         {
-            LampCallback(this);
+            LampCallback();
         }
     }
 
@@ -53,7 +51,21 @@ public class Lamp : MonoBehaviour
         return true;
     }
 
-    public void Initialize(System.Action<Lamp> callback)
+    private bool IsEmptyNeighbour()
+    {
+        bool isEmpty = false;
+        for (int i = 0; i < neighbours.Length; i++)
+        {
+            if (neighbours[i].GetCondition() == LampCondition.Off)
+            {
+                isEmpty = true;
+                break;
+            }
+        }
+        return isEmpty;
+    }
+
+    public void Initialize(System.Action callback)
     {
         visualComponent = transform.GetChild(0).GetComponent<LampVisual>();
         visualComponent.Init();
@@ -103,12 +115,18 @@ public class Lamp : MonoBehaviour
                         {
                             break;
                         }
+
+                        if (!IsEmptyNeighbour())
+                        {
+                            break;
+                        }
+
                         Lamp targetLamp;
                         do
                         {
                             targetLamp = neighbours[valueGenerator.GenerateInt(0, neighbours.Length)];
                         }
-                        while (targetLamp == inputNeighbour);
+                        while (targetLamp == inputNeighbour || !(targetLamp.GetCondition() == LampCondition.Off));
 
                         targetLamp.Ignite(this);
                         break;
@@ -133,13 +151,7 @@ public class Lamp : MonoBehaviour
                 inputNeighbour = input;
                 ChangeCondition(true);
             }            
-        }
-
-        //надо проверять (мб флаг в параметр для различия игрока и цепной работы, как зажигаем,
-        //чтобы при переходе с синего на зеленый не активировать уже зажженную лампу еще сильнее)
-
-        //детям тоже
-        //родителю не шлем       
+        }    
     }
 
     public void Extinguish(Lamp input)
@@ -184,11 +196,6 @@ public class Lamp : MonoBehaviour
                 ChangeCondition(false);
             }
         }
-        //отсылаем детям то же
-        //если инпут параметр не нул, то всем детям кроме старого родителя и этого свежего инпута
-
-        //если тухнем то и родителю, но не свежему инпуту
-        //мб сделать доп флаг, чтобы отслеживать команду родителям, чтобы оно не тушило остальных сиблингов при снижении уровня
     }
 
     public LampCondition GetCondition()

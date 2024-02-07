@@ -2,13 +2,19 @@ using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
 
+public enum GameResult
+{
+    Win,
+    Lose
+}
+
 [System.Serializable]
 public class FinishPreset
 {
-    public PlayerRes targetRes;
-    public RateType rate;
+    public GameResult result;
     public string finishText;
     public Sprite icon;
+    public int resAmount;
 }
 
 public class GameController : MonoBehaviour
@@ -68,13 +74,13 @@ public class GameController : MonoBehaviour
         }
     }
 
-    private void PlayFinish(RateType targetType)
+    private void PlayFinish(GameResult targetType)
     {
         FinishPreset currentPreset = null;
 
         for (int j = 0; j < presets.Length; j++)
         {
-            if (targetType == presets[j].rate)
+            if (targetType == presets[j].result)
             {
                 currentPreset = presets[j];
                 break;
@@ -90,6 +96,6 @@ public class GameController : MonoBehaviour
         restartIcon.SetNativeSize();
         restartText.text = currentPreset.finishText;
 
-        resourceManager.UpdateRes(currentPreset.targetRes, 1);
+        resourceManager.UpdateRes(PlayerRes.Lamp, currentPreset.resAmount);
     }
 }

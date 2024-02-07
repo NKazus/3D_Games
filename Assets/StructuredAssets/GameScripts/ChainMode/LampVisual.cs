@@ -4,11 +4,13 @@ public class LampVisual : MonoBehaviour
 {
     private MaterialInstance statusMat;
 
-    private Color offColor = Color.white;
-    private Color singleColor = new Color32(209, 44, 17, 255);
-    private Color pairColor = new Color32(202, 157, 41, 255);
-    private Color chainColor = new Color32(121, 179, 60, 255);
+    private Color offColor = new Color32(142, 142, 142, 255);
+    private Color singleColor = new Color32(195, 74, 120, 255);
+    private Color pairColor = new Color32(74, 147, 195, 255);
+    private Color chainColor = new Color32(84, 195, 73, 255);
 
+    private Color playerColor = new Color32(181, 148, 68, 255);
+    private Color botColor = new Color32(123, 74, 195, 255);
 
     public void Init()
     {
@@ -18,12 +20,24 @@ public class LampVisual : MonoBehaviour
 
     public void UpdateStatus(LampCondition cond)
     {
-        switch (cond)
+        Color targetColor = cond switch
         {
-            case LampCondition.Single: statusMat.SetColor(singleColor); break;
-            case LampCondition.Pair: statusMat.SetColor(pairColor); break;
-            case LampCondition.Chain: statusMat.SetColor(chainColor); break;
-            default: statusMat.SetColor(offColor); break;
-        }
+            LampCondition.Single => singleColor,
+            LampCondition.Pair => pairColor,
+            LampCondition.Chain => chainColor,
+            _ => offColor
+        };
+        statusMat.SetColor(targetColor);
+    }
+
+    public void UpdateStatus(FillCondition cond)
+    {
+        Color targetColor = cond switch
+        {
+            FillCondition.Player => playerColor,
+            FillCondition.Bot => botColor,
+            _ => offColor
+        };
+        statusMat.SetColor(targetColor);
     }
 }

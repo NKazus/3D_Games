@@ -1,3 +1,4 @@
+using DG.Tweening;
 using UnityEngine;
 
 public class MaterialInstance : MonoBehaviour
@@ -13,7 +14,7 @@ public class MaterialInstance : MonoBehaviour
 
     public void SetColor(Color target)
     {       
-        meshRenderer.material.color = target;
+        meshRenderer.material.DOColor(target, 0.5f);
     }
 
 }

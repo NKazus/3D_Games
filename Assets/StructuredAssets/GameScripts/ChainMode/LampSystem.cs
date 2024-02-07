@@ -18,7 +18,7 @@ public class LampSystem : MonoBehaviour
 
     [Inject] private readonly ValueGenerator valueGenerator;
 
-    public void Initialize(System.Action<Lamp> callback)
+    public void Initialize(System.Action callback)
     {
         for(int i = 0; i < lamps.Length; i++)
         {
@@ -61,7 +61,6 @@ public class LampSystem : MonoBehaviour
 
     public void ExtinguishRandom()
     {
-        Debug.Log("random lamp pick");
         List<Lamp> eventLamps = new List<Lamp>();
 
         for (int i = 0; i < lamps.Length - 1; i++)//exclude destination
