@@ -79,13 +79,15 @@ public class ActionSystem : MonoBehaviour
         CheckFreeUses();
     }
 
-    public void UseAction()
+    public bool UseAction()
     {
         if (!UseFreeAction())
         {
             baseUses--;
             baseUsesText.text = baseUses.ToString();
+            return false;
         }
+        return true;
     }
 
     public bool CheckActions()

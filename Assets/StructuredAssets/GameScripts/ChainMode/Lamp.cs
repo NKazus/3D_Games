@@ -163,14 +163,12 @@ public class Lamp : MonoBehaviour
 
         if(input == null)//single
         {
-            Debug.Log("Event target: "+gameObject.name);
             ChangeCondition(false);
             inputNeighbour.Extinguish(this);
             inputNeighbour = null;
         }
         else// pair/chain
         {
-            Debug.Log("Event parent: " + gameObject.name);
             if (currentCondition == LampCondition.Chain)
             {
                 ChangeCondition(false);

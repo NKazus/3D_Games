@@ -52,9 +52,11 @@ public class ChainMode : MonoBehaviour
 
     private void HandleLamp()
     {
-        Debug.Log("Lamp click");
         lampSystem.SwitchLamps(false);
-        actionSystem.UseAction();
+        if (actionSystem.UseAction())
+        {
+            events.PlaySound(AppSound.Action);
+        }
 
         //Invoke("FinishTurn", 0.5f);
         Invoke("PlayEvent", 0.5f);
@@ -62,7 +64,6 @@ public class ChainMode : MonoBehaviour
 
     private void PlayEvent()
     {
-        //Debug.Log("play event");
         lampSystem.ExtinguishRandom();
 
         Invoke("FinishTurn", 0.5f);
@@ -70,11 +71,10 @@ public class ChainMode : MonoBehaviour
 
     private void FinishTurn()
     {
-        Debug.Log("random lamp pick");
         if (lampSystem.CheckComplete())
         {
             events.DoFinish(GameResult.Win);
-            Debug.Log("win");
+            events.PlaySound(AppSound.Win);
             events.DoGame(false);
             return;
         }
@@ -82,11 +82,11 @@ public class ChainMode : MonoBehaviour
         if (!actionSystem.CheckActions())
         {
             events.DoFinish(GameResult.Lose);
-            Debug.Log("lose");
+            events.PlaySound(AppSound.Lose);
+            events.PlayVibro();
             events.DoGame(false);
             return;
-        }
-        
+        }        
 
         lampSystem.SwitchLamps(true);
     }

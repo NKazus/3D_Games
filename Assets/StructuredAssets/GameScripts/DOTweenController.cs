@@ -3,9 +3,15 @@ using UnityEngine;
 
 public class DOTweenController : MonoBehaviour
 {
+    [SerializeField] private string tweenId;
+
     private void OnDisable()
     {
-        DOTween.Kill("submenu");
-        DOTween.Kill("unit");
+        DOTween.Kill(tweenId);
+    }
+
+    public string GetId()
+    {
+        return tweenId;
     }
 }

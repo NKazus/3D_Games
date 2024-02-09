@@ -1,16 +1,29 @@
 using UnityEngine;
+using Zenject;
 
 public class LampVisual : MonoBehaviour
 {
     private MaterialInstance statusMat;
 
-    private Color offColor = new Color32(142, 142, 142, 255);
-    private Color singleColor = new Color32(195, 74, 120, 255);
-    private Color pairColor = new Color32(74, 147, 195, 255);
-    private Color chainColor = new Color32(84, 195, 73, 255);
+    private Color offColor;
+    private Color singleColor;
+    private Color pairColor;
+    private Color chainColor;
 
-    private Color playerColor = new Color32(181, 148, 68, 255);
-    private Color botColor = new Color32(123, 74, 195, 255);
+    private Color playerColor;
+    private Color botColor;
+
+    [Inject]
+    public void SetupLampColors(LampColors lampColors)
+    {
+        offColor = lampColors.OffColor;
+        singleColor = lampColors.SingleColor;
+        pairColor = lampColors.PairColor;
+        chainColor = lampColors.ChainColor;
+
+        playerColor = lampColors.PlayerColor;
+        botColor = lampColors.BotColor;
+    }
 
     public void Init()
     {

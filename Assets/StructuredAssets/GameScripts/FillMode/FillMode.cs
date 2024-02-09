@@ -5,27 +5,27 @@ using Zenject;
 public class FillMode : MonoBehaviour
 {
     [SerializeField] private FillLampSystem lampSystem;
-    [SerializeField] private GameObject noLampPanel;
-    [SerializeField] private GameObject messagePanel;
-    [SerializeField] private GameObject hintPanel;
-    [SerializeField] private Text messageText;
+    [SerializeField] private MessageSystem messages;
     [SerializeField] private Button hideMessage;
 
     [Inject] private readonly AppResourceManager resources;
+    [Inject] private readonly AppEvents events;
 
     private void Awake()
     {
         lampSystem.Initialize(HandleLamp);
+        messages.Initialize();
     }
 
     private void OnEnable()
     {
+        resources.Refresh();
         lampSystem.ResetLamps();
 
+        messages.ResetMessages();
         CheckAvailability();
         
-        hideMessage.onClick.AddListener(HideMessage);
-        messagePanel.SetActive(false);
+        hideMessage.onClick.AddListener(HideMessage);        
     }
 
     private void OnDisable()
@@ -78,19 +78,17 @@ public class FillMode : MonoBehaviour
         {
             resources.UpdateRes(PlayerRes.Lamp, -1);
             ChangeFieldState(false);
-            hintPanel.SetActive(false);
             if (lampSystem.CalculateVictory())
             {
                 resources.UpdateRes(PlayerRes.FreeAction, 1);
-                //sound
-                messageText.text = "Win";
+                events.PlaySound(AppSound.Action);
+                messages.ShowResult(true);
             }
             else
             {
-                //vibro
-                messageText.text = "Lose";
+                events.PlayVibro();
+                messages.ShowResult(false);
             }
-            messagePanel.SetActive(true);
             return;
         }
 
@@ -99,7 +97,6 @@ public class FillMode : MonoBehaviour
 
     private void HideMessage()
     {
-        messagePanel.SetActive(false);
         CheckAvailability();
     }
 
@@ -107,13 +104,11 @@ public class FillMode : MonoBehaviour
     {
         if (!(resources.GetResValue(PlayerRes.Lamp) > 0))
         {
-            noLampPanel.SetActive(true);
-            hintPanel.SetActive(false);
+            messages.ShowLampMessage();
             return;
         }
 
-        noLampPanel.SetActive(false);
-        hintPanel.SetActive(true);
+        messages.ShowHint();
         ChangeFieldState(true);
     }
 }

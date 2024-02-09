@@ -4,22 +4,18 @@ using Zenject;
 
 public enum AppSound
 {
-    Result,
-    FreeAction,
-    Event,
-    Build,
-    Destroy
+    Win,
+    Lose,
+    Action
 }
 
 public class AppAudioManager : MonoBehaviour
 {
     [SerializeField] private AudioMixerGroup mixerMasterGroup;
 
-    [SerializeField] private AudioSource resultSound;
-    [SerializeField] private AudioSource freeActionSound;
-    [SerializeField] private AudioSource eventSound;
-    [SerializeField] private AudioSource buildSound;
-    [SerializeField] private AudioSource destroySound;
+    [SerializeField] private AudioSource winSound;
+    [SerializeField] private AudioSource actionSound;
+    [SerializeField] private AudioSource loseSound;
 
     private bool vibroEnabled = true;
 
@@ -71,17 +67,14 @@ public class AppAudioManager : MonoBehaviour
     {
         AudioSource target = type switch
         {
-            AppSound.Result => resultSound,
-            AppSound.FreeAction => freeActionSound,
-            AppSound.Event => eventSound,
-            AppSound.Build => buildSound,
-            AppSound.Destroy => destroySound,
+            AppSound.Win => winSound,
+            AppSound.Action => actionSound,
+            AppSound.Lose => loseSound,
             _ => throw new System.NotSupportedException()
         };
         target.Play();
     }
 
-    #region SETTINGS
     private void TurnSound(bool isSoundOn)
     {
         if (isSoundOn)
@@ -98,5 +91,4 @@ public class AppAudioManager : MonoBehaviour
     {
         vibroEnabled = isVibroOn;
     }
-    #endregion
 }

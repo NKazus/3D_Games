@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d42e65a3017454550a0f71c478bbea10, type: 3}
+  m_Name: LampColorsPreset
+  m_EditorClassIdentifier: 
+  offColor: {r: 0.48235294, g: 0.4117647, b: 0.44313726, a: 1}
+  singleColor: {r: 0.6431373, g: 0.21568628, b: 0.23529412, a: 1}
+  pairColor: {r: 0.21568628, g: 0.4627451, b: 0.6431373, a: 1}
+  chainColor: {r: 0.25882354, g: 0.59607846, b: 0.16862746, a: 1}
+  playerColor: {r: 0.59607846, g: 0.50980395, b: 0.16470589, a: 1}
+  botColor: {r: 0.5019608, g: 0.2, b: 0.6627451, a: 1}
