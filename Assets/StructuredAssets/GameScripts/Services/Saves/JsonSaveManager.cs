@@ -7,8 +7,8 @@ using UnityEngine;
 
 public class JsonSaveManager : ISaveManager
 {
-    private const string KEY = "+947dtvcOgRu88+Ayq4DyVLH66IxrsYTVIVeK4xesH4=";
-    private const string IV = "gugQsqb8r8/82AfxbLfGZA==";
+    private const string KEY = "BKBJlgcR5b0Br9HsLEQWgzHgdQ+ychA/OgQWVORip28=";
+    private const string IV = "bDqD/hVNRoTOcomRlUOYuA==";
 
     private void WriteEncryptedData<T>(T data, FileStream stream)
     {
@@ -26,6 +26,8 @@ public class JsonSaveManager : ISaveManager
         byte[] fileBytes = File.ReadAllBytes(path);
 
         using Aes aesProvider = Aes.Create();
+        //Debug.Log("KEY: "+ Convert.ToBase64String(aesProvider.Key));
+        //Debug.Log("IV: " + Convert.ToBase64String(aesProvider.IV));
         aesProvider.Key = Convert.FromBase64String(KEY);
         aesProvider.IV = Convert.FromBase64String(IV);
 

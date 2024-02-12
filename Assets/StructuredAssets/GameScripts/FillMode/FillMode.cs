@@ -81,7 +81,7 @@ public class FillMode : MonoBehaviour
             if (lampSystem.CalculateVictory())
             {
                 resources.UpdateRes(PlayerRes.FreeAction, 1);
-                events.PlaySound(AppSound.Action);
+                events.PlaySound(AppSound.Win);
                 messages.ShowResult(true);
             }
             else

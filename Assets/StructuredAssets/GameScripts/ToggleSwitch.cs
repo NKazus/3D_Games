@@ -5,23 +5,24 @@ using UnityEngine.UI;
 public class ToggleSwitch : MonoBehaviour
 {
     [SerializeField] private RectTransform handleRectTransform;
-    [SerializeField] private Sprite onIcon;
-    [SerializeField] private Sprite offIcon;
+    [SerializeField] private Image toggleBg;
+    [SerializeField] private Text onText;
+    [SerializeField] private Text offText;
 
     private Toggle toggle;
     private Vector2 handlePosition;
-    private Image handleImage;
 
     private void Awake()
     {
         toggle = GetComponent<Toggle>();
         handlePosition = handleRectTransform.anchoredPosition;
-        handleImage = handleRectTransform.GetComponent<Image>();
 
         if (toggle.isOn)
         {
             handleRectTransform.anchoredPosition = handlePosition * (-1);
-            handleImage.sprite = onIcon;
+            toggleBg.color = Color.yellow;
+            onText.enabled = true;
+            offText.enabled = false;
         }
     }
 
@@ -37,12 +38,15 @@ public class ToggleSwitch : MonoBehaviour
 
     private void Switch(bool isOn)
     {
+        onText.enabled = offText.enabled = false;
         handleRectTransform.DOAnchorPos(isOn ? handlePosition * (-1) : handlePosition, .4f)
             .SetId(this)
             .SetEase(Ease.InOutBack)
             .OnComplete(() =>
             {
-                handleImage.sprite = isOn ? onIcon : offIcon;
+                toggleBg.color = isOn ? Color.yellow : Color.red;
+                onText.enabled = isOn;
+                offText.enabled = !isOn;
             });
     }
 }

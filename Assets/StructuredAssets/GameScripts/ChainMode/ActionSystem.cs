@@ -7,12 +7,20 @@ public class ActionSystem : MonoBehaviour
     [SerializeField] private int baseActionCount;
 
     [SerializeField] private Button switchButton;
-    [SerializeField] private Image statusImage;
+    [SerializeField] private Image actionImage;
+    [SerializeField] private Sprite freeEnabled;
+    [SerializeField] private Sprite freeDisabled;
+    [SerializeField] private Sprite freeActive;
+
     [SerializeField] private Text baseUsesText;
+    [SerializeField] private Sprite actionEnabled;
+    [SerializeField] private Sprite actionDisabled;
 
     private int baseUses;
     private int freeUses;
     private bool freeActionEnabled;
+
+    private Image freeActionImage;
 
     [Inject] private readonly AppResourceManager resources;
 
@@ -34,7 +42,7 @@ public class ActionSystem : MonoBehaviour
 
     private void ChangeStatus()
     {
-        statusImage.color = freeActionEnabled ? Color.green : Color.magenta;
+        freeActionImage.sprite = freeActionEnabled ? freeActive : freeEnabled;
     }
 
     private bool CheckFreeUses()
@@ -61,22 +69,31 @@ public class ActionSystem : MonoBehaviour
         if (!CheckFreeUses())
         {
             freeActionEnabled = false;
-            ChangeStatus();
+            freeActionImage.sprite = freeDisabled;
         }
 
         return true;
+    }
+
+    public void Initialize()
+    {
+        freeActionImage = switchButton.image;
     }
 
     public void ResetActions()
     {
         baseUses = baseActionCount;
         baseUsesText.text = baseUses.ToString();
+        actionImage.sprite = actionEnabled;
 
         freeUses = resources.GetResValue(PlayerRes.FreeAction);
 
         freeActionEnabled = false;
         ChangeStatus();
-        CheckFreeUses();
+        if (!CheckFreeUses())
+        {
+            freeActionImage.sprite = freeDisabled;
+        }
     }
 
     public bool UseAction()
@@ -85,6 +102,11 @@ public class ActionSystem : MonoBehaviour
         {
             baseUses--;
             baseUsesText.text = baseUses.ToString();
+            if (!CheckActions())
+            {
+                actionImage.sprite = actionDisabled;
+            }
+
             return false;
         }
         return true;

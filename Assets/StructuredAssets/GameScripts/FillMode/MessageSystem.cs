@@ -10,6 +10,9 @@ public class MessageSystem : MonoBehaviour
     [SerializeField] private Text messageText;
     [SerializeField] private string winText;
     [SerializeField] private string loseText;
+    [SerializeField] private Image resultImage;
+    [SerializeField] private Sprite winSprite;
+    [SerializeField] private Sprite loseSprite;
 
     private Transform noLampTransform;
     private Transform hintTransform;
@@ -52,6 +55,7 @@ public class MessageSystem : MonoBehaviour
 
     public void ShowResult(bool win)
     {
+        resultImage.sprite = win ? winSprite : loseSprite;
         messageText.text = win ? winText : loseText;
         hintTransform.DOScale(Vector3.zero, 0.5f)
             .SetId("messages")

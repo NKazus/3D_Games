@@ -11,6 +11,7 @@ public class ChainMode : MonoBehaviour
     private void Awake()
     {
         lampSystem.Initialize(HandleLamp);
+        actionSystem.Initialize();
     }
 
     private void OnEnable()
@@ -58,7 +59,6 @@ public class ChainMode : MonoBehaviour
             events.PlaySound(AppSound.Action);
         }
 
-        //Invoke("FinishTurn", 0.5f);
         Invoke("PlayEvent", 0.5f);
     }
 

@@ -16,8 +16,8 @@ public class AppUISwitcher : MonoBehaviour
 
     [SerializeField] private Button[] toMenu;
     [SerializeField] private Button toSettings;
-    [SerializeField] private Button toExchange;
-    [SerializeField] private Button toGameplay;
+    [SerializeField] private Button toFillMode;
+    [SerializeField] private Button toChainMode;
     [SerializeField] private Button toRules;
     [SerializeField] private Button toPrivacy;
     [SerializeField] private Button toSupport;
@@ -39,8 +39,8 @@ public class AppUISwitcher : MonoBehaviour
             toMenu[i].onClick.AddListener(() => { TriggerChange(AppUIState.Menu); });
         }
         toSettings.onClick.AddListener(() => { TriggerChange(AppUIState.Settings); });
-        toExchange.onClick.AddListener(() => { TriggerChange(AppUIState.Exchange); });
-        toGameplay.onClick.AddListener(() => { TriggerChange(AppUIState.Gameplay); });
+        toFillMode.onClick.AddListener(() => { TriggerChange(AppUIState.Exchange); });
+        toChainMode.onClick.AddListener(() => { TriggerChange(AppUIState.Gameplay); });
         toRules.onClick.AddListener(() => { TriggerChange(AppUIState.Rules); });
 
         toPrivacy.onClick.AddListener(() => OpenPage(privacyURL));
@@ -59,8 +59,8 @@ public class AppUISwitcher : MonoBehaviour
             toMenu[i].onClick.RemoveAllListeners();
         }
         toSettings.onClick.RemoveAllListeners();
-        toExchange.onClick.RemoveAllListeners();
-        toGameplay.onClick.RemoveAllListeners();
+        toFillMode.onClick.RemoveAllListeners();
+        toChainMode.onClick.RemoveAllListeners();
         toRules.onClick.RemoveAllListeners();
 
         toPrivacy.onClick.RemoveAllListeners();
