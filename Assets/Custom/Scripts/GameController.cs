@@ -12,13 +12,14 @@ public class GameController : MonoBehaviour
 {
     [SerializeField] private FieldCellSystem cellSystem;
     [SerializeField] private UnitSystem unitSystem;
+    [SerializeField] private ActionSubmenu submenu;
+    [SerializeField] private BonusAction bonus;
 
     [SerializeField] private Button startButton;
     [SerializeField] private Button turnButton;
 
-    private int switchCharges = 3;
-
     [Inject] private readonly GameEvents events;
+    [Inject] private readonly GameDataManager dataManager;
 
     private void OnEnable()
     {
@@ -39,6 +40,10 @@ public class GameController : MonoBehaviour
         unitSystem.SetCallback(HandleUnit);
         unitSystem.SetSwitchCallback(HandleSwitch);
         unitSystem.SetUnitsCallback(HandleFinish);
+        unitSystem.SetDestroyCallback(HandleDestruction);
+
+        submenu.Init(HandleAction);
+        bonus.Init(HandleBonus);
     }
 
     private void OnDisable()
@@ -53,6 +58,8 @@ public class GameController : MonoBehaviour
     {
         if (activate)
         {
+            dataManager.RefreshData();
+
             cellSystem.ActivateCells();//add triggers
             cellSystem.ResetCells();//set all inactive
 
@@ -60,20 +67,24 @@ public class GameController : MonoBehaviour
             unitSystem.ResetUnits();
             unitSystem.PlaceUnits();
 
-            if(switchCharges > 0)
+            unitSystem.SwitchUnits(UnitCategory.Bot, false);
+            if (dataManager.GetData(DataType.Switches) > 0)
             {
                 unitSystem.SetPhase(GamePhase.Switch);
-                unitSystem.SwitchUnits(true);
+                unitSystem.SwitchUnits(UnitCategory.Player, true);
             }
             else
             {
-                unitSystem.SwitchUnits(false);
+                unitSystem.SwitchUnits(UnitCategory.Player, false);
             }
         
             startButton.gameObject.SetActive(true);
+            bonus.ShowBonusMenu(false);
+            bonus.ResetBonusMenu(dataManager.GetData(DataType.Adds) > 0);
         }
         else
         {
+            bonus.ShowBonusMenu(false);
             turnButton.gameObject.SetActive(false);
             cellSystem.DeactivateCells();//remove triggers
             unitSystem.DeactivateUnits();
@@ -84,43 +95,78 @@ public class GameController : MonoBehaviour
     {
         startButton.gameObject.SetActive(false);
         turnButton.gameObject.SetActive(true);
+        bonus.ShowBonusMenu(true);
 
         unitSystem.SetPhase(GamePhase.Play);
+        unitSystem.ResetUnits();
+        unitSystem.RefreshUnits(UnitCategory.Player);
 
-        unitSystem.SwitchUnits(true);        
+        unitSystem.SwitchUnits(UnitCategory.Player, true);
+        unitSystem.SwitchUnits(UnitCategory.Bot, true);
     }
 
     private void EndTurn()
     {
-        //unitSystem.SwitchUnits(false);
+        //unitSystem.SwitchUnits(UnitCategory.Player, false);
+        cellSystem.ResetTarget();
+        unitSystem.ResetTarget();
+        submenu.ResetMenu();
+        bonus.Deactivate();
         //bot
+        unitSystem.RefreshUnits(UnitCategory.Bot);
         HandleBot();
     }
 
     private void HandleBot()
     {
-        unitSystem.RefreshUnits();
-        unitSystem.SwitchUnits(true);
+
+        //bot logic
+
+        unitSystem.RefreshUnits(UnitCategory.Player);
+        unitSystem.SwitchUnits(UnitCategory.Player, true);
+        unitSystem.SwitchUnits(UnitCategory.Bot, true);
+
+        bonus.ResetBonusMenu(dataManager.GetData(DataType.Adds) > 0);
     }
 
     private void HandleCell(FieldCell targetCell)
     {
         unitSystem.MoveUnit(targetCell);
+        submenu.ResetMenu();
+        bonus.Deactivate();
     }
 
     private void HandleSwitch()
     {
-        switchCharges--;
-        if(switchCharges <= 0)
+        dataManager.UpdateData(DataType.Switches, -1);
+        if(dataManager.GetData(DataType.Switches) <= 0)
         {
-            unitSystem.SwitchUnits(false);
+            unitSystem.SwitchUnits(UnitCategory.Player, false);
         }
     }
 
     private void HandleUnit(Unit targetUnit)
     {
-        //if defence / buff - show submenu
+        bonus.SwitchButton();
+        submenu.SwitchMenu(targetUnit);
         cellSystem.SwitchCells(targetUnit.GetUnitCell());
+    }
+
+    private void HandleAction()
+    {
+        unitSystem.PerformAction();
+    }
+
+    private void HandleBonus()
+    {
+        unitSystem.AddActions();
+        dataManager.UpdateData(DataType.Adds, -1);
+        bonus.ResetBonusMenu(false);
+    }
+
+    private void HandleDestruction(FieldCell cell)
+    {
+        cellSystem.FreeCell(cell);
     }
 
     private void HandleFinish(bool win)

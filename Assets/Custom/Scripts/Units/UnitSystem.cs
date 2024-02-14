@@ -6,7 +6,7 @@ using Zenject;
 public class UnitSystem : MonoBehaviour
 {
     [SerializeField] private Unit[] units;
-
+    [SerializeField] private Vector3 offScreenPos;
     [SerializeField] private int unitActionCount;
 
     private List<Unit> playerUnits = new List<Unit>();
@@ -23,6 +23,7 @@ public class UnitSystem : MonoBehaviour
     private System.Action<Unit> UnitCallback;
     private System.Action SwitchCallback;
     private System.Action<bool> NoUnitCallback;
+    private System.Action<FieldCell> DestroyCallback;
 
     [Inject] private readonly RandomValueGenerator generator;
 
@@ -35,7 +36,6 @@ public class UnitSystem : MonoBehaviour
                 currentActive = target;
                 if (currentPhase != GamePhase.Switch)
                 {
-                    //cells switch
                     if (UnitCallback != null)
                     {
                         UnitCallback(target);
@@ -65,9 +65,32 @@ public class UnitSystem : MonoBehaviour
             if (target == currentActive)
             {
                 currentActive = null;
+                if (UnitCallback != null)
+                {
+                    UnitCallback(target);
+                }
                 return;
             }
+
+            if(currentActive.GetUnitCategory() != target.GetUnitCategory() && CheckActionZone(currentActive, target))
+            {
+                currentActive.Attack(target);
+                if (UnitCallback != null)
+                {
+                    UnitCallback(currentActive);
+                }
+                currentActive = null;
+            }
         }
+    }
+
+    private bool CheckActionZone(Unit actor1, Unit actor2)
+    {
+        CellIndices cell1, cell2;
+        cell1 = actor1.GetUnitCell().GetIndices();
+        cell2 = actor2.GetUnitCell().GetIndices();
+
+        return (Mathf.Abs(cell1.cellX - cell2.cellX) <= 1) && (Mathf.Abs(cell1.cellZ - cell2.cellZ) <= 1);
     }
 
     private void SwitchUnitPositions(Unit actor1, Unit actor2)
@@ -89,6 +112,11 @@ public class UnitSystem : MonoBehaviour
         activeUnits.Remove(target);
         target.SwitchUnit(false);
 
+        if(DestroyCallback != null)
+        {
+            DestroyCallback(target.GetUnitCell());
+        }
+
         for(int i = 1; i < activeUnits.Count; i++)
         {
             if(activeUnits[i].GetUnitCategory() != activeUnits[i - 1].GetUnitCategory())//if different categories skip
@@ -98,7 +126,6 @@ public class UnitSystem : MonoBehaviour
         }
 
         NoUnitCallback(activeUnits[0].GetUnitCategory() == UnitCategory.Player);//check if only player remained
-
     }
 
     public void InitUnits(FieldCell[] playerPos, FieldCell[] botPos)
@@ -106,7 +133,7 @@ public class UnitSystem : MonoBehaviour
         for (int i = 0; i < units.Length; i++)
         {
             units[i].Init();
-            units[i].SetDestroyCallback(DestroyUnit);
+            units[i].SetDestroyCallback(DestroyUnit, offScreenPos);
             units[i].SetPickCallback(PickUnit);
 
             if (units[i].GetUnitCategory() == UnitCategory.Player)
@@ -130,7 +157,7 @@ public class UnitSystem : MonoBehaviour
 
     public void ResetUnits()
     {
-        currentActive = null;
+        ResetTarget();
         activeUnits.Clear();
 
         for (int i = 0; i < units.Length; i++)
@@ -140,11 +167,19 @@ public class UnitSystem : MonoBehaviour
         }
     }
 
-    public void RefreshUnits()
+    public void ResetTarget()
+    {
+        currentActive = null;
+    }
+
+    public void RefreshUnits(UnitCategory category)
     {
         for (int i = 0; i < activeUnits.Count; i++)
         {
-            activeUnits[i].ResetActions(unitActionCount);
+            if(activeUnits[i].GetUnitCategory() == category)
+            {
+                activeUnits[i].RefreshUnit(unitActionCount);
+            }
         }
     }
 
@@ -164,6 +199,34 @@ public class UnitSystem : MonoBehaviour
     {
         currentActive.Move(targetCell);
         currentActive = null;
+    }
+
+    public void PerformAction()
+    {
+        List<Unit> targetUnits = new List<Unit>();
+        for(int i = 0; i < activeUnits.Count; i++)
+        {
+            if(currentActive == activeUnits[i])
+            {
+                continue;
+            }
+            if (CheckActionZone(currentActive, activeUnits[i]))
+            {
+                targetUnits.Add(activeUnits[i]);
+            }
+        }
+
+        currentActive.Act(targetUnits);
+        if (UnitCallback != null)
+        {
+            UnitCallback(currentActive);
+        }
+        currentActive = null;
+    }
+
+    public void AddActions()
+    {
+        currentActive.UpdateActions();
     }
 
     public void SetPhase(GamePhase type)
@@ -186,6 +249,11 @@ public class UnitSystem : MonoBehaviour
         NoUnitCallback = callback;
     }
 
+    public void SetDestroyCallback(System.Action<FieldCell> callback)
+    {
+        DestroyCallback = callback;
+    }
+
     public void ActivateUnits()
     {
         for (int i = 0; i < units.Length; i++)
@@ -202,11 +270,23 @@ public class UnitSystem : MonoBehaviour
         }
     }
 
-    public void SwitchUnits(bool active)
+    public void SwitchUnits(UnitCategory category, bool active)
     {
-        for (int i = 0; i < units.Length; i++)
+        switch (category)
         {
-            units[i].SwitchUnit(active);
+            case UnitCategory.Player:
+                for (int i = 0; i < playerUnits.Count; i++)
+                {
+                    playerUnits[i].SwitchUnit(active);
+                }
+                break;
+            case UnitCategory.Bot:
+                for (int i = 0; i < botUnits.Count; i++)
+                {
+                    botUnits[i].SwitchUnit(active);
+                }
+                break;
+            default: throw new System.NotSupportedException();
         }
     }
 }

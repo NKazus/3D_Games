@@ -106,6 +106,11 @@ public class FieldCellSystem : MonoBehaviour
         }
     }
 
+    public void FreeCell(FieldCell target)
+    {
+        linkedCells.Remove(target);
+    }
+
     public void SwitchCells(FieldCell target)
     {
         if(targetCell == null)
@@ -125,6 +130,15 @@ public class FieldCellSystem : MonoBehaviour
         SwitchNeighbours(false);
         targetCell = target;
         SwitchNeighbours(true);
+    }
+
+    public void ResetTarget()
+    {
+        if(targetCell != null)
+        {
+            SwitchNeighbours(false);
+            targetCell = null;
+        }
     }
 
     public void SetCallback(System.Action<FieldCell> callback)

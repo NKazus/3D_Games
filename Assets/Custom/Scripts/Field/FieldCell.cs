@@ -36,7 +36,6 @@ public class FieldCell : MonoBehaviour
 
     private void ClickCell(PointerEventData data)
     {
-        Debug.Log("Cell pick");
         if(CellCallback != null)
         {
             CellCallback(this);

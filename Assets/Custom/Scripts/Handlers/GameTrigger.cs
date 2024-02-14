@@ -29,6 +29,7 @@ public class GameTrigger : MonoBehaviour
     {
         events.GameEvent += ChangeGameState;
         events.WinEvent += ChangeTextToWin;
+        restart.onClick.AddListener(Restart);
 
         Restart();
     }
@@ -40,7 +41,6 @@ public class GameTrigger : MonoBehaviour
         events.WinEvent -= ChangeTextToWin;
         events.GameEvent -= ChangeGameState;
 
-        restart.gameObject.SetActive(false);
         restartBg.SetActive(false);
         restart.onClick.RemoveListener(Restart);
     }
@@ -55,19 +55,15 @@ public class GameTrigger : MonoBehaviour
     {
         if (!isActive)
         {
-            restart.gameObject.SetActive(true);
             restartBg.SetActive(true);
-            restart.onClick.AddListener(Restart);
         }
         else
         {
-            restart.gameObject.SetActive(false);
             restartIcon.sprite = lose;
             restartIcon.SetNativeSize();
             restartText.text = loseText;
             restartExtra.enabled = false;
             restartBg.SetActive(false);
-            restart.onClick.RemoveListener(Restart);
         }
     }
 

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -16,7 +17,7 @@ public enum UnitType
 
 public abstract class Unit : MonoBehaviour
 {
-    [SerializeField] private UnitCategory category;
+    [SerializeField] protected UnitCategory category;
     [SerializeField] private UnitType type;
     [SerializeField] private int damageValue;
     [SerializeField] private int hpValue;
@@ -25,15 +26,17 @@ public abstract class Unit : MonoBehaviour
     private Transform unitTransform;
     private EventTrigger trigger;
 
-    private int hp;
-    private int damage;
-    private int actions;
+    protected int hp;
+    protected int damage;
+    protected int actions;
+
+    private Vector3 offScreenPos;
 
     private FieldCell linkedCell;
     private System.Action<Unit> PickCallback;
     private System.Action<Unit> DestroyCallback;
 
-    private void CheckActions()
+    protected void CheckActions()
     {
         if(actions <= 0)
         {
@@ -55,10 +58,28 @@ public abstract class Unit : MonoBehaviour
         damage = damageValue;
     }
 
-    public void ResetActions(int count)
+    public void RefreshUnit(int count)
     {
         actions = count;
+        damage = Mathf.Clamp(damage, 0, damageValue);
+        hp = Mathf.Clamp(hp, 0, hpValue);
         visuals.SetMaterial(true);
+    }
+
+    public void UpdateActions()
+    {
+        actions++;
+        Debug.Log("Actions: "+ actions);
+    }
+
+    public void UpdateHp()
+    {
+        hp++;
+    }
+
+    public void UpdateDamage()
+    {
+        damage++;
     }
 
     public void Activate()
@@ -82,7 +103,6 @@ public abstract class Unit : MonoBehaviour
 
     public void PickUnit(PointerEventData data)
     {
-        Debug.Log("Unit pick");
         if(PickCallback != null)
         {
             PickCallback(this);
@@ -95,7 +115,7 @@ public abstract class Unit : MonoBehaviour
 
         if(hp <= 0)
         {
-
+            unitTransform.position = offScreenPos;
             if (DestroyCallback != null)
             {
                 DestroyCallback(this);
@@ -123,9 +143,10 @@ public abstract class Unit : MonoBehaviour
         PickCallback = callback;
     }
 
-    public void SetDestroyCallback(System.Action<Unit> callback)
+    public void SetDestroyCallback(System.Action<Unit> callback, Vector3 hiddenPos)
     {
         DestroyCallback = callback;
+        offScreenPos = new Vector3(hiddenPos.x, unitTransform.position.y, hiddenPos.z);
     }
 
     public void PlaceUnit(FieldCell targetCell)
@@ -151,5 +172,5 @@ public abstract class Unit : MonoBehaviour
         CheckActions();
     }
 
-    public abstract void Act();
+    public abstract void Act(List<Unit> targets);
 }
