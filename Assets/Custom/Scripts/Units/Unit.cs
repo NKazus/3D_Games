@@ -31,6 +31,7 @@ public abstract class Unit : MonoBehaviour
     protected int actions;
 
     private Vector3 offScreenPos;
+    private bool isEnabled;
 
     private FieldCell linkedCell;
     private System.Action<Unit> PickCallback;
@@ -54,6 +55,8 @@ public abstract class Unit : MonoBehaviour
     public void ResetUnit()
     {
         //scale
+        isEnabled = true;
+
         hp = hpValue;
         damage = damageValue;
     }
@@ -69,7 +72,6 @@ public abstract class Unit : MonoBehaviour
     public void UpdateActions()
     {
         actions++;
-        Debug.Log("Actions: "+ actions);
     }
 
     public void UpdateHp()
@@ -115,12 +117,18 @@ public abstract class Unit : MonoBehaviour
 
         if(hp <= 0)
         {
+            isEnabled = false;
             unitTransform.position = offScreenPos;
             if (DestroyCallback != null)
             {
                 DestroyCallback(this);
             }
         }
+    }
+
+    public bool IsUnitEnabled()
+    {
+        return isEnabled;
     }
 
     public UnitCategory GetUnitCategory()

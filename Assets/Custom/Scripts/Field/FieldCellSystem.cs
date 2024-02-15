@@ -31,23 +31,11 @@ public class FieldCellSystem : MonoBehaviour
 
     private void SwitchNeighbours(bool active)
     {
-        int minX, minZ, maxX, maxZ;
-        CellIndices targetIndices = targetCell.GetIndices();
+        List<FieldCell> targetNeighbours = GetNeighbours(targetCell);
 
-        minX = Mathf.Clamp(targetIndices.cellX - 1, 0, fieldSize - 1);
-        maxX = Mathf.Clamp(targetIndices.cellX + 1, 0, fieldSize - 1);
-        minZ = Mathf.Clamp(targetIndices.cellZ - 1, 0, fieldSize - 1);
-        maxZ = Mathf.Clamp(targetIndices.cellZ + 1, 0, fieldSize - 1);
-
-        for(int i = minX; i <= maxX; i++)
-        {
-            for (int j = minZ; j <= maxZ; j++)
-            {
-                if (field[i, j] != targetCell && !linkedCells.Contains(field[i, j]))
-                {
-                    field[i, j].SwitchCell(active);
-                }                
-            }
+        for(int i = 0; i < targetNeighbours.Count; i++)
+        {            
+            targetNeighbours[i].SwitchCell(active);
         }
     }
 
@@ -109,6 +97,42 @@ public class FieldCellSystem : MonoBehaviour
     public void FreeCell(FieldCell target)
     {
         linkedCells.Remove(target);
+    }
+
+    public void ReplaceLinkedCell(FieldCell prevCell, FieldCell newCell)
+    {
+        linkedCells.Remove(prevCell);
+        linkedCells.Add(newCell);
+    }
+
+    public bool CheckCellLinked(FieldCell target)
+    {
+        return linkedCells.Contains(target);
+    }
+
+    public List<FieldCell> GetNeighbours(FieldCell target)
+    {
+        int minX, minZ, maxX, maxZ;
+        CellIndices targetIndices = target.GetIndices();
+
+        minX = Mathf.Clamp(targetIndices.cellX - 1, 0, fieldSize - 1);
+        maxX = Mathf.Clamp(targetIndices.cellX + 1, 0, fieldSize - 1);
+        minZ = Mathf.Clamp(targetIndices.cellZ - 1, 0, fieldSize - 1);
+        maxZ = Mathf.Clamp(targetIndices.cellZ + 1, 0, fieldSize - 1);
+
+        List<FieldCell> neighbours = new List<FieldCell>();
+        for (int i = minX; i <= maxX; i++)
+        {
+            for (int j = minZ; j <= maxZ; j++)
+            {
+                if (field[i, j] != target && !CheckCellLinked(field[i, j]))
+                {
+                    neighbours.Add(field[i, j]);
+                }
+            }
+        }
+
+        return neighbours;
     }
 
     public void SwitchCells(FieldCell target)

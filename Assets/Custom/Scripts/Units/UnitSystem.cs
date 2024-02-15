@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
@@ -84,15 +83,6 @@ public class UnitSystem : MonoBehaviour
         }
     }
 
-    private bool CheckActionZone(Unit actor1, Unit actor2)
-    {
-        CellIndices cell1, cell2;
-        cell1 = actor1.GetUnitCell().GetIndices();
-        cell2 = actor2.GetUnitCell().GetIndices();
-
-        return (Mathf.Abs(cell1.cellX - cell2.cellX) <= 1) && (Mathf.Abs(cell1.cellZ - cell2.cellZ) <= 1);
-    }
-
     private void SwitchUnitPositions(Unit actor1, Unit actor2)
     {
         currentActive = null;
@@ -155,6 +145,11 @@ public class UnitSystem : MonoBehaviour
         botStartPositions = botPos;
     }
 
+    public List<Unit> GetActiveUnits()
+    {
+        return activeUnits;
+    }
+
     public void ResetUnits()
     {
         ResetTarget();
@@ -165,6 +160,11 @@ public class UnitSystem : MonoBehaviour
             activeUnits.Add(units[i]);
             units[i].ResetUnit();
         }
+    }
+
+    public void SetTarget(Unit target)
+    {
+        currentActive = target;
     }
 
     public void ResetTarget()
@@ -181,6 +181,25 @@ public class UnitSystem : MonoBehaviour
                 activeUnits[i].RefreshUnit(unitActionCount);
             }
         }
+    }
+
+    public bool CheckActionZone(Unit actor1, Unit actor2)
+    {
+        CellIndices cell1, cell2;
+        cell1 = actor1.GetUnitCell().GetIndices();
+        cell2 = actor2.GetUnitCell().GetIndices();
+
+        return (Mathf.Abs(cell1.cellX - cell2.cellX) <= 1) && (Mathf.Abs(cell1.cellZ - cell2.cellZ) <= 1);
+    }
+
+    public float CheckUnitsDistance(FieldCell actor1, FieldCell actor2)
+    {
+        CellIndices cell1, cell2;
+        cell1 = actor1.GetIndices();
+        cell2 = actor2.GetIndices();
+
+        return Mathf.Sqrt((cell2.cellX - cell1.cellX) * (cell2.cellX - cell1.cellX)
+            + (cell2.cellZ - cell1.cellZ) * (cell2.cellZ - cell1.cellZ));
     }
 
     public void PlaceUnits()

@@ -1457,6 +1457,7 @@ GameObject:
   m_Component:
   - component: {fileID: 425886849}
   - component: {fileID: 425886850}
+  - component: {fileID: 425886851}
   m_Layer: 0
   m_Name: FieldObjects
   m_TagString: Untagged
@@ -1500,8 +1501,21 @@ MonoBehaviour:
   unitSystem: {fileID: 1857723172}
   submenu: {fileID: 0}
   bonus: {fileID: 0}
+  bot: {fileID: 0}
   startButton: {fileID: 1822674263}
   turnButton: {fileID: 839938819}
+--- !u!114 &425886851
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 425886847}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 504b540b35427467daffd921210e2f4b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &428437698
 GameObject:
   m_ObjectHideFlags: 0
@@ -5866,6 +5880,7 @@ MonoBehaviour:
   unitSystem: {fileID: 1857723172}
   submenu: {fileID: 533164360}
   bonus: {fileID: 533164361}
+  bot: {fileID: 425886851}
   startButton: {fileID: 1822674263}
   turnButton: {fileID: 839938819}
 --- !u!1 &1442508444

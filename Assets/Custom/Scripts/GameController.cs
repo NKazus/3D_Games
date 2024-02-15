@@ -14,9 +14,12 @@ public class GameController : MonoBehaviour
     [SerializeField] private UnitSystem unitSystem;
     [SerializeField] private ActionSubmenu submenu;
     [SerializeField] private BonusAction bonus;
+    [SerializeField] private Bot bot;
 
     [SerializeField] private Button startButton;
     [SerializeField] private Button turnButton;
+
+    private bool isFinished;
 
     [Inject] private readonly GameEvents events;
     [Inject] private readonly GameDataManager dataManager;
@@ -44,6 +47,9 @@ public class GameController : MonoBehaviour
 
         submenu.Init(HandleAction);
         bonus.Init(HandleBonus);
+
+        bot.InitBot(unitSystem, cellSystem);
+        bot.SetBotCallback(HandleBot);
     }
 
     private void OnDisable()
@@ -84,6 +90,8 @@ public class GameController : MonoBehaviour
         }
         else
         {
+            bot.KillBot();
+
             bonus.ShowBonusMenu(false);
             turnButton.gameObject.SetActive(false);
             cellSystem.DeactivateCells();//remove triggers
@@ -103,24 +111,28 @@ public class GameController : MonoBehaviour
 
         unitSystem.SwitchUnits(UnitCategory.Player, true);
         unitSystem.SwitchUnits(UnitCategory.Bot, true);
+
+        isFinished = false;
     }
 
     private void EndTurn()
     {
-        //unitSystem.SwitchUnits(UnitCategory.Player, false);
+        unitSystem.SwitchUnits(UnitCategory.Player, false);
         cellSystem.ResetTarget();
         unitSystem.ResetTarget();
         submenu.ResetMenu();
         bonus.Deactivate();
-        //bot
+     
         unitSystem.RefreshUnits(UnitCategory.Bot);
-        HandleBot();
+        bot.StartBot();
     }
 
     private void HandleBot()
     {
-
-        //bot logic
+        if (isFinished)
+        {
+            return;
+        }
 
         unitSystem.RefreshUnits(UnitCategory.Player);
         unitSystem.SwitchUnits(UnitCategory.Player, true);
@@ -171,6 +183,8 @@ public class GameController : MonoBehaviour
 
     private void HandleFinish(bool win)
     {
+        isFinished = true;
+
         if (win)
         {
             Debug.Log("win");
