@@ -5,15 +5,19 @@ using Zenject;
 public enum GameAudio
 {
     Victory,
-    Loss
+    Loss,
+    Action,
+    UI
 }
 
 public class GameAudioController : MonoBehaviour
 {
     [SerializeField] private AudioMixerGroup mixerMasterGroup;
 
-    [SerializeField] private AudioSource rewardSound;
-    [SerializeField] private AudioSource magicDiceSound;
+    [SerializeField] private AudioSource victorySound;
+    [SerializeField] private AudioSource lossSound;
+    [SerializeField] private AudioSource actionSound;
+    [SerializeField] private AudioSource uiSound;
 
     private bool vibroEnabled = true;
 
@@ -50,7 +54,6 @@ public class GameAudioController : MonoBehaviour
     }
     #endregion
 
-
     private void PlayVibro()
     {
         if (vibroEnabled)
@@ -63,8 +66,10 @@ public class GameAudioController : MonoBehaviour
     {
         AudioSource target = type switch
         {
-            GameAudio.Victory => rewardSound,
-            GameAudio.Loss => magicDiceSound,
+            GameAudio.Victory => victorySound,
+            GameAudio.Loss => lossSound,
+            GameAudio.Action => actionSound,
+            GameAudio.UI => uiSound,
             _ => throw new System.NotSupportedException()
         };
         target.Play();

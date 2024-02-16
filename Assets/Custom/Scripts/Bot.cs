@@ -42,7 +42,7 @@ public class Bot : MonoBehaviour
         for(int i = 0; i < botUnits.Count; i++)
         {
             DoUnit(botUnits[i]);
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(1.5f);
         }
         if(BotCallback != null)
         {
@@ -52,7 +52,7 @@ public class Bot : MonoBehaviour
 
     private void DoUnit(Unit target)
     {
-        Debug.Log($"!!!!! UNIT TYPE: {target.GetUnitType()}");
+        //Debug.Log($"!!!!! UNIT TYPE: {target.GetUnitType()}");
         switch (target.GetUnitType())
         {
             case UnitType.Buff:

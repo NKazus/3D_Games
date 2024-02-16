@@ -13,7 +13,6 @@ public class GameTrigger : MonoBehaviour
 
     private Image restartIcon;
     private Text restartText;
-    private Text restartExtra;
 
     [Inject] private readonly GameEvents events;
 
@@ -22,13 +21,12 @@ public class GameTrigger : MonoBehaviour
     {
         restartIcon = restartBg.transform.GetChild(1).GetComponent<Image>();
         restartText = restartBg.transform.GetChild(2).GetComponent<Text>();
-        restartExtra = restartBg.transform.GetChild(3).GetComponent<Text>();
     }
 
     private void OnEnable()
     {
         events.GameEvent += ChangeGameState;
-        events.WinEvent += ChangeTextToWin;
+        events.WinEvent += HandleWin;
         restart.onClick.AddListener(Restart);
 
         Restart();
@@ -38,7 +36,7 @@ public class GameTrigger : MonoBehaviour
     {
         events.TriggerGame(false);
         
-        events.WinEvent -= ChangeTextToWin;
+        events.WinEvent -= HandleWin;
         events.GameEvent -= ChangeGameState;
 
         restartBg.SetActive(false);
@@ -62,17 +60,14 @@ public class GameTrigger : MonoBehaviour
             restartIcon.sprite = lose;
             restartIcon.SetNativeSize();
             restartText.text = loseText;
-            restartExtra.enabled = false;
             restartBg.SetActive(false);
         }
     }
 
-    private void ChangeTextToWin(int points)
+    private void HandleWin()
     {
         restartIcon.sprite = win;
         restartIcon.SetNativeSize();
         restartText.text = winText;
-        restartExtra.text = "You've got "+points.ToString()+" coin(s)!";
-        restartExtra.enabled = true;
     }
 }

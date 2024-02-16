@@ -167,6 +167,7 @@ public class GameController : MonoBehaviour
     private void HandleAction()
     {
         unitSystem.PerformAction();
+        //events.PlaySound(GameAudio.Action);
     }
 
     private void HandleBonus()
@@ -187,11 +188,13 @@ public class GameController : MonoBehaviour
 
         if (win)
         {
-            Debug.Log("win");
+            //events.PlaySound(GameAudio.Victory);
+            events.DoWin();
+            dataManager.UpdateData(DataType.Points, 1);
         }
         else
         {
-            Debug.Log("lose");
+            //events.PlaySound(GameAudio.Loss);
         }
         events.TriggerGame(false);
     }

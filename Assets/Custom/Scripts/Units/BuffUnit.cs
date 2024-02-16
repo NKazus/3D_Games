@@ -12,7 +12,6 @@ public class BuffUnit : Unit
             }
         }
 
-        actions--;
-        CheckActions();
+        FinishAction();
     }
 }

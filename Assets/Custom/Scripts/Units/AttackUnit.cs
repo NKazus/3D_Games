@@ -12,7 +12,6 @@ public class AttackUnit : Unit
             }
         }
 
-        actions--;
-        CheckActions();
+        FinishAction();
     }
 }

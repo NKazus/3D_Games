@@ -8,10 +8,7 @@ public class GameEvents
     public event Action<bool> VibroSettingsEvent;
     public event Action<bool> SoundSettingsEvent;
 
-    public event Action<int> WinEvent;
-    public event Action<CellIndices> MovePlayerEvent;
-    public event Action LocksUpdateEvent;
-    public event Action CoinEvent;
+    public event Action WinEvent;
 
     public void TriggerGame(bool activate)
     {
@@ -38,23 +35,8 @@ public class GameEvents
         SoundSettingsEvent?.Invoke(value);
     }
 
-    public void DoWin(int value)
+    public void DoWin()
     {
-        WinEvent?.Invoke(value);
-    }
-
-    public void MovePlayer(CellIndices cell)
-    {
-        MovePlayerEvent?.Invoke(cell);
-    }
-
-    public void UpdateLocks()
-    {
-        LocksUpdateEvent?.Invoke();
-    }
-
-    public void CollectCoin()
-    {
-        CoinEvent?.Invoke();
+        WinEvent?.Invoke();
     }
 }

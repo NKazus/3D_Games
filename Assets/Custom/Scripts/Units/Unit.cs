@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -21,7 +22,8 @@ public abstract class Unit : MonoBehaviour
     [SerializeField] private UnitType type;
     [SerializeField] private int damageValue;
     [SerializeField] private int hpValue;
-    [SerializeField] private UnitVisuals visuals;
+    [SerializeField] private UnitStatus visuals;
+    [SerializeField] private UnitAnimation unitAnim;
 
     private Transform unitTransform;
     private EventTrigger trigger;
@@ -37,7 +39,7 @@ public abstract class Unit : MonoBehaviour
     private System.Action<Unit> PickCallback;
     private System.Action<Unit> DestroyCallback;
 
-    protected void CheckActions()
+    private void CheckActions()
     {
         if(actions <= 0)
         {
@@ -45,16 +47,33 @@ public abstract class Unit : MonoBehaviour
         }
     }
 
+    private void HideUnit()
+    {
+        unitTransform.position = offScreenPos;
+        if (DestroyCallback != null)
+        {
+            DestroyCallback(this);
+        }
+    }
+
+    protected void FinishAction()
+    {
+        unitAnim.PlayAction();
+        actions--;
+        CheckActions();
+    }
+
     public void Init()
     {
         unitTransform = transform;
         trigger = GetComponent<EventTrigger>();
         visuals.Init();
+        unitAnim.Init();
     }
 
     public void ResetUnit()
     {
-        //scale
+        unitAnim.ResetScale(false);
         isEnabled = true;
 
         hp = hpValue;
@@ -66,6 +85,7 @@ public abstract class Unit : MonoBehaviour
         actions = count;
         damage = Mathf.Clamp(damage, 0, damageValue);
         hp = Mathf.Clamp(hp, 0, hpValue);
+        unitAnim.ResetScale(true);
         visuals.SetMaterial(true);
     }
 
@@ -77,11 +97,13 @@ public abstract class Unit : MonoBehaviour
     public void UpdateHp()
     {
         hp++;
+        unitAnim.ScaleHp();
     }
 
     public void UpdateDamage()
     {
         damage++;
+        unitAnim.ScaleDamage();
     }
 
     public void Activate()
@@ -118,11 +140,7 @@ public abstract class Unit : MonoBehaviour
         if(hp <= 0)
         {
             isEnabled = false;
-            unitTransform.position = offScreenPos;
-            if (DestroyCallback != null)
-            {
-                DestroyCallback(this);
-            }
+            unitAnim.DescaleUnit(HideUnit);
         }
     }
 
@@ -157,16 +175,24 @@ public abstract class Unit : MonoBehaviour
         offScreenPos = new Vector3(hiddenPos.x, unitTransform.position.y, hiddenPos.z);
     }
 
-    public void PlaceUnit(FieldCell targetCell)
+    public void PlaceUnit(FieldCell targetCell, bool animated = false)
     {
         Vector3 targetPos = targetCell.GetCellPosition();
-        unitTransform.position = new Vector3(targetPos.x, unitTransform.position.y, targetPos.z);
+        if (animated)
+        {
+            unitTransform.DOMove(new Vector3(targetPos.x, unitTransform.position.y, targetPos.z), 0.5f)
+            .SetId("game_unit");
+        }
+        else
+        {
+            unitTransform.position = new Vector3(targetPos.x, unitTransform.position.y, targetPos.z);
+        }
         linkedCell = targetCell;
     }
 
     public void Move(FieldCell targetCell)
     {
-        PlaceUnit(targetCell);
+        PlaceUnit(targetCell, true);
 
         actions--;
         CheckActions();
@@ -175,6 +201,7 @@ public abstract class Unit : MonoBehaviour
     public void Attack(Unit targetUnit)
     {
         targetUnit.DamageUnit(damage);
+        unitAnim.ShakeScale();
 
         actions--;
         CheckActions();

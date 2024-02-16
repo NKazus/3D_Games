@@ -12,7 +12,6 @@ public class DefenceUnit : Unit
             }
         }
 
-        actions--;
-        CheckActions();
+        FinishAction();
     }
 }

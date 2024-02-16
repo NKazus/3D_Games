@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class UnitVisuals : MonoBehaviour
+public class UnitStatus : MonoBehaviour
 {
     [SerializeField] private Material defaultMaterial;
     [SerializeField] private Material activeMaterial;
