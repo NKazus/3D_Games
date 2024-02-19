@@ -1,6 +1,6 @@
 using System;
 
-public class RandomValueGenerator
+public class IntGenerator
 {
     private Random random = new Random();
 

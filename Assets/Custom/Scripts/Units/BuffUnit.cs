@@ -1,17 +1,20 @@
 using System.Collections.Generic;
 
-public class BuffUnit : Unit
+namespace CMGame.Gameplay
 {
-    public override void Act(List<Unit> targets)
+    public class BuffUnit : Unit
     {
-        for (int i = 0; i < targets.Count; i++)
+        public override void Act(List<Unit> targets)
         {
-            if (targets[i].GetUnitCategory() == category)
+            for (int i = 0; i < targets.Count; i++)
             {
-                targets[i].UpdateDamage();
+                if (targets[i].GetUnitCategory() == category)
+                {
+                    targets[i].UpdateDamage();
+                }
             }
-        }
 
-        FinishAction();
+            FinishAction();
+        }
     }
 }

@@ -1,4 +1,5 @@
 using UnityEngine;
+using CMGame.Saves;
 
 public enum DataType
 {
@@ -10,33 +11,48 @@ public enum DataType
 public class GameDataManager : MonoBehaviour
 {
     [SerializeField] private GameScoreManager scoreManager;
-    [SerializeField] private int globalScore;
-    [SerializeField] private int doubleJumps;
-    [SerializeField] private int unlocks;
 
     [SerializeField] private int score;
     [SerializeField] private int switches;
     [SerializeField] private int adds;
 
-    public int ScoreValue => currentScoreValue;
-    private int currentScoreValue;
+    [SerializeField] private string playerFileName;
+    [SerializeField] private bool enableEncryption;
 
-    public int DoubleJumps => doubleJumps;
-    public int Unlocks => unlocks;
-    public int GlobalScore => globalScore;
+    private JsonSaveManager saveManager = new JsonSaveManager();
+    private PlayerData playerData = new PlayerData();
 
     private void OnEnable()
     {
         //globalScore = PlayerPrefs.HasKey("_GlobalScore") ? PlayerPrefs.GetInt("_GlobalScore") : globalScore;
-
-        score = 10;
-        switches = 3;
-        adds = 5;
+        DeserializeData();
     }
 
     private void OnDisable()
     {
         //PlayerPrefs.SetInt("_GlobalScore", globalScore);
+        SerializeData();
+    }
+
+    private void SerializeData()
+    {
+        saveManager.SaveData($"/{playerFileName}.json", playerData, enableEncryption);
+    }
+
+    private void DeserializeData()
+    {
+        try
+        {
+            playerData = saveManager.LoadData<PlayerData>($"/{playerFileName}.json", enableEncryption);
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Loading exception: {e.Message} {e.StackTrace}");
+            playerData.points = score;
+            playerData.adds = adds;
+            playerData.switches = switches;
+            playerData.rewardDate = System.DateTime.Now.AddDays(-2);
+        }
     }
 
     public void UpdateData(DataType type, int value)
@@ -44,9 +60,9 @@ public class GameDataManager : MonoBehaviour
         int targetValue;
         switch (type)
         {
-            case DataType.Points: score += value; targetValue = score; break;
-            case DataType.Switches: switches += value; targetValue = switches; break;
-            case DataType.Adds: adds += value; targetValue = adds; break;
+            case DataType.Points: playerData.points += value; targetValue = playerData.points; break;
+            case DataType.Switches: playerData.switches += value; targetValue = playerData.switches; break;
+            case DataType.Adds: playerData.adds += value; targetValue = playerData.adds; break;
             default: throw new System.NotSupportedException();
         }
         scoreManager.UpdateValues(type, targetValue);
@@ -56,9 +72,9 @@ public class GameDataManager : MonoBehaviour
     {
         return type switch
         {
-            DataType.Points => score,
-            DataType.Switches => switches,
-            DataType.Adds => adds,
+            DataType.Points => playerData.points,
+            DataType.Switches => playerData.switches,
+            DataType.Adds => playerData.adds,
             _ => throw new System.NotSupportedException()
         };
     }
@@ -70,41 +86,13 @@ public class GameDataManager : MonoBehaviour
         UpdateData(DataType.Adds, 0);
     }
 
-    public void AddBonus(bool isJump)
+    public void UpdateReward(System.DateTime dateTime)
     {
-        if (isJump)
-        {
-            doubleJumps++;
-        }
-        else
-        {
-            unlocks++;
-        }
+        playerData.rewardDate = dateTime;
     }
 
-    public void RemoveBonus(bool isJump)
+    public System.DateTime GetRewardDate()
     {
-        if (isJump)
-        {
-            doubleJumps--;
-        }
-        else
-        {
-            unlocks--;
-        }
-    }
-
-    public void UpdateGlobalScore(int value)
-    {
-        globalScore += value;
-        if(globalScore < 0)
-        {
-            globalScore = 0;
-        }
-    }
-
-    public void UpdateCurrentScore(bool doReset = false)
-    {
-        currentScoreValue = doReset ? 0 : ++currentScoreValue;
+        return playerData.rewardDate;
     }
 }

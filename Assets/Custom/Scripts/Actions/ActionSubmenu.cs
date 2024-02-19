@@ -1,38 +1,39 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ActionSubmenu : MonoBehaviour
+namespace CMGame.Gameplay
 {
-    [SerializeField] private GameObject menuObject;
-    [SerializeField] private Button actionButton;
-
-    private Unit activeTarget;
-
-    public void Init(System.Action callback)
+    public class ActionSubmenu : MonoBehaviour
     {
-        actionButton.onClick.AddListener(() => callback());
-    }
+        [SerializeField] private GameObject menuObject;
+        [SerializeField] private Button actionButton;
 
-    public void ResetMenu()
-    {
-        activeTarget = null;
-        menuObject.SetActive(false);
-    }
+        private Unit activeTarget;
 
-    public void SwitchMenu(Unit target)
-    {
-        if(activeTarget == null)
+        public void Init(System.Action callback)
         {
-            activeTarget = target;
-            menuObject.SetActive(true);
-            return;
+            actionButton.onClick.AddListener(() => callback());
         }
 
-        if (activeTarget == target)
+        public void ResetMenu()
         {
-            ResetMenu();
+            activeTarget = null;
+            menuObject.SetActive(false);
+        }
+
+        public void SwitchMenu(Unit target)
+        {
+            if (activeTarget == null)
+            {
+                activeTarget = target;
+                menuObject.SetActive(true);
+                return;
+            }
+
+            if (activeTarget == target)
+            {
+                ResetMenu();
+            }
         }
     }
 }

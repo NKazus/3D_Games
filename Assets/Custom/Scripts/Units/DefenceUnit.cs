@@ -1,17 +1,20 @@
 using System.Collections.Generic;
 
-public class DefenceUnit : Unit
+namespace CMGame.Gameplay
 {
-    public override void Act(List<Unit> targets)
+    public class DefenceUnit : Unit
     {
-        for(int i = 0; i < targets.Count; i++)
+        public override void Act(List<Unit> targets)
         {
-            if (targets[i].GetUnitCategory() == category)
+            for (int i = 0; i < targets.Count; i++)
             {
-                targets[i].UpdateHp();
+                if (targets[i].GetUnitCategory() == category)
+                {
+                    targets[i].UpdateHp();
+                }
             }
-        }
 
-        FinishAction();
+            FinishAction();
+        }
     }
 }

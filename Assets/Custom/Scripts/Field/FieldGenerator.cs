@@ -1,32 +1,35 @@
 using UnityEngine;
 
-public class FieldGenerator : MonoBehaviour
+namespace CMGame.Gameplay
 {
-    [SerializeField] private Transform fieldParentObject;
-    [SerializeField] private GameObject cellPrefab;
-    [SerializeField] private float cellOffset = 0.09f;
-    [SerializeField] private Vector3 fieldOffset;
-
-    public FieldCell[,] Generate(int fieldSize)
+    public class FieldGenerator : MonoBehaviour
     {
-        FieldCell[,] field = new FieldCell[fieldSize, fieldSize];
-        GameObject cell;
+        [SerializeField] private Transform fieldParentObject;
+        [SerializeField] private GameObject cellPrefab;
+        [SerializeField] private float cellOffset = 0.09f;
+        [SerializeField] private Vector3 fieldOffset;
 
-        for(int i = 0; i < fieldSize; i++)
+        public FieldCell[,] Generate(int fieldSize)
         {
-            for(int j = 0; j < fieldSize; j++)
-            {
-                cell = Instantiate(cellPrefab);
-                cell.transform.SetParent(fieldParentObject);
-                cell.transform.position =
-                    new Vector3(i * cellOffset + fieldOffset.x,
-                    transform.position.y + fieldOffset.y, -j * cellOffset + fieldOffset.z);
-                
-                field[i, j] = cell.GetComponent<FieldCell>();
-                field[i, j].SetIndices(i, j);
-            }
-        }
+            FieldCell[,] field = new FieldCell[fieldSize, fieldSize];
+            GameObject cell;
 
-        return field;
+            for (int i = 0; i < fieldSize; i++)
+            {
+                for (int j = 0; j < fieldSize; j++)
+                {
+                    cell = Instantiate(cellPrefab);
+                    cell.transform.SetParent(fieldParentObject);
+                    cell.transform.position =
+                        new Vector3(i * cellOffset + fieldOffset.x,
+                        transform.position.y + fieldOffset.y, -j * cellOffset + fieldOffset.z);
+
+                    field[i, j] = cell.GetComponent<FieldCell>();
+                    field[i, j].SetIndices(i, j);
+                }
+            }
+
+            return field;
+        }
     }
 }

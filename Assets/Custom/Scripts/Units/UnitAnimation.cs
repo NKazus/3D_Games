@@ -7,8 +7,7 @@ public class UnitAnimation : MonoBehaviour
     private Transform scaleTransform;
 
     private Vector3 defaultScale = new Vector3(1f, 1f, 1f);
-    private Vector3 damageScale = new Vector3(1f, 2f, 1f);
-    private Vector3 hpScale = new Vector3(1.5f, 1f, 1.5f);
+    private Vector3 buffScale = new Vector3(1.5f, 1f, 1.5f);
 
     private void OnDisable()
     {
@@ -51,20 +50,20 @@ public class UnitAnimation : MonoBehaviour
 
     public void ScaleDamage()
     {
-        scaleTransform.DOScale(damageScale, 0.4f)
+        scaleTransform.DOScale(buffScale, 0.4f)
             .SetId("game_unit");
     }
 
     public void ScaleHp()
     {
-        scaleTransform.DOScale(hpScale, 0.4f)
+        scaleTransform.DOScale(new Vector3(buffScale.x, scaleTransform.localScale.y, buffScale.z), 0.4f)
             .SetId("game_unit");
     }
 
     public void DescaleUnit(System.Action callback)
     {
-        scaleTransform.DOScale(Vector3.zero, 0.5f)
-                .SetId("game_unit")
-                .OnComplete(() => callback());
+        scaleTransform.DOScale(Vector3.zero, 0.3f)
+            .SetId("game_unit")
+            .OnComplete(() => callback());
     }
 }

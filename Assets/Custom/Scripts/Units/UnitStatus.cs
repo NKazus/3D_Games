@@ -1,19 +1,22 @@
 using UnityEngine;
 
-public class UnitStatus : MonoBehaviour
+namespace CMGame.Gameplay
 {
-    [SerializeField] private Material defaultMaterial;
-    [SerializeField] private Material activeMaterial;
-
-    private MeshRenderer meshRenderer;
-
-    public void Init()
+    public class UnitStatus : MonoBehaviour
     {
-        meshRenderer = GetComponent<MeshRenderer>();
-    }
+        [SerializeField] private Material defaultMaterial;
+        [SerializeField] private Material activeMaterial;
 
-    public void SetMaterial(bool active)
-    {
-        meshRenderer.material = active ? activeMaterial : defaultMaterial;
+        private MeshRenderer meshRenderer;
+
+        public void Init()
+        {
+            meshRenderer = GetComponent<MeshRenderer>();
+        }
+
+        public void SetMaterial(bool active)
+        {
+            meshRenderer.material = active ? activeMaterial : defaultMaterial;
+        }
     }
 }

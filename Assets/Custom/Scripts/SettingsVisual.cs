@@ -2,7 +2,7 @@ using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SwitchToggle : MonoBehaviour
+public class SettingsVisual : MonoBehaviour
 {
     [SerializeField] private RectTransform handleRectTransform;
     [SerializeField] private Image toggleImage;
@@ -12,14 +12,13 @@ public class SwitchToggle : MonoBehaviour
     private Toggle toggle;
     private Vector2 handlePosition;
 
-    #region MONO
     private void Awake()
     {
         toggle = GetComponent<Toggle>();
         handlePosition = handleRectTransform.anchoredPosition;
         if (toggle.isOn)
         {
-            Switch(true);
+            handleRectTransform.anchoredPosition = toggle.isOn ? handlePosition * (-1) : handlePosition;
         }
     }
 
@@ -32,7 +31,6 @@ public class SwitchToggle : MonoBehaviour
     {
         toggle.onValueChanged.RemoveListener(Switch);
     }
-    #endregion
 
     private void Switch(bool isOn)
     {
