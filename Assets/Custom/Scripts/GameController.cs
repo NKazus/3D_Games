@@ -88,6 +88,7 @@ namespace CMGame.Gameplay
                 }
 
                 startButton.gameObject.SetActive(true);
+                submenu.ResetMenu();
                 bonus.ShowBonusMenu(false);
                 bonus.ResetBonusMenu(dataManager.GetData(DataType.Adds) > 0);
             }

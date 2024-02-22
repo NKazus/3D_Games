@@ -8,6 +8,10 @@ namespace CMGame.Gameplay
         [SerializeField] private GameObject menuObject;
         [SerializeField] private Button actionButton;
 
+        [SerializeField] private Sprite attackSprite;
+        [SerializeField] private Sprite defenceSprite;
+        [SerializeField] private Sprite buffSprite;
+
         private Unit activeTarget;
 
         public void Init(System.Action callback)
@@ -26,6 +30,13 @@ namespace CMGame.Gameplay
             if (activeTarget == null)
             {
                 activeTarget = target;
+                actionButton.image.sprite = target.GetUnitType() switch
+                {
+                    UnitType.Attack => attackSprite,
+                    UnitType.Defence => defenceSprite,
+                    UnitType.Buff => buffSprite,
+                    _ => throw new System.NotSupportedException()
+                };
                 menuObject.SetActive(true);
                 return;
             }

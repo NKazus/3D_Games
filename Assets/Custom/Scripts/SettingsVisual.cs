@@ -5,9 +5,8 @@ using UnityEngine.UI;
 public class SettingsVisual : MonoBehaviour
 {
     [SerializeField] private RectTransform handleRectTransform;
-    [SerializeField] private Image toggleImage;
-    [SerializeField] private Sprite onIcon;
-    [SerializeField] private Sprite offIcon;
+    [SerializeField] private Text onText;
+    [SerializeField] private Text offText;
 
     private Toggle toggle;
     private Vector2 handlePosition;
@@ -19,6 +18,8 @@ public class SettingsVisual : MonoBehaviour
         if (toggle.isOn)
         {
             handleRectTransform.anchoredPosition = toggle.isOn ? handlePosition * (-1) : handlePosition;
+            onText.enabled = true;
+            offText.enabled = false;
         }
     }
 
@@ -34,7 +35,15 @@ public class SettingsVisual : MonoBehaviour
 
     private void Switch(bool isOn)
     {
-        toggleImage.sprite = isOn ? onIcon : offIcon;
-        handleRectTransform.DOAnchorPos(isOn ? handlePosition * (-1) : handlePosition, .4f).SetId(this).SetEase(Ease.InOutBack).Play();        
+        onText.enabled = false;
+        offText.enabled = false;
+        handleRectTransform.DOAnchorPos(isOn ? handlePosition * (-1) : handlePosition, .4f)
+            .SetId("game_settings")
+            .SetEase(Ease.InOutBack)
+            .OnKill(() =>
+            {
+                onText.enabled = isOn;
+                offText.enabled = !isOn;
+            });        
     }
 }

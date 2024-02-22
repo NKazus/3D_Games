@@ -14,6 +14,7 @@ namespace CMGame.Gameplay
             FieldCell[,] field = new FieldCell[fieldSize, fieldSize];
             GameObject cell;
 
+            bool alternateMaterial = false;
             for (int i = 0; i < fieldSize; i++)
             {
                 for (int j = 0; j < fieldSize; j++)
@@ -26,6 +27,8 @@ namespace CMGame.Gameplay
 
                     field[i, j] = cell.GetComponent<FieldCell>();
                     field[i, j].SetIndices(i, j);
+                    field[i, j].SetMaterial(alternateMaterial);
+                    alternateMaterial = !alternateMaterial;
                 }
             }
 

@@ -61,12 +61,12 @@ namespace CMGame.Setup
             {
                 case DataType.Adds:
                     cash = currentPointsValue >= addPrice;
-                    addPriceText.color = cash ? Color.white : Color.red;
+                    addPriceText.color = cash ? Color.gray : Color.red;
                     addButton.interactable = cash;
                     break;
                 case DataType.Switches:
                     cash = currentPointsValue >= switchPrice;
-                    switchPriceText.color = cash ? Color.white : Color.red;
+                    switchPriceText.color = cash ? Color.gray : Color.red;
                     switchButton.interactable = cash;
                     break;
                 default:

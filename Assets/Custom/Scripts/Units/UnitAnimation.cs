@@ -7,7 +7,7 @@ public class UnitAnimation : MonoBehaviour
     private Transform scaleTransform;
 
     private Vector3 defaultScale = new Vector3(1f, 1f, 1f);
-    private Vector3 buffScale = new Vector3(1.5f, 1f, 1.5f);
+    private Vector3 buffScale = new Vector3(1.2f, 1f, 1.2f);
 
     private void OnDisable()
     {

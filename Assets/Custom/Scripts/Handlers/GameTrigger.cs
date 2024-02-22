@@ -8,8 +8,10 @@ public class GameTrigger : MonoBehaviour
     [SerializeField] private GameObject restartBg;
     [SerializeField] private Sprite win;
     [SerializeField] private string winText;
+    [SerializeField] private Color winColor;
     [SerializeField] private Sprite lose;
     [SerializeField] private string loseText;
+    [SerializeField] private Color loseColor;
 
     private Image restartIcon;
     private Text restartText;
@@ -60,6 +62,7 @@ public class GameTrigger : MonoBehaviour
             restartIcon.sprite = lose;
             restartIcon.SetNativeSize();
             restartText.text = loseText;
+            restartText.color = loseColor;
             restartBg.SetActive(false);
         }
     }
@@ -69,5 +72,6 @@ public class GameTrigger : MonoBehaviour
         restartIcon.sprite = win;
         restartIcon.SetNativeSize();
         restartText.text = winText;
+        restartText.color = winColor;
     }
 }

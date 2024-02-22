@@ -27,7 +27,7 @@ namespace CMGame.Setup
 
         private void OnEnable()
         {
-            getButton.image.color = Color.gray;
+            getButton.interactable = false;
             rewardText.text = disableText;
 
             CheckDaily();
@@ -58,7 +58,7 @@ namespace CMGame.Setup
         private void GetIncome()
         {
             getButton.onClick.RemoveListener(GetIncome);
-            getButton.image.color = Color.gray;
+            getButton.interactable = false;
             rewardText.text = disableText;
 
             resources.UpdateData(DataType.Points, rewardValue);
@@ -76,7 +76,7 @@ namespace CMGame.Setup
 
         private void EnableReward()
         {
-            getButton.image.color = Color.white;
+            getButton.interactable = true;
             getButton.onClick.AddListener(GetIncome);
             rewardText.text = enableText;
         }

@@ -17,6 +17,7 @@ namespace CMGame.Gameplay
     public class FieldCell : MonoBehaviour
     {
         [SerializeField] private Material defaultMaterial;
+        [SerializeField] private Material alternativeMaterial;
         [SerializeField] private Material activeMaterial;
 
         private CellIndices indices;
@@ -26,13 +27,15 @@ namespace CMGame.Gameplay
         private EventTrigger trigger;
         private MeshRenderer meshRenderer;
 
+        private Material cellMaterial;
+
         private System.Action<FieldCell> CellCallback;
 
         private void Awake()
         {
             cellTransform = transform;
             trigger = GetComponent<EventTrigger>();
-            meshRenderer = GetComponent<MeshRenderer>();
+            meshRenderer = cellTransform.GetChild(0).GetComponent<MeshRenderer>();
             ResetCell();
         }
 
@@ -48,6 +51,12 @@ namespace CMGame.Gameplay
         {
             indices.cellX = x;
             indices.cellZ = z;
+        }
+
+        public void SetMaterial(bool alternate)
+        {
+            cellMaterial = alternate ? alternativeMaterial : defaultMaterial;
+            meshRenderer.material = cellMaterial;
         }
 
         public CellIndices GetIndices()
@@ -86,7 +95,7 @@ namespace CMGame.Gameplay
         public void SwitchCell(bool active)
         {
             trigger.enabled = active;
-            meshRenderer.material = active ? activeMaterial : defaultMaterial;
+            meshRenderer.material = active ? activeMaterial : cellMaterial;
         }
     }
 }
