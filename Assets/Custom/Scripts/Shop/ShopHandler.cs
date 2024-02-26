@@ -85,7 +85,7 @@ namespace CMGame.Setup
             }
             resources.UpdateData(DataType.Points, -price);
             resources.UpdateData(type, 1);
-            //globalEvents.PlaySound(GameAudio.UI);
+            globalEvents.PlaySound(GameAudio.UI);
 
             CheckBonuses();
         }

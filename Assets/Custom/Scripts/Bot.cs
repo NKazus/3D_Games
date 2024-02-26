@@ -17,6 +17,7 @@ namespace CMGame.Gameplay
         private System.Action BotCallback;
 
         [Inject] private readonly IntGenerator generator;
+        [Inject] private readonly GameEvents eventManager;
 
         private void InitTurn()
         {
@@ -96,6 +97,7 @@ namespace CMGame.Gameplay
             {
                 //Debug.Log("Targets spotted - Attack");
                 target.Act(attackTargets);
+                eventManager.PlaySound(GameAudio.Action);
                 return;
             }
 
@@ -201,6 +203,7 @@ namespace CMGame.Gameplay
                 {
                     //Debug.Log("Buff ally");
                     target.Act(allyUnits);
+                    eventManager.PlaySound(GameAudio.Action);
                 }
 
                 return;
@@ -242,6 +245,7 @@ namespace CMGame.Gameplay
                     {
                         //Debug.Log("Attack unit present - Act");
                         target.Act(allyUnits);
+                        eventManager.PlaySound(GameAudio.Action);
                         return;
                     }
                 }
@@ -250,6 +254,7 @@ namespace CMGame.Gameplay
                 {
                     //Debug.Log("Act");
                     target.Act(allyUnits);
+                    eventManager.PlaySound(GameAudio.Action);
                 }
                 else
                 {

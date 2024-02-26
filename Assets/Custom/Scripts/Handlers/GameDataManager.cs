@@ -24,13 +24,11 @@ public class GameDataManager : MonoBehaviour
 
     private void OnEnable()
     {
-        //globalScore = PlayerPrefs.HasKey("_GlobalScore") ? PlayerPrefs.GetInt("_GlobalScore") : globalScore;
         DeserializeData();
     }
 
     private void OnDisable()
     {
-        //PlayerPrefs.SetInt("_GlobalScore", globalScore);
         SerializeData();
     }
 

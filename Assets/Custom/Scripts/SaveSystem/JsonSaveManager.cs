@@ -9,6 +9,7 @@ namespace CMGame.Saves
 {
     public class JsonSaveManager : ISaveManager
     {
+        //filename cmRes
         private const string KEY = "JZzy/cmOcPlsqbnwzJEmlb8HqQPkrqMqponIiyssvEg=";
         private const string IV = "tXZuLrD4foFkcGcrH47AWA==";
 

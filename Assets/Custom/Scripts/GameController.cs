@@ -108,6 +108,7 @@ namespace CMGame.Gameplay
         {
             startButton.gameObject.SetActive(false);
             turnButton.gameObject.SetActive(true);
+            turnButton.interactable = true;
             bonus.ShowBonusMenu(true);
 
             unitSystem.SetPhase(GamePhase.Play);
@@ -122,6 +123,7 @@ namespace CMGame.Gameplay
 
         private void EndTurn()
         {
+            turnButton.interactable = false;
             unitSystem.SwitchUnits(UnitCategory.Player, false);
             cellSystem.ResetTarget();
             unitSystem.ResetTarget();
@@ -144,6 +146,7 @@ namespace CMGame.Gameplay
             unitSystem.SwitchUnits(UnitCategory.Bot, true);
 
             bonus.ResetBonusMenu(dataManager.GetData(DataType.Adds) > 0);
+            turnButton.interactable = true;
         }
 
         private void HandleCell(FieldCell targetCell)
@@ -172,7 +175,7 @@ namespace CMGame.Gameplay
         private void HandleAction()
         {
             unitSystem.PerformAction();
-            //events.PlaySound(GameAudio.Action);
+            events.PlaySound(GameAudio.Action);
         }
 
         private void HandleBonus()
@@ -200,13 +203,13 @@ namespace CMGame.Gameplay
 
             if (win)
             {
-                //events.PlaySound(GameAudio.Victory);
+                events.PlaySound(GameAudio.Victory);
                 events.DoWin();
                 dataManager.UpdateData(DataType.Points, 1);
             }
             else
             {
-                //events.PlaySound(GameAudio.Loss);
+                events.PlaySound(GameAudio.Loss);
             }
             events.TriggerGame(false);
         }

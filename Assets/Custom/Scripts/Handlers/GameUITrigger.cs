@@ -5,8 +5,8 @@ using UnityEngine.UI;
 public enum GameUI
 {
     Menu = 0,
-    Gameplay = 1,
-    MagicDice = 2,
+    Game = 1,
+    Shop = 2,
     Settings = 3,
     Rules = 4
 }
@@ -16,8 +16,8 @@ public class GameUITrigger : MonoBehaviour
 
     [SerializeField] private Button[] toMenu;
     [SerializeField] private Button toSettings;
-    [SerializeField] private Button toMagicDice;
-    [SerializeField] private Button toGameplay;
+    [SerializeField] private Button toShop;
+    [SerializeField] private Button toGame;
     [SerializeField] private Button toRules;
     [SerializeField] private Button toPrivacy;
     [SerializeField] private string privacyURL;
@@ -37,8 +37,8 @@ public class GameUITrigger : MonoBehaviour
             toMenu[i].onClick.AddListener(() => { TriggerChange(GameUI.Menu); });
         }
         toSettings.onClick.AddListener(() => { TriggerChange(GameUI.Settings); });
-        toMagicDice.onClick.AddListener(() => { TriggerChange(GameUI.MagicDice); });
-        toGameplay.onClick.AddListener(() => { TriggerChange(GameUI.Gameplay); });
+        toShop.onClick.AddListener(() => { TriggerChange(GameUI.Shop); });
+        toGame.onClick.AddListener(() => { TriggerChange(GameUI.Game); });
         toRules.onClick.AddListener(() => { TriggerChange(GameUI.Rules); });
 
         toPrivacy.onClick.AddListener(CheckPrivacy);
@@ -56,8 +56,8 @@ public class GameUITrigger : MonoBehaviour
             toMenu[i].onClick.RemoveAllListeners();
         }
         toSettings.onClick.RemoveAllListeners();
-        toMagicDice.onClick.RemoveAllListeners();
-        toGameplay.onClick.RemoveAllListeners();
+        toShop.onClick.RemoveAllListeners();
+        toGame.onClick.RemoveAllListeners();
         toRules.onClick.RemoveAllListeners();
 
         toPrivacy.onClick.RemoveListener(CheckPrivacy);
