@@ -21100,7 +21100,6 @@ GameObject:
   - component: {fileID: 1440539140}
   - component: {fileID: 1440539142}
   - component: {fileID: 1440539143}
-  - component: {fileID: 1440539144}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -21178,8 +21177,8 @@ MonoBehaviour:
   toRules: {fileID: 1514429100}
   toPrivacy: {fileID: 2106902490}
   toSupport: {fileID: 2145816844}
-  privacyURL: 
-  supportURL: 
+  privacyURL: https://banishdark.com/privacy-policy.html
+  supportURL: https://banishdark.com/support.html
 --- !u!114 &1440539142
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21211,18 +21210,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lampsUI: {fileID: 1286939735}
   freeActionsUI: {fileID: 239502328}
---- !u!114 &1440539144
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1440539136}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d2e4d813705604655a22bc98bd760cc6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1443445136
 GameObject:
   m_ObjectHideFlags: 0
