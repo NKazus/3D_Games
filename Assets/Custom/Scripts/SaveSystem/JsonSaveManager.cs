@@ -5,13 +5,13 @@ using System.Text;
 using Newtonsoft.Json;
 using UnityEngine;
 
-namespace CMGame.Saves
+namespace Bouncer.Saves
 {
     public class JsonSaveManager : ISaveManager
     {
-        //filename cmRes
-        private const string KEY = "JZzy/cmOcPlsqbnwzJEmlb8HqQPkrqMqponIiyssvEg=";
-        private const string IV = "tXZuLrD4foFkcGcrH47AWA==";
+        //filename pDB
+        private const string KEY = "SdsSAhL2NgqKIqIkNkxBjxUAU4I0xp7WHR2w9tBCWaQ=";
+        private const string IV = "2x9BCdnWI9dOaAmqjWjyoA==";
 
         private void WriteEncryptedData<T>(T data, FileStream stream)
         {

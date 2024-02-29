@@ -1,4 +1,4 @@
-namespace CMGame.Saves
+namespace Bouncer.Saves
 {
     public interface ISaveManager
     {

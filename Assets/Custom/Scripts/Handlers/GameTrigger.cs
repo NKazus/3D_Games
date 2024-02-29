@@ -6,29 +6,16 @@ public class GameTrigger : MonoBehaviour
 {
     [SerializeField] private Button restart;
     [SerializeField] private GameObject restartBg;
-    [SerializeField] private Sprite win;
-    [SerializeField] private string winText;
-    [SerializeField] private Color winColor;
-    [SerializeField] private Sprite lose;
-    [SerializeField] private string loseText;
-    [SerializeField] private Color loseColor;
+    [SerializeField] private Text scoreText;
+    [SerializeField] private Text recordText;
 
-    private Image restartIcon;
-    private Text restartText;
 
     [Inject] private readonly GameEvents events;
-
-    #region MONO
-    private void Awake()
-    {
-        restartIcon = restartBg.transform.GetChild(1).GetComponent<Image>();
-        restartText = restartBg.transform.GetChild(2).GetComponent<Text>();
-    }
 
     private void OnEnable()
     {
         events.GameEvent += ChangeGameState;
-        events.WinEvent += HandleWin;
+        events.FinishGameEvent += HandleEndgame;
         restart.onClick.AddListener(Restart);
 
         Restart();
@@ -38,13 +25,12 @@ public class GameTrigger : MonoBehaviour
     {
         events.TriggerGame(false);
         
-        events.WinEvent -= HandleWin;
+        events.FinishGameEvent -= HandleEndgame;
         events.GameEvent -= ChangeGameState;
 
         restartBg.SetActive(false);
         restart.onClick.RemoveListener(Restart);
     }
-    #endregion
 
     private void Restart()
     {
@@ -59,19 +45,13 @@ public class GameTrigger : MonoBehaviour
         }
         else
         {
-            restartIcon.sprite = lose;
-            restartIcon.SetNativeSize();
-            restartText.text = loseText;
-            restartText.color = loseColor;
             restartBg.SetActive(false);
         }
     }
 
-    private void HandleWin()
+    private void HandleEndgame(int score, bool newRecord)
     {
-        restartIcon.sprite = win;
-        restartIcon.SetNativeSize();
-        restartText.text = winText;
-        restartText.color = winColor;
+        scoreText.text = score.ToString();
+        recordText.enabled = newRecord;
     }
 }

@@ -1,12 +1,10 @@
 
-namespace CMGame.Saves
+namespace Bouncer.Saves
 {
     [System.Serializable]
     public class PlayerData
     {
-        public int points;
-        public int adds;
-        public int switches;
-        public System.DateTime rewardDate;
+        public int mainScore;
+        public int bonusScore;
     }
 }

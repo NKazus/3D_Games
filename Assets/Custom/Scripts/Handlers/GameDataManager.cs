@@ -1,20 +1,18 @@
 using UnityEngine;
-using CMGame.Saves;
+using Bouncer.Saves;
 
 public enum DataType
 {
-    Switches,
-    Adds,
-    Points
+    MainScore,
+    BonusScore
 }
 
 public class GameDataManager : MonoBehaviour
 {
     [SerializeField] private GameScoreManager scoreManager;
 
-    [SerializeField] private int score;
-    [SerializeField] private int switches;
-    [SerializeField] private int adds;
+    [SerializeField] private int mScore;
+    [SerializeField] private int bScore;
 
     [SerializeField] private string playerFileName;
     [SerializeField] private bool enableEncryption;
@@ -46,51 +44,34 @@ public class GameDataManager : MonoBehaviour
         catch (System.Exception e)
         {
             Debug.LogError($"Loading exception: {e.Message} {e.StackTrace}");
-            playerData.points = score;
-            playerData.adds = adds;
-            playerData.switches = switches;
-            playerData.rewardDate = System.DateTime.Now.AddDays(-2);
+            playerData.mainScore = mScore;
+            playerData.bonusScore = bScore;
         }
     }
 
     public void UpdateData(DataType type, int value)
     {
-        int targetValue;
         switch (type)
         {
-            case DataType.Points: playerData.points += value; targetValue = playerData.points; break;
-            case DataType.Switches: playerData.switches += value; targetValue = playerData.switches; break;
-            case DataType.Adds: playerData.adds += value; targetValue = playerData.adds; break;
+            case DataType.MainScore: playerData.mainScore = value; break;
+            case DataType.BonusScore: playerData.bonusScore = value; break;
             default: throw new System.NotSupportedException();
         }
-        scoreManager.UpdateValues(type, targetValue);
+        scoreManager.UpdateValues(type, value);
     }
 
     public int GetData(DataType type)
     {
         return type switch
         {
-            DataType.Points => playerData.points,
-            DataType.Switches => playerData.switches,
-            DataType.Adds => playerData.adds,
+            DataType.MainScore => playerData.mainScore,
+            DataType.BonusScore => playerData.bonusScore,
             _ => throw new System.NotSupportedException()
         };
     }
 
-    public void RefreshData()
+    public void RefreshData(DataType type)
     {
-        UpdateData(DataType.Points, 0);
-        UpdateData(DataType.Switches, 0);
-        UpdateData(DataType.Adds, 0);
-    }
-
-    public void UpdateReward(System.DateTime dateTime)
-    {
-        playerData.rewardDate = dateTime;
-    }
-
-    public System.DateTime GetRewardDate()
-    {
-        return playerData.rewardDate;
+        UpdateData(type, GetData(type));
     }
 }

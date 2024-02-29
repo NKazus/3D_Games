@@ -4,9 +4,8 @@ using UnityEngine.UI;
 
 public class GameScoreManager : MonoBehaviour
 {
-    [SerializeField] private Text scoreUI;
-    [SerializeField] private Text switchesUI;
-    [SerializeField] private Text addsUI;
+    [SerializeField] private Text mainScoreUI;
+    [SerializeField] private Text bonusScoreUI;
 
     private void UpdateText(Text uiText, string value)
     {
@@ -18,9 +17,8 @@ public class GameScoreManager : MonoBehaviour
         Text ui;
         switch (type)
         {
-            case DataType.Points: ui = scoreUI; break;
-            case DataType.Switches: ui = switchesUI; break;
-            case DataType.Adds: ui = addsUI; break;
+            case DataType.MainScore: ui = mainScoreUI; break;
+            case DataType.BonusScore: ui = bonusScoreUI; break;
             default: throw new System.NotSupportedException();
         }
 

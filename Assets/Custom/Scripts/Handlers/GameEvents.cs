@@ -8,7 +8,7 @@ public class GameEvents
     public event Action<bool> VibroSettingsEvent;
     public event Action<bool> SoundSettingsEvent;
 
-    public event Action WinEvent;
+    public event Action<int, bool> FinishGameEvent;
 
     public void TriggerGame(bool activate)
     {
@@ -35,8 +35,8 @@ public class GameEvents
         SoundSettingsEvent?.Invoke(value);
     }
 
-    public void DoWin()
+    public void SetFinish(int score, bool newRecord)
     {
-        WinEvent?.Invoke();
+        FinishGameEvent?.Invoke(score, newRecord);
     }
 }
