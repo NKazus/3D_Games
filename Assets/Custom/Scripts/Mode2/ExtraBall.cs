@@ -1,7 +1,8 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-using Zenject;
 
-public class Ball : MonoBehaviour
+public class ExtraBall : MonoBehaviour
 {
     [SerializeField] private float initialVelocity;
 
@@ -13,24 +14,12 @@ public class Ball : MonoBehaviour
 
     private float currentVelocity;
 
-    private System.Action<bool> CollisionCallback;
-
-    [Inject] private readonly GameUpdateHandler updateHandler;
-
-    private void OnEnable()
-    {
-        ballTransform.position = ballInitialPos;
-        ballCollider.enabled = true;
-    }
+    private System.Action CollisionCallback;
+    private System.Action CrashCallback;
 
     private void OnDisable()
     {
         StopBall();
-    }
-
-    private void LocalFixedUpdate()
-    {
-        lastFrameVelocity = ballRigidbody.velocity;
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -38,23 +27,34 @@ public class Ball : MonoBehaviour
         GameObject targetObject = collision.gameObject;
         if (targetObject.CompareTag("Wall"))
         {
-            Wall targetWall = targetObject.GetComponent<Wall>();
-            bool isCrashing = targetWall.IsWallActive();
-            if (isCrashing)
+            SwitchingWall targetWall = targetObject.GetComponent<SwitchingWall>();
+            if (targetWall.IsWallActive())
             {
-                StopBall();
-                //crash anim
+                Bounce(collision.GetContact(0).normal);
+                if (CollisionCallback != null)
+                {
+                    CollisionCallback();
+                }                
             }
             else
-            {                
-                targetWall.Activate();
-                Bounce(collision.GetContact(0).normal);
-            }
-
-            if (CollisionCallback != null)
             {
-                CollisionCallback(isCrashing);
+                //targetWall.Activate();
+                //trigger barrier path animation
+                //if not needed -> delete all if else constr
             }            
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Floor"))
+        {
+            StopBall();
+            //crash anim
+            if (CrashCallback != null)
+            {
+                CrashCallback();
+            }
         }
     }
 
@@ -70,7 +70,6 @@ public class Ball : MonoBehaviour
     {
         ballCollider.enabled = false;
         ballRigidbody.velocity = Vector3.zero;
-        //updateHandler.GameFixedUpdateEvent -= LocalFixedUpdate;
     }
 
     public void Init()
@@ -86,14 +85,10 @@ public class Ball : MonoBehaviour
         currentVelocity = initialVelocity;
         ballTransform.position = ballInitialPos;
 
-        Vector3 randDir = Random.insideUnitSphere;
-        randDir.y = 0f;
-        randDir = randDir.normalized;
-
-        //updateHandler.GameFixedUpdateEvent += LocalFixedUpdate;
+        Vector3 initDir = new Vector3(0, 0, 1f);
 
         ballCollider.enabled = true;
-        lastFrameVelocity = ballRigidbody.velocity = randDir * currentVelocity;
+        lastFrameVelocity = ballRigidbody.velocity = initDir * currentVelocity;
     }
 
     public void ResetBall()
@@ -102,8 +97,13 @@ public class Ball : MonoBehaviour
         ballCollider.enabled = true;
     }
 
-    public void SetCollisionCallback(System.Action<bool> callback)
+    public void SetCollisionCallback(System.Action callback)
     {
         CollisionCallback = callback;
+    }
+
+    public void SetCrashCallback(System.Action callback)
+    {
+        CrashCallback = callback;
     }
 }

@@ -20,6 +20,7 @@ public class MainModeController : MonoBehaviour
     private void Awake()
     {
         ball.SetCollisionCallback(HandleCollision);
+        ball.Init();
         inputHandler.SetInputCallback(HandleInput);
     }
 
@@ -44,6 +45,7 @@ public class MainModeController : MonoBehaviour
         if (activate)
         {
             spawner.ResetWalls();
+            ball.ResetBall();
 
             for(int i = 0; i < arenaWalls.Length; i++)
             {
