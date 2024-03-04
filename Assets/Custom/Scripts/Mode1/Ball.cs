@@ -1,5 +1,5 @@
+using DG.Tweening;
 using UnityEngine;
-using Zenject;
 
 public class Ball : MonoBehaviour
 {
@@ -7,6 +7,7 @@ public class Ball : MonoBehaviour
 
     private Transform ballTransform;
     private Vector3 ballInitialPos;
+    private Vector3 ballInitialScale;
     private Vector3 lastFrameVelocity;
     private Rigidbody ballRigidbody;
     private SphereCollider ballCollider;
@@ -14,8 +15,6 @@ public class Ball : MonoBehaviour
     private float currentVelocity;
 
     private System.Action<bool> CollisionCallback;
-
-    [Inject] private readonly GameUpdateHandler updateHandler;
 
     private void OnEnable()
     {
@@ -28,11 +27,6 @@ public class Ball : MonoBehaviour
         StopBall();
     }
 
-    private void LocalFixedUpdate()
-    {
-        lastFrameVelocity = ballRigidbody.velocity;
-    }
-
     private void OnCollisionEnter(Collision collision)
     {
         GameObject targetObject = collision.gameObject;
@@ -43,18 +37,24 @@ public class Ball : MonoBehaviour
             if (isCrashing)
             {
                 StopBall();
-                //crash anim
+                ballTransform.DOScale(Vector3.zero, 0.4f)
+                    .SetId("main")
+                    .OnComplete(() => {
+                        if (CollisionCallback != null)
+                        {
+                            CollisionCallback(isCrashing);
+                        }
+                    });
             }
             else
             {                
                 targetWall.Activate();
                 Bounce(collision.GetContact(0).normal);
-            }
-
-            if (CollisionCallback != null)
-            {
-                CollisionCallback(isCrashing);
-            }            
+                if (CollisionCallback != null)
+                {
+                    CollisionCallback(isCrashing);
+                }
+            }                     
         }
     }
 
@@ -70,13 +70,13 @@ public class Ball : MonoBehaviour
     {
         ballCollider.enabled = false;
         ballRigidbody.velocity = Vector3.zero;
-        //updateHandler.GameFixedUpdateEvent -= LocalFixedUpdate;
     }
 
     public void Init()
     {
         ballTransform = transform;
-        ballInitialPos = transform.position;
+        ballInitialPos = ballTransform.position;
+        ballInitialScale = ballTransform.localScale;
         ballRigidbody = GetComponent<Rigidbody>();
         ballCollider = GetComponent<SphereCollider>();
     }
@@ -84,13 +84,10 @@ public class Ball : MonoBehaviour
     public void StartBall()
     {
         currentVelocity = initialVelocity;
-        ballTransform.position = ballInitialPos;
 
         Vector3 randDir = Random.insideUnitSphere;
         randDir.y = 0f;
         randDir = randDir.normalized;
-
-        //updateHandler.GameFixedUpdateEvent += LocalFixedUpdate;
 
         ballCollider.enabled = true;
         lastFrameVelocity = ballRigidbody.velocity = randDir * currentVelocity;
@@ -99,7 +96,8 @@ public class Ball : MonoBehaviour
     public void ResetBall()
     {
         ballTransform.position = ballInitialPos;
-        ballCollider.enabled = true;
+        ballTransform.DOScale(ballInitialScale, 0.4f)
+            .SetId("main");
     }
 
     public void SetCollisionCallback(System.Action<bool> callback)

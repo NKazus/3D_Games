@@ -6,8 +6,7 @@ public enum GameAudio
 {
     Victory,
     Loss,
-    Action,
-    UI
+    Bounce
 }
 
 public class GameAudioController : MonoBehaviour
@@ -16,8 +15,7 @@ public class GameAudioController : MonoBehaviour
 
     [SerializeField] private AudioSource victorySound;
     [SerializeField] private AudioSource lossSound;
-    [SerializeField] private AudioSource actionSound;
-    [SerializeField] private AudioSource uiSound;
+    [SerializeField] private AudioSource bounceSound;
 
     private bool vibroEnabled = true;
 
@@ -68,8 +66,7 @@ public class GameAudioController : MonoBehaviour
         {
             GameAudio.Victory => victorySound,
             GameAudio.Loss => lossSound,
-            GameAudio.Action => actionSound,
-            GameAudio.UI => uiSound,
+            GameAudio.Bounce => bounceSound,
             _ => throw new System.NotSupportedException()
         };
         target.Play();

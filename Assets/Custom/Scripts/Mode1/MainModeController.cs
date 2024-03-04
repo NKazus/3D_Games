@@ -83,6 +83,7 @@ public class MainModeController : MonoBehaviour
             return;
         }
 
+        events.PlaySound(GameAudio.Bounce);
         currentScore++;
         scoreUI.text = currentScore.ToString();
     }
@@ -93,10 +94,12 @@ public class MainModeController : MonoBehaviour
         {
             dataManager.UpdateData(DataType.MainScore, currentScore);
             events.SetFinish(currentScore, true);
+            events.PlaySound(GameAudio.Victory);
         }
         else
         {
             events.SetFinish(currentScore, false);
+            events.PlaySound(GameAudio.Loss);
         }
         events.TriggerGame(false);
     }

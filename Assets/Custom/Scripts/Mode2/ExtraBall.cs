@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 
 public class ExtraBall : MonoBehaviour
@@ -8,6 +7,7 @@ public class ExtraBall : MonoBehaviour
 
     private Transform ballTransform;
     private Vector3 ballInitialPos;
+    private Vector3 ballInitialScale;
     private Vector3 lastFrameVelocity;
     private Rigidbody ballRigidbody;
     private SphereCollider ballCollider;
@@ -24,24 +24,13 @@ public class ExtraBall : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        GameObject targetObject = collision.gameObject;
-        if (targetObject.CompareTag("Wall"))
+        if (collision.gameObject.CompareTag("Wall"))
         {
-            SwitchingWall targetWall = targetObject.GetComponent<SwitchingWall>();
-            if (targetWall.IsWallActive())
+            Bounce(collision.GetContact(0).normal);
+            if (CollisionCallback != null)
             {
-                Bounce(collision.GetContact(0).normal);
-                if (CollisionCallback != null)
-                {
-                    CollisionCallback();
-                }                
-            }
-            else
-            {
-                //targetWall.Activate();
-                //trigger barrier path animation
-                //if not needed -> delete all if else constr
-            }            
+                CollisionCallback();
+            }                  
         }
     }
 
@@ -50,11 +39,14 @@ public class ExtraBall : MonoBehaviour
         if (other.CompareTag("Floor"))
         {
             StopBall();
-            //crash anim
-            if (CrashCallback != null)
-            {
-                CrashCallback();
-            }
+            ballTransform.DOScale(Vector3.zero, 0.4f)
+            .SetId("extra")
+            .OnComplete(() => {
+                if (CrashCallback != null)
+                {
+                    CrashCallback();
+                }
+            });            
         }
     }
 
@@ -75,7 +67,8 @@ public class ExtraBall : MonoBehaviour
     public void Init()
     {
         ballTransform = transform;
-        ballInitialPos = transform.position;
+        ballInitialPos = ballTransform.position;
+        ballInitialScale = ballTransform.localScale;
         ballRigidbody = GetComponent<Rigidbody>();
         ballCollider = GetComponent<SphereCollider>();
     }
@@ -83,8 +76,6 @@ public class ExtraBall : MonoBehaviour
     public void StartBall()
     {
         currentVelocity = initialVelocity;
-        ballTransform.position = ballInitialPos;
-
         Vector3 initDir = new Vector3(0, 0, 1f);
 
         ballCollider.enabled = true;
@@ -94,7 +85,8 @@ public class ExtraBall : MonoBehaviour
     public void ResetBall()
     {
         ballTransform.position = ballInitialPos;
-        ballCollider.enabled = true;
+        ballTransform.DOScale(ballInitialScale, 0.4f)
+            .SetId("extra");
     }
 
     public void SetCollisionCallback(System.Action callback)

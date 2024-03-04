@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class FloorSystem : MonoBehaviour
@@ -15,11 +14,11 @@ public class FloorSystem : MonoBehaviour
         while (true)
         {
             SwitchTarget();
-            yield return new WaitForSeconds(2f);
+            yield return new WaitForSeconds(Random.Range(0.5f, 2f));
             targetPanel.SwitchFloor(FloorCondition.Warning);
-            yield return new WaitForSeconds(2f);
+            yield return new WaitForSeconds(1.5f);
             targetPanel.SwitchFloor(FloorCondition.Active);
-            yield return new WaitForSeconds(2f);
+            yield return new WaitForSeconds(1f);
         }        
     }
 

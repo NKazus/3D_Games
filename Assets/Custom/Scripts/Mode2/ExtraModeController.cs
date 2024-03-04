@@ -67,7 +67,7 @@ public class ExtraModeController : MonoBehaviour
             ball.ResetBall();
 
             walls.ResetWalls();
-            walls.SwitchWalls(true);
+            walls.SwitchWalls(false);
 
             startButton.gameObject.SetActive(true);
 
@@ -86,12 +86,14 @@ public class ExtraModeController : MonoBehaviour
     {
         startButton.gameObject.SetActive(false);
 
+        walls.SwitchWalls(true);
         ball.StartBall();
         floor.ActivateFloor();
     }
 
     private void HandleCollision()
     {
+        events.PlaySound(GameAudio.Bounce);
         currentScore++;
         scoreUI.text = currentScore.ToString();
     }
@@ -102,10 +104,12 @@ public class ExtraModeController : MonoBehaviour
         {
             dataManager.UpdateData(DataType.BonusScore, currentScore);
             recordText.enabled = true;
+            events.PlaySound(GameAudio.Victory);
         }
         else
         {
             recordText.enabled = false;
+            events.PlaySound(GameAudio.Loss);
         }
         finishScoreUI.text = currentScore.ToString();
 
