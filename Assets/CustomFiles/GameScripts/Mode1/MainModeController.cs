@@ -100,6 +100,7 @@ public class MainModeController : MonoBehaviour
         {
             events.SetFinish(currentScore, false);
             events.PlaySound(GameAudio.Loss);
+            events.PlayVibro();
         }
         events.TriggerGame(false);
     }

@@ -88,6 +88,7 @@ public class GameAudioController : MonoBehaviour
     private void TurnVibration(bool isVibroOn)
     {
         vibroEnabled = isVibroOn;
+        PlayVibro();
     }
     #endregion
 }

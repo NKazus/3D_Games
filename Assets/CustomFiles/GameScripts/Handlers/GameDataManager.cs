@@ -40,6 +40,7 @@ public class GameDataManager : MonoBehaviour
         try
         {
             playerData = saveManager.LoadData<PlayerData>($"/{playerFileName}.json", enableEncryption);
+            playerData.bonusScore = 10;
         }
         catch (System.Exception e)
         {

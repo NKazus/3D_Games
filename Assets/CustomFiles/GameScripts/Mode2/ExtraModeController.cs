@@ -110,6 +110,7 @@ public class ExtraModeController : MonoBehaviour
         {
             recordText.enabled = false;
             events.PlaySound(GameAudio.Loss);
+            events.PlayVibro();
         }
         finishScoreUI.text = currentScore.ToString();
 

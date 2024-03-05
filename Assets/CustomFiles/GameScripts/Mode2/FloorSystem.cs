@@ -18,7 +18,7 @@ public class FloorSystem : MonoBehaviour
             targetPanel.SwitchFloor(FloorCondition.Warning);
             yield return new WaitForSeconds(1.5f);
             targetPanel.SwitchFloor(FloorCondition.Active);
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(2f);
         }        
     }
 
