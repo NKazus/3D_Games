@@ -90,7 +90,7 @@ public class MainModeController : MonoBehaviour
 
     private void Crash()
     {
-        if(dataManager.GetData(DataType.MainScore) < currentScore)
+        if (dataManager.GetData(DataType.MainScore) < currentScore)
         {
             dataManager.UpdateData(DataType.MainScore, currentScore);
             events.SetFinish(currentScore, true);

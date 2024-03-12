@@ -5,8 +5,8 @@ using UnityEngine.UI;
 public enum GameUI
 {
     Menu = 0,
-    Game = 1,
-    Shop = 2,
+    Wall = 1,
+    Switch = 2,
     Settings = 3,
     Rules = 4
 }
@@ -16,15 +16,14 @@ public class GameUITrigger : MonoBehaviour
 
     [SerializeField] private Button[] toMenu;
     [SerializeField] private Button toSettings;
-    [SerializeField] private Button toShop;
-    [SerializeField] private Button toGame;
+    [SerializeField] private Button toSwitchMode;
+    [SerializeField] private Button toWallMode;
     [SerializeField] private Button toRules;
     [SerializeField] private Button toPrivacy;
     [SerializeField] private string privacyURL;
 
     private GameUI currentState;
 
-    #region MONO
     private void Awake()
     {
        currentState = GameUI.Menu;
@@ -37,8 +36,8 @@ public class GameUITrigger : MonoBehaviour
             toMenu[i].onClick.AddListener(() => { TriggerChange(GameUI.Menu); });
         }
         toSettings.onClick.AddListener(() => { TriggerChange(GameUI.Settings); });
-        toShop.onClick.AddListener(() => { TriggerChange(GameUI.Shop); });
-        toGame.onClick.AddListener(() => { TriggerChange(GameUI.Game); });
+        toSwitchMode.onClick.AddListener(() => { TriggerChange(GameUI.Switch); });
+        toWallMode.onClick.AddListener(() => { TriggerChange(GameUI.Wall); });
         toRules.onClick.AddListener(() => { TriggerChange(GameUI.Rules); });
 
         toPrivacy.onClick.AddListener(CheckPrivacy);
@@ -56,14 +55,12 @@ public class GameUITrigger : MonoBehaviour
             toMenu[i].onClick.RemoveAllListeners();
         }
         toSettings.onClick.RemoveAllListeners();
-        toShop.onClick.RemoveAllListeners();
-        toGame.onClick.RemoveAllListeners();
+        toSwitchMode.onClick.RemoveAllListeners();
+        toWallMode.onClick.RemoveAllListeners();
         toRules.onClick.RemoveAllListeners();
 
         toPrivacy.onClick.RemoveListener(CheckPrivacy);
     }
-    #endregion
-
 
     private void TriggerChange(GameUI state)
     {

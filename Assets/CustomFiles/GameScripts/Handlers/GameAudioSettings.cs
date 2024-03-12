@@ -9,7 +9,6 @@ public class GameAudioSettings : MonoBehaviour
 
     [Inject] private readonly GameEvents events;
 
-    #region MONO
     private void OnEnable()
     {
         musicToggle.onValueChanged.AddListener(TurnMisic);
@@ -27,7 +26,6 @@ public class GameAudioSettings : MonoBehaviour
         musicToggle.onValueChanged.RemoveListener(TurnMisic);
         vibroToggle.onValueChanged.RemoveListener(TurnVibro);
     }
-    #endregion
 
     private void TurnMisic(bool isMusicOn)
     {

@@ -21,7 +21,6 @@ public class GameAudioController : MonoBehaviour
 
     [Inject] private readonly GameEvents events;
 
-    #region MONO
     private void OnEnable()
     {
         events.VibroEvent += PlayVibro;
@@ -39,7 +38,7 @@ public class GameAudioController : MonoBehaviour
             PlayerPrefs.SetInt("AppSettings_Vibro", 1);
         }
         TurnSound(PlayerPrefs.GetInt("AppSettings_Sound") == 1);
-        TurnVibration(PlayerPrefs.GetInt("AppSettings_Vibro") == 1);
+        vibroEnabled = (PlayerPrefs.GetInt("AppSettings_Vibro") == 1);
     }
 
     private void OnDisable()
@@ -50,7 +49,6 @@ public class GameAudioController : MonoBehaviour
         events.VibroSettingsEvent -= TurnVibration;
         events.SoundSettingsEvent -= TurnSound;
     }
-    #endregion
 
     private void PlayVibro()
     {

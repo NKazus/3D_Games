@@ -7,19 +7,25 @@ public class SettingsVisual : MonoBehaviour
     [SerializeField] private RectTransform handleRectTransform;
     [SerializeField] private Text onText;
     [SerializeField] private Text offText;
+    [SerializeField] private Sprite onImage;
+    [SerializeField] private Sprite offImage;
 
     private Toggle toggle;
     private Vector2 handlePosition;
+    private Image handleImage;
 
     private void Awake()
     {
         toggle = GetComponent<Toggle>();
         handlePosition = handleRectTransform.anchoredPosition;
+        handleImage = handleRectTransform.GetComponent<Image>();
+
         if (toggle.isOn)
         {
             handleRectTransform.anchoredPosition = toggle.isOn ? handlePosition * (-1) : handlePosition;
             onText.enabled = true;
             offText.enabled = false;
+            handleImage.sprite = onImage;
         }
     }
 
@@ -44,6 +50,7 @@ public class SettingsVisual : MonoBehaviour
             {
                 onText.enabled = isOn;
                 offText.enabled = !isOn;
+                handleImage.sprite = isOn ? onImage : offImage;
             });        
     }
 }
